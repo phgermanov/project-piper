@@ -11,10 +11,10 @@ services:
     environment:
       # These can be overridden in Coolify
       - NGINX_HOST=localhost
-    volumes:
-      # Mount custom .htpasswd file if you want to use different credentials
-      # Create with: htpasswd -c .htpasswd username
-      - ./.htpasswd:/etc/nginx/auth/.htpasswd:ro
+    # volumes:
+      # Uncomment to mount custom .htpasswd file for different credentials
+      # Create with: htpasswd -c .htpasswd username OR run ./create-auth.sh
+      # - ./.htpasswd:/etc/nginx/auth/.htpasswd:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
