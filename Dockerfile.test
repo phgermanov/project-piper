@@ -1,0 +1,12 @@
+# Minimal test Dockerfile to verify Coolify can build
+FROM nginx:alpine
+
+# Test that the build works
+RUN echo "Build test successful"
+
+# Copy a simple test page
+RUN echo "<h1>Coolify Test - Build Successful</h1>" > /usr/share/nginx/html/index.html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
