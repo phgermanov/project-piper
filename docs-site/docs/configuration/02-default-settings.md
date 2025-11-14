@@ -4,9 +4,7 @@ Project Piper ships with comprehensive default configuration covering common CI/
 
 ## Table of Contents
 
-- [Default Settings](#default-settings)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [Overview](#overview)
   - [Default Configuration File](#default-configuration-file)
   - [General Defaults](#general-defaults)
     - [Core Settings](#core-settings)
