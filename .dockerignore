@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+.github
+
+# Node modules (we'll install fresh)
+**/node_modules
+**/.npm
+
+# Build outputs (except what we need)
+**/build
+**/dist
+
+# Development files
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation and development files
+**/*.md
+!docs-site/**/*.md
+!docs/**/*.md
+
+# Test files
+**/test
+**/tests
+**/__tests__
+**/*.test.js
+**/*.spec.js
+
+# CI/CD
+.github/workflows
+
+# Exclude everything except docs-site directory
+/*
+!/docs-site
+
+# But include the Dockerfile in root
+!Dockerfile
+!.dockerignore

@@ -28,10 +28,24 @@ This guide explains how to deploy the Project Piper documentation site to Coolif
 ### 2. Configure Git Repository
 
 - **Repository URL**: `https://github.com/phgermanov/project-piper`
-- **Branch**: `claude/hetzner-coolify-setup-01PcVbDXbBu4iREgujvfDzHB` (or your preferred branch)
+- **Branch**: `claude/fix-coolify-deploy-docs-017zQxNhGvRoaWFpVNBThEZM` (or your preferred branch)
 - **Build Pack**: Docker
-- **Dockerfile Location**: `docs-site/Dockerfile`
-- **Docker Context**: `docs-site`
+
+#### Option A: Using Root Dockerfile (Recommended)
+
+This is the simplest and most reliable option:
+
+- **Dockerfile Location**: `Dockerfile` (or leave empty/default)
+- **Base Directory**: Leave empty/default (repository root)
+
+#### Option B: Using docs-site Subdirectory Dockerfile
+
+If you prefer to use the Dockerfile in the docs-site directory:
+
+- **Base Directory**: `docs-site`
+- **Dockerfile Location**: `Dockerfile` (relative to base directory)
+
+**Note**: Do NOT use `docs-site/Dockerfile` as the Dockerfile Location when Base Directory is set to `docs-site`.
 
 ### 3. Configure Environment Variables
 
@@ -205,11 +219,31 @@ You can modify `docs-site/nginx.conf` to:
 
 ## Troubleshooting
 
+### "Oops something is not okay" Error
+
+This generic error in Coolify usually indicates a build or configuration issue:
+
+1. **Check Dockerfile Location Configuration**:
+   - If using root Dockerfile: Set Dockerfile Location to `Dockerfile` or leave empty
+   - If using docs-site/Dockerfile: Set Base Directory to `docs-site` AND Dockerfile Location to `Dockerfile` (not `docs-site/Dockerfile`)
+
+2. **Verify Build Arguments**: Ensure `DOCUSAURUS_URL` and `DOCUSAURUS_BASE_URL` are set in Coolify's Build section
+
+3. **Check Build Logs**: Look for the actual error in Coolify's deployment logs (expand the build steps)
+
+4. **Common Misconfigurations**:
+   - Using `docs-site/Dockerfile` as Dockerfile Location when Base Directory is `docs-site` (wrong)
+   - Not setting the Base Directory when using subdirectory Dockerfile
+   - Missing build arguments
+
+5. **Solution**: Use the root-level Dockerfile (Option A above) which is simpler and more reliable
+
 ### Build Fails
 
-1. Check Coolify build logs for errors
-2. Verify the Docker context path is set to `docs-site`
+1. Check Coolify build logs for detailed error messages
+2. Verify the Docker context path configuration (see Configure Git Repository section)
 3. Ensure Node.js version compatibility (requires Node 20+)
+4. Verify build arguments are set correctly
 
 ### Authentication Not Working
 
