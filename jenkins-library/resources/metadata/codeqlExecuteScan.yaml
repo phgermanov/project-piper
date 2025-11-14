@@ -1,0 +1,310 @@
+metadata:
+  name: codeqlExecuteScan
+  description: This step executes a codeql scan on the specified project to perform static code analysis and check the source code for security flaws.
+  longDescription: |-
+    This step executes a codeql scan on the specified project to perform static code analysis and check the source code for security flaws.
+
+    The codeql step triggers a scan locally on your orchestrator (e.g. Jenkins) within a docker container so finally you have to supply a docker image with codeql
+    and Java plus Maven.
+
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        description: Jenkins 'Secret text' credentials ID containing token to authenticate to GitHub.
+        type: jenkins
+    resources:
+      - name: commonPipelineEnvironment
+        resourceSpec:
+          type: piperEnvironment
+      - name: buildDescriptor
+        type: stash
+      - name: tests
+        type: stash
+    params:
+      - name: githubToken
+        description: "GitHub personal access token in plain text. NEVER set this parameter in a file commited to a source code repository. This parameter is intended to be used from the command line or set securely via the environment variable listed below. In most pipeline use-cases, you should instead either store the token in Vault (where it can be automatically retrieved by the step from one of the paths listed below) or store it as a Jenkins secret and configure the secret's id via the `githubTokenCredentialsId` parameter."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubVaultSecretName
+      - name: buildTool
+        type: string
+        description: Defines the build tool which is used for building the project.
+        longDescription: |-
+          Based on the build tool the step will try to auto build the project. The step will try to auto select
+          the language and the build command.
+        mandatory: true
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - custom
+          - maven
+          - golang
+          - npm
+          - pip
+          - yarn
+        default: "maven"
+      - name: buildCommand
+        type: string
+        description: "Command to build the project"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: language
+        type: string
+        description: "The programming language used to analyze. Use coma separation and select custom build tool to analyze multiple languages"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: modulePath
+        type: string
+        description: "Allows providing the path for the module to scan"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "./"
+      - name: database
+        type: string
+        description: "Path to the CodeQL database to create. This directory will be created, and must not already exist."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "codeqlDB"
+      - name: querySuite
+        type: string
+        description: "The name of a CodeQL query suite. If omitted, the default query suite for the language of the database being analyzed will be used."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: uploadResults
+        type: bool
+        description: "Allows you to upload codeql SARIF results to your github project. You will need to set githubToken for this."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: sarifCheckMaxRetries
+        type: int
+        description: "Maximum number of retries when waiting for the server to finish processing the SARIF upload."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: 10
+      - name: sarifCheckRetryInterval
+        type: int
+        description: "Interval in seconds between retries when waiting for the server to finish processing the SARIF upload."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: 30
+      - name: targetGithubRepoURL
+        type: string
+        description: "Target github repo url. Only relevant, if project uses a combination of Piper and non-GitHub SCM."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: targetGithubBranchName
+        type: string
+        description: "Target github branch name. Only relevant, if project uses a combination of Piper and non-GitHub SCM."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: threads
+        type: string
+        description: "Use this many threads for the codeql operations."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "0"
+      - name: ram
+        type: string
+        description: "Use this much ram (MB) for the codeql operations."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "4000"
+      - name: analyzedRef
+        type: string
+        description: "Name of the ref that was analyzed."
+        longDescription: |-
+          If this ref is a pull request merge commit, then use refs/pulls/1234/merge or refs/pulls/1234/head (depending on whether or not this commit corresponds to the HEAD or MERGE commit of the PR).
+          Otherwise, this should be a branch: refs/heads/branch-name. If omitted, the CLI will attempt to automatically populate this from the current branch of the checkout path, if this exists.
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/ref
+      - name: repository
+        aliases:
+          - name: githubRepo
+        description: "URL of the GitHub instance"
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/httpsUrl
+        type: string
+      - name: commitId
+        description: "SHA of commit that was analyzed."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/remoteCommitId
+        type: string
+      - name: vulnerabilityThresholdTotal
+        description: "Threashold for maximum number of allowed vulnerabilities."
+        type: int
+        default: 0
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: checkForCompliance
+        description: "If set to true, the piper step checks for compliance based on vulnerability threadholds. Example - If total vulnerabilites are 10 and vulnerabilityThresholdTotal is set as 0, then the steps throws an compliance error."
+        type: bool
+        default: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: projectSettingsFile
+        type: string
+        description: Path to the mvn settings file that should be used as project settings file.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        aliases:
+          - name: maven/projectSettingsFile
+      - name: globalSettingsFile
+        type: string
+        description: Path to the mvn settings file that should be used as global settings file.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        aliases:
+          - name: maven/globalSettingsFile
+      - name: databaseCreateFlags
+        type: string
+        description: "A space-separated string of flags for the 'codeql database create' command."
+        longDescription: |-
+          A space-separated string of flags for the 'codeql database create' command.
+
+          If both long and short forms of the same flag are provided, the long form takes precedence.
+          Example input: "--threads=1 --ram=2000"
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: databaseAnalyzeFlags
+        type: string
+        description: "A space-separated string of flags for the 'codeql database analyze' command."
+        longDescription: |-
+          A space-separated string of flags for the 'codeql database analyze' command.
+
+          If both long and short forms of the same flag are provided, the long form takes precedence.
+          Example input: "--threads=1 --ram=2000"
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: customCommand
+        type: string
+        description: "A custom user-defined command to run between codeql analysis and results upload."
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: transformQuerySuite
+        type: string
+        description: "A transform string that will be applied to the querySuite using the sed command."
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: paths
+        type: string
+        description: |
+          List of file or directory patterns to include.
+          Each entry must be on its own line, e.g.:
+            src/**
+            lib/**
+          Note: This parameter is only applicable for interpreted languages.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: pathsIgnore
+        type: string
+        pathsIgnore:
+        description: |
+          List of file or directory patterns to ignore.
+          Each entry must be on its own line, e.g.:
+            **/*.md
+            docs/**
+          Note: This parameter is only applicable for interpreted languages.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+  containers:
+    - image: ""
+  outputs:
+    resources:
+      - name: influx
+        type: influx
+        params:
+          - name: step_data
+            fields:
+              - name: codeql
+                type: bool
+          - name: codeql_data
+            fields:
+              - name: repositoryUrl
+              - name: repositoryReferenceUrl
+              - name: codeScanningLink
+              - name: querySuite
+              - name: optionalTotal
+                type: int
+              - name: optionalAudited
+                type: int
+              - name: auditAllTotal
+                type: int
+              - name: auditAllAudited
+                type: int
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "**/*.csv"
+            type: codeql
+          - filePattern: "**/*.sarif"
+            type: codeql
+          - filePattern: "**/toolrun_codeql_*.json"
+            type: codeql
+          - filePattern: "**/piper_codeql_report.json"
+            type: codeql

@@ -1,0 +1,279 @@
+# sap-piper-pipeline - security.yml
+parameters:
+  - name: preSASTSteps
+    type: stepList
+    default: []
+  - name: postSASTSteps
+    type: stepList
+    default: []
+  - name: preOSSSteps
+    type: stepList
+    default: []
+  - name: postOSSSteps
+    type: stepList
+    default: []
+  - name: checkoutSubmodule
+    type: boolean
+    default: false
+  - name: checkoutLFS
+    type: boolean
+    default: false
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnSelfHostedAgents
+    type: boolean
+    default: false
+stages:
+  - stage: Security
+    displayName: Security
+    dependsOn: ["Init", "Build"]
+    condition: and(eq(dependencies.Init.outputs['setup.checkIfStepActive.activeSecurity'], 'true'), not(or(failed(),canceled())), eq(dependencies.Init.outputs['setup.productiveBranch.onProductiveBranch'], 'true'), or(not(eq(dependencies.Init.outputs['setup.optimization.pipelineOptimization'], 'true')), eq(dependencies.Init.outputs['setup.optimization.isOptimizedAndScheduled'], 'true')))
+    variables:
+      sapDefaults_b64: $[ stageDependencies.Init.setup.outputs['piper_defaults.DefaultConfig'] ]
+      pipelineEnvironment_b64: $[ stageDependencies.Build.build.outputs['piper.PipelineEnv'] ]
+      binaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+      osBinaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      activeStepsMap: $[ stageDependencies.Init.setup.outputs['checkIfStepActive.activeStepsSecurity'] ]
+      systemTrustToken: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustSessionToken'] ]
+      systemTrustURL: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustURL'] ]
+
+      # the following two variables are only for backward compatibility and should be removed with Piper Azure task v2.
+      # they might be used by pipelines with custom stages or in extensions
+      # use fetch_version.binaryVersion and fetch_version.osBinaryVersion instead
+      piperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      sapPiperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+    jobs:
+      - job: SAST
+        displayName: Static Application Security Testing
+        pool:
+          name: ${{ parameters.selfHostedPool }}
+          vmImage: ${{ parameters.poolVmImage}}
+        steps:
+          - checkout: self
+            submodules: ${{ parameters.checkoutSubmodule }}
+            lfs: ${{ parameters.checkoutLFS }}
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnSelfHostedAgents }}
+          - ${{ parameters.preSASTSteps }}
+          - task: piper@1.35.2
+            displayName: checkmarxExecuteScan
+            condition: contains(variables.activeStepsMap, '"checkmarxExecuteScan":true')
+            inputs:
+              stepName: checkmarxExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (checkmarx)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              # dont keep spaces between file names (comma is required for step). parameter gets cut at the space and only value before space is considered
+              flags: "--filePattern **/CxSASTReport_*.pdf,**/*CxSAST*.html,**/ScanReport.*,**/toolrun_checkmarx_*.json,**/piper_checkmarx_report.json,**/checkmarx/*.sarif --stepResultType checkmarx"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (checkmarx evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/piper_checkmarx_report.json --stepResultType policy-evidence/SDOL-009-SAST"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: checkmarxOneExecuteScan
+            condition: contains(variables.activeStepsMap, '"checkmarxOneExecuteScan":true')
+            inputs:
+              stepName: checkmarxOneExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (checkmarxOne)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              # dont keep spaces between file names (comma is required for step). parameter gets cut at the space and only value before space is considered
+              flags: "--filePattern **/Cx1_SASTReport_*.pdf,**/Cx1_SASTReport*.json,**/toolrun_checkmarxOne_*.json,**/checkmarxOne/*.sarif --stepResultType checkmarxOne"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (checkmarxOne evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              # dont keep spaces between file names (comma is required for step). parameter gets cut at the space and only value before space is considered
+              flags: "--filePattern **/piper_checkmarxone_report.json --stepResultType policy-evidence/SDOL-009-SAST"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: fortifyExecuteScan
+            condition: contains(variables.activeStepsMap, '"fortifyExecuteScan":true')
+            inputs:
+              stepName: fortifyExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (fortify)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/*.PDF,**/*.fpr,**/fortify-scan.*,**/toolrun_fortify_*.json,**/piper_fortify_report.json,**/fortify/*.sarif,**/fortify/*.sarif.gz --stepResultType fortify"  # codespell:ignore fpr
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (fortify evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/piper_fortify_report.json --stepResultType policy-evidence/SDOL-009-SAST"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: codeqlExecuteScan
+            condition: contains(variables.activeStepsMap, '"codeqlExecuteScan":true')
+            inputs:
+              stepName: codeqlExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (codeql)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/toolrun_codeql_*.json,**/codeqlReport.sarif,**/codeqlReport.csv --stepResultType codeql"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (codeql evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/piper_codeql_report.json --stepResultType policy-evidence/SDOL-009-SAST"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postSASTSteps }}
+      - job: OSS
+        displayName: Open Source Security Scanning
+        pool:
+          name: ${{ parameters.msHostedPool }}
+          vmImage: ${{ parameters.poolVmImage}}
+        steps:
+          - checkout: self
+            submodules: ${{ parameters.checkoutSubmodule }}
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnSelfHostedAgents }}
+          - ${{ parameters.preOSSSteps }}
+          - task: piper@1.35.2
+            displayName: detectExecuteScan
+            condition: contains(variables.activeStepsMap, '"detectExecuteScan":true')
+            inputs:
+              stepName: detectExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (blackduck-ip)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/*BlackDuck_RiskReport.pdf,blackduck-ip.json,**/toolrun_detectExecute_*.json --stepResultType blackduck-ip"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (blackduck-ip evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/blackduck-ip.json --stepResultType policy-evidence/PSL-1"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              sapPiperVersion: $(sapPiperCacheVersion)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: whitesourceExecuteScan
+            condition: contains(variables.activeStepsMap, '"whitesourceExecuteScan":true')
+            inputs:
+              stepName: whitesourceExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (whitesource-security)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern whitesource/**,whitesource/*risk-report.pdf,**/toolrun_whitesource_*.json --stepResultType whitesource-security"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (whitesource-ip)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern whitesource/**,whitesource/*risk-report.pdf,**/toolrun_whitesource_*.json --stepResultType whitesource-ip"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              sapPiperVersion: $(sapPiperCacheVersion)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (whitesource-ip evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/whitesource-ip.json --stepResultType policy-evidence/PSL-1"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - bash: |
+              whitesourceExecuted=$(cat .pipeline/influx/step_data/fields/whitesource.json)
+              detectExecuted=$(cat .pipeline/influx/step_data/fields/detect.json)
+
+              if [[ "$whitesourceExecuted" == "true" && "$detectExecuted" == "" ]] || [[ "$whitesourceExecuted" == "" && "$detectExecuted" == "true" ]]
+              then
+                 echo "##vso[task.setvariable variable=ipStepsExecuted;isOutput=true]true"
+              else
+                 echo "##vso[task.setvariable variable=ipStepsExecuted;isOutput=true]false"
+              fi
+            name: ip
+            displayName: Propagate information about IP scan execution
+          - task: piper@1.35.2
+            displayName: protecodeExecuteScan
+            condition: contains(variables.activeStepsMap, '"protecodeExecuteScan":true')
+            inputs:
+              stepName: protecodeExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (protecode)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/toolrun_protecode_*.json --stepResultType protecode"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCreateFosstarsReport
+            condition: contains(variables.activeStepsMap, '"sapCreateFosstarsReport":true')
+            inputs:
+              stepName: sapCreateFosstarsReport
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (fosstars)
+            condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+            inputs:
+              stepName: sapCumulusUpload
+              flags: '--filePattern fosstars-report/*.json --stepResultType fosstars'
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postOSSSteps }}
+          # current workaround: persist cpe at the end of the stage/job
+          - task: piper@1.35.2
+            name: piper
+            displayName: Export pipeline env
+            condition: always()
+            inputs:
+              stepName: version
+              exportPipelineEnv: true

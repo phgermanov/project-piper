@@ -1,0 +1,17 @@
+general:
+  globalSettingsFile: 'https://int.repositories.cloud.sap/artifactory/build-releases/settings.xml'
+steps:
+  sonarExecuteScan:
+    dockerImage: public.int.repositories.cloud.sap/com.sap.prd.sonar/sonar-scanner-cache:11.1.1-sap-01
+  cnbBuild:
+    buildEnvVars:
+      BP_DEPENDENCY_MIRROR_GITHUB_COM: https://int.repositories.cloud.sap/artifactory/github-com-generic
+      BP_DEPENDENCY_MIRROR_NODEJS_ORG: https://int.repositories.cloud.sap/artifactory/nodejs.org
+hooks:
+  # trustengine kept for compatibility with piper OS binary version from v1.383.0 to 1.414.0. Remove it in ~June 2025
+  # if System Trust will be available for Azure and Jenkins, move only 'systemtrust' and leave 'trustengine' here.
+  trustengine:
+    # full URL example for getting a token: https://api.trust.tools.sap/tokens?systems=sonar
+    serverURL: 'https://api.trust.tools.sap'
+    tokenEndPoint: 'tokens'
+    tokenQueryParamName: 'systems'

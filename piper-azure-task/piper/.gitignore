@@ -1,0 +1,12 @@
+.taskkey
+
+node_modules/
+
+dist/
+reports/
+
+tmp/
+tools/
+
+.pipeline/commonPipelineEnvironment
+**/*_errorDetails.json

@@ -1,0 +1,37 @@
+# This example disables the closing of the staging group in the build stage, and does it in a post-build stage instead.
+# It enables uploading additional artifacts after the build stage.
+
+name: Piper workflow
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+
+jobs:
+  init-piper:
+    uses: project-piper/piper-pipeline-github/.github/workflows/init.yml@jliempt/optionalStagingClose
+    secrets: inherit
+  build-piper:
+    needs: init-piper
+    uses: project-piper/piper-pipeline-github/.github/workflows/build.yml@jliempt/optionalStagingClose
+    secrets: inherit
+    with:
+      on-productive-branch: ${{ needs.init-piper.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.init-piper.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.init-piper.outputs.active-steps-map }}
+      close-staging-group: false
+  post-build-piper:
+    runs-on: self-hosted
+    needs: build-piper
+    env:
+      PIPER_ACTION_GITHUB_TOOLS_TOKEN: ${{ secrets.GH_TOOLS }}
+      PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+      PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+    steps:
+      - uses: actions/checkout@v1
+      # Steps that upload additional artifacts can be added here
+      - name: sapCallStagingService (close staging group)
+        uses: project-piper/piper-github-action@main
+        with:
+          command: sapCallStagingService
+          flags: '--action close'

@@ -1,0 +1,257 @@
+# sap-piper-pipeline - init.yml
+
+parameters:
+  - name: customDefaults
+    type: string
+    default: ""
+  - name: customStageConditions
+    type: string
+    default: ""
+  - name: checkoutSubmodule
+    type: boolean
+    default: false
+  - name: checkoutLFS
+    type: boolean
+    default: false
+  - name: piperVersion  # DEPRECATED. Have no effect and will be removed in the future with v2 of Piper task
+    type: string
+    default: "latest"
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnMSHostedAgents
+    type: boolean
+    default: false
+  - name: overrideBuildReason
+    type: string
+    default: ""
+
+stages:
+  - stage: Init
+    displayName: Init
+    pool:
+      name: ${{ parameters.msHostedPool }}
+      vmImage: ${{ parameters.poolVmImage}}
+    jobs:
+      - job: setup
+        displayName: Setup Pipeline Environment
+        variables:
+          currentBranch: $[variables['Build.SourceBranchName']]
+        # ----------------------------------------------
+        # TODOs:
+        #
+        # * download SAP defaults and store in variable -> DONE in a basic way
+        # * download custom defaults and store in variable(s)
+        # * download stage conditions and store in variable -> DONE in a basic way
+        #
+        # OPEN:
+        #
+        # * perform agnostic downloads in a Piper step? and then only perform Azure specifics on top? (-> adds resilience, ...)
+        # ----------------------------------------------
+        steps:
+          - checkout: piper-pipeline-azure
+            sparseCheckoutPatterns: trust_api_request_azure.sh
+            fetchDepth: 1
+            path: ./scripts
+            displayName: get system trust token script
+            continueOnError: true
+          - checkout: self
+            submodules: ${{ parameters.checkoutSubmodule }}
+            lfs: ${{ parameters.checkoutLFS }}
+            workspaceRepo: true
+          # fetch_version writes binary version to 'binaryVersion' and 'osBinaryVersion' pipeline variable
+          # if hyperspace.piper.version is 'latest' it will first fetch the version tag from latest release
+          - task: piper@1.35.2
+            name: fetch_version
+            displayName: Fetch Piper binary
+            inputs:
+              stepName: version
+              fetchPiperBinaryVersionTag: true
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: Cache@2
+            inputs:
+              key: '"piper" | "$(Agent.OS)" | "$(Agent.OSArchitecture)" | "$(fetch_version.binaryVersion)"'
+              path: $(Agent.ToolsDirectory)/piper
+            condition: and(ne(variables['fetch_version.binaryVersion'], ''), eq('${{ parameters.disableCachingOnMSHostedAgents }}', false))
+            displayName: Piper binary cache
+            continueOnError: true
+            retryCountOnTaskFailure: 3
+            timeoutInMinutes: 3
+          - task: Cache@2
+            inputs:
+              key: '"osPiper" | "$(Agent.OS)" | "$(Agent.OSArchitecture)" | "$(fetch_version.osBinaryVersion)"'
+              path: $(Agent.ToolsDirectory)/osPiper
+            displayName: OS binary cache
+            condition: and(ne(variables['fetch_version.osBinaryVersion'], ''), eq('${{ parameters.disableCachingOnMSHostedAgents }}', false))
+            continueOnError: true
+            retryCountOnTaskFailure: 3
+            timeoutInMinutes: 3
+
+          - task: piper@1.35.2
+            name: piper_defaults
+            displayName: Retrieve Piper and pipeline defaults
+            inputs:
+              stepName: version
+              preserveDefaultConfig: true
+              customDefaults: ${{ parameters.customDefaults }}
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            inputs:
+              stepName: getConfig
+              flags: "--stageConfig --outputFile stage-config.json"
+              restorePipelineDefaults: $(piper_defaults.DefaultConfig)
+            displayName: Read stage configuration
+          # Set up System Trust Token with the help of a script
+          - bash: |
+              echo "Setting up System Trust token"
+              SCRIPT_PATH="$(Pipeline.Workspace)/scripts/trust_api_request_azure.sh"
+              chmod +x $SCRIPT_PATH
+
+              # Check for serverUrl in hooks (coming from defaults+custom defaults) in stage-config.json
+              api_url=$(jq -r .hooks.systemtrust.serverURL stage-config.json)
+              url=$api_url/auth
+              runtime_header=$(System.AccessToken)
+              secret_id=$(hyperspace.vault.secretId)
+              pipeline_id=$(jq -r .vaultPipelineName stage-config.json)
+              group_id=$(jq -r .vaultBasePath stage-config.json)
+              $SCRIPT_PATH $url $runtime_header $secret_id $pipeline_id $group_id
+
+              # URL is also used by Piper Azure task for authenticating in Artifactory for pulling docker images
+              echo "##vso[task.setvariable variable=systemTrustURL;isOutput=true]$api_url"
+            displayName: Set up System Trust Token
+            name: getSystemTrustToken
+            continueOnError: true
+          # calculate productive branch setting, maybe replace with other functionality in future
+          - bash: |
+              echo "##vso[task.setvariable variable=productiveBranch]$(jq -j .productiveBranch stage-config.json)"
+            displayName: Read productive branch config
+          - bash: |
+              if [[ $(currentBranch) =~ $(productiveBranch) ]]; then
+                onProductiveBranch=true
+              else
+                onProductiveBranch=false
+              fi
+              echo "##vso[task.setvariable variable=onProductiveBranch]$onProductiveBranch"
+              echo "##vso[task.setvariable variable=onProductiveBranch;isOutput=true;]$onProductiveBranch"
+              echo "Branch $(currentBranch) is productive branch: $onProductiveBranch"
+            name: productiveBranch
+            displayName: Propagate setting for productive branch
+          - bash: |
+              echo "##vso[task.setvariable variable=useCommitIdForCumulus;isOutput=true;]$(jq -j .useCommitIdForCumulus stage-config.json)"
+            name: commitIdBasedPipeline
+            displayName: Propagate setting for commitID based pipeline
+          - bash: |
+              echo "##vso[task.setvariable variable=manualConfirmation;isOutput=true;]$(jq -j .manualConfirmation stage-config.json)"
+            name: confirm
+            displayName: Propagate setting for manual confirmation
+          - bash: |
+              buildTrigger="$(Build.Reason)"
+              if [ "${{ parameters.overrideBuildReason }}" != "" ]
+              then
+                buildTrigger="${{ parameters.overrideBuildReason }}"
+              fi
+              echo "build trigger: $(Build.Reason)"
+              if [ "$buildTrigger" == "Schedule" ]
+              then
+                # QUESTION: go via commonPipelineEnvironment instead?
+                echo "##vso[task.setvariable variable=scheduledRun;isOutput=true;]true"
+                echo "Pipeline is scheduled: true"
+              else
+                echo "##vso[task.setvariable variable=scheduledRun;isOutput=true;]false"
+                echo "Pipeline is scheduled: false"
+              fi
+              echo "##vso[task.setvariable variable=pipelineOptimization;isOutput=true;]$(jq -j .pipelineOptimization stage-config.json)"
+              echo "Pipeline optimization active: $(jq -j .pipelineOptimization stage-config.json)"
+              # only for testing using Manual instead of Schedule
+              if [ "$(jq -j .pipelineOptimization stage-config.json)" == "true" ] && [ "$buildTrigger" == "Schedule" ]
+              then
+                echo "##vso[task.setvariable variable=isOptimizedAndScheduled;isOutput=true;]true"
+                echo "Pipeline is scheduled and optimized: true"
+              else
+                echo "##vso[task.setvariable variable=isOptimizedAndScheduled;isOutput=true;]false"
+                echo "Pipeline is scheduled and optimized: false"
+              fi
+            displayName: Prepare pipeline optimization behavior
+            name: optimization
+
+          # Identify an ACT pull request based on Build.Reason env variable and uploadCumulusFilesforPR param
+          - bash: |
+              echo "##vso[task.setvariable variable=uploadCumulusFilesforPR]$(jq -j .uploadCumulusFilesforPR stage-config.json)"
+            displayName: Check if user has requested to upload files for PR (ACT)
+          - bash: |
+              echo "Build trigger: $(Build.Reason) && uploadCumulusFilesforPR : $(uploadCumulusFilesforPR)"
+              if  [ "$(uploadCumulusFilesforPR)" == "true" ] && [ "$(Build.Reason)" == "PullRequest" ]
+              then
+                echo "##vso[task.setvariable variable=isActPullRequest;isOutput=true;]true"
+                echo "Pipeline run is for an ACT pull request: true"
+              else
+                echo "##vso[task.setvariable variable=isActPullRequest;isOutput=true;]false"
+                echo "Pipeline run is for an ACT pull request: false"
+              fi
+            displayName: Identify an ACT pull request
+            name: pullRequest
+          - task: piper@1.35.2
+            name: sapPipelineInit
+            displayName: sapPipelineInit
+            inputs:
+              stepName: sapPipelineInit
+              flags: "--isScheduled=$(optimization.scheduledRun)"
+              restorePipelineDefaults: $(piper_defaults.DefaultConfig)
+              exportPipelineEnv: true
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # checkIfStepActive needs to run after pipelineOptimization pipeline env var is set by sapPipelineInit
+          - task: piper@1.35.2
+            displayName: checkIfStepActive
+            inputs:
+              stepName: version
+              createCheckIfStepActiveMaps: true
+              customStageConditions: ${{ parameters.customStageConditions }}
+              restorePipelineDefaults: $(piper_defaults.DefaultConfig)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - bash: |
+              jq -r 'to_entries[] | [.key, .value] | @csv' < .pipeline/stage_out.json |
+              while read -r stage; do
+                  # get stage names without any characters other than letters, to create output variable names with
+                  stageNameOnlyLetters=$(echo $stage | awk -F',' '{gsub(/[^a-zA-Z]/,"", $1); print $1}')
+                  # export "active stage" variables for all stages
+                  active=$(echo $stage | awk  -F',' '{print $2}')
+                  echo "##vso[task.setvariable variable=active$stageNameOnlyLetters;isOutput=true;]$active"
+
+                  # export "active steps" variables for all stages
+                  stageName=$(echo $stage | awk -F',' '{gsub(/"/,"", $1); print $1}')
+                  steps=$(jq -c --arg stageName "$stageName" '.[$stageName]' < .pipeline/step_out.json)
+                  echo "##vso[task.setvariable variable=activeSteps$stageNameOnlyLetters;isOutput=true;]$steps"
+              done
+            displayName: Export active steps/stages
+            name: checkIfStepActive
+          # checkIfStepActive can't be used for this step, since conditions don't work with runtime variables
+          # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops
+          - task: piper@1.35.2
+            name: gcpPublishEvent
+            displayName: gcpPublishEvent (pipelineRunStarted)
+            condition: eq(variables.onProductiveBranch, 'true')
+            continueOnError: true
+            inputs:
+              stepName: gcpPublishEvent
+              flags: "--eventType sap.hyperspace.pipelineRunStarted --topic hyperspace-pipelinerun-started"
+              restorePipelineDefaults: $(piper_defaults.DefaultConfig)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+
+# ----------------------------------------------------
+# TODOs:
+#
+# * advanced PR voting
+#
+# ----------------------------------------------------

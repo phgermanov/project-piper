@@ -1,0 +1,109 @@
+# sap-piper-pipeline - integration.yml
+parameters:
+  - name: skipStage
+    type: boolean
+    default: false
+  - name: overwriteSteps
+    type: stepList
+    default: []
+  - name: preSteps
+    type: stepList
+    default: []
+  - name: postSteps
+    type: stepList
+    default: []
+  - name: checkoutSubmodule
+    type: boolean
+    default: false
+  - name: checkoutLFS
+    type: boolean
+    default: false
+  - name: serviceContainers
+    type: object
+    default: {}
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnMSHostedAgents
+    type: boolean
+    default: false
+stages:
+  - stage: Integration
+    displayName: Integration
+    dependsOn: ["Init", "Build"]
+    condition: and(eq(dependencies.Init.outputs['setup.checkIfStepActive.activeIntegration'], 'true'), not(or(failed(),canceled())), eq(dependencies.Init.outputs['setup.productiveBranch.onProductiveBranch'], 'true'), eq(dependencies.Init.outputs['setup.optimization.isOptimizedAndScheduled'], 'false'), eq('${{ parameters.skipStage }}', 'false'))
+    variables:
+      sapDefaults_b64: $[ stageDependencies.Init.setup.outputs['piper_defaults.DefaultConfig'] ]
+      pipelineEnvironment_b64: $[ stageDependencies.Build.build.outputs['piper.PipelineEnv'] ]
+      binaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+      osBinaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      activeStepsMap: $[ stageDependencies.Init.setup.outputs['checkIfStepActive.activeStepsIntegration'] ]
+      systemTrustToken: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustSessionToken'] ]
+      systemTrustURL: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustURL'] ]
+
+      # the following two variables are only for backward compatibility and should be removed with Piper Azure task v2.
+      # they might be used by pipelines with custom stages or in extensions
+      # use fetch_version.binaryVersion and fetch_version.osBinaryVersion instead
+      piperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      sapPiperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+    pool:
+      name: ${{ parameters.msHostedPool }}
+      vmImage: ${{ parameters.poolVmImage}}
+    jobs:
+      - job: integration
+        services: ${{ parameters.serviceContainers }}
+        steps:
+          - checkout: self
+            submodules: ${{ parameters.checkoutSubmodule }}
+            lfs: ${{ parameters.checkoutLFS }}
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnMSHostedAgents }}
+          - ${{ parameters.preSteps }}
+          - ${{ if ne(length(parameters.overwriteSteps), 0) }}:
+              - ${{ parameters.overwriteSteps }}
+          - ${{ if eq(length(parameters.overwriteSteps), 0) }}:
+              - task: piper@1.33.8
+                displayName: mavenExecuteIntegration
+                condition: contains(variables.activeStepsMap, '"mavenExecuteIntegration":true')
+                inputs:
+                  stepName: mavenExecuteIntegration
+                  restorePipelineDefaults: $(sapDefaults_b64)
+              # ToDo: possibly improve user and configuration experience here - might get obsolete with direct upload of results from steps
+              - task: piper@1.33.8
+                displayName: sapCumulusUpload
+                condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+                inputs:
+                  stepName: sapCumulusUpload
+                  flags: "--filePattern **/TEST-*.xml --stepResultType integration-test"
+                  restorePipelineDefaults: $(sapDefaults_b64)
+                  gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+              - task: piper@1.33.8
+                displayName: sapCumulusUpload
+                condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+                inputs:
+                  stepName: sapCumulusUpload
+                  flags: "--filePattern **/requirement.mapping --stepResultType requirement-mapping"
+                  restorePipelineDefaults: $(sapDefaults_b64)
+                  gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+              - task: piper@1.33.8
+                displayName: sapCumulusUpload
+                condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+                inputs:
+                  stepName: sapCumulusUpload
+                  flags: "--filePattern **/delivery.mapping --stepResultType delivery-mapping"
+                  restorePipelineDefaults: $(sapDefaults_b64)
+                  gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postSteps }}

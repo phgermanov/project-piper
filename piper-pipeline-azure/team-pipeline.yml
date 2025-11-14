@@ -1,0 +1,12 @@
+resources:
+  repositories:
+    - repository: piper-pipeline-ado
+      endpoint: GitHubTools
+      type: githubenterprise
+      name: project-piper/piper-pipeline-ado
+
+extends:
+  template: sap-piper-pipeline.yml@piper-pipeline-ado
+  parameters:
+    customDefaults:
+      - "https://github.tools.sap/my/customDefaults.yml"

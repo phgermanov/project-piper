@@ -1,0 +1,69 @@
+general:
+  # TODO: clarify if value is up to date and in sync with wdf value
+  jenkinsKubernetes:
+    jnlpAgent: 'public.int.repositories.cloud.sap/sap-production/jnlp:4.3.4-sap-01'
+  githubApiUrl: 'https://github.tools.sap/api/v3'
+  githubServerUrl: 'https://github.tools.sap'
+steps:
+  checkmarxOneExecuteScan:
+    filterPattern: '!**/node_modules/**, !**/.xmake/**, !**/*_test.go, !**/vendor/**/*.go, !**/*.mockserver.js, !**/*-preload.js, !**/target/coverage/**, **/*.js, **/*.scala, **/*.py, **/*.go, **/*.d, **/*.di, **/*.xml, **/*.html, **/*.ts'
+  executePitTests:
+    dockerImage: 'piper.int.repositories.cloud.sap/piper/maven'
+    dockerWorkspace: '/home/piper'
+  setupPipelineEnvironment:
+    configFile: '.pipeline/config.properties'
+    githubApiUrl: 'https://github.wdf.sap.corp/api/v3'
+  sonarExecuteScan:
+    customTlsCertificateLinks:
+      - https://aia.pki.co.sap.com/aia/SAPNetCA_G2_2.crt
+      - https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt
+  stashFilesAfterBuild:
+    stashIncludes:
+      classFiles: '**/target/classes/**/*.class, **/target/test-classes/**/*.class'
+      postStagedFiles: 'docker.metadata.json'
+      sonar: '**/jacoco*.exec, **/sonar-project.properties'
+    stashExcludes:
+      classFiles: ''
+      postStagedFiles: ''
+      sonar: ''
+  stashFilesBeforeBuild:
+    stashIncludes:
+      buildDescriptor: '**/pom.xml, **/.mvn/**, **/assembly.xml, **/.swagger-codegen-ignore, **/requirements.txt, **/dub.json, **/package*.json, **/npm-shrinkwrap.json, **/sbtDescriptor.json, **/setup.py, **/mta*.y*ml, **/.npmrc, .xmake.cfg, **/Dockerfile, .hadolint.yaml, **/VERSION, **/version.txt, **/Gopkg.*, **/build.sbt, **/project/*, **/*.cds, **/*.csn'
+      deployDescriptor: '**/manifest*.y*ml, **/*.mtaext.y*ml, **/*.mtaext, **/xs-app.json, helm/**, **/*.y*ml, **/runtime.txt, chart/**'
+      git: '**/.git/**'
+      opa5: '**/*.*'
+      opensourceConfiguration: '**/srcclr.yml, **/vulas-custom.properties, **/vulas-python.cfg, **/.nsprc, **/whitesource_config.py, **/wss-unified-agent.config, **/whitesource.config.json, **/whitesource-fs-agent.config, **/fortify-custom.properties, **/vendor/**/*'
+      yarnSourceConfiguration: '**/.yarn/**, **/.yarnrc, **/yarn.lock'
+      pipelineConfigAndTests: '.pipeline/**'
+      securityDescriptor: '**/xs-security.json'
+      tests: '**/*.xml, **/*.json, **/src/**, **/test/**, **/node_modules/**, **/specs/**, **/env/**, **/*.js, **/*.cds, **/*.csn'
+      zapFiles: '**/zap/scripts/**, **/zap/context/**'
+      traceabilityMapping: '**/*.mapping'
+      checkmarx: '**/*.js, **/*.scala, **/*.py, **/*.go, **/*.xml, **/*.html, **/*.d, **/*.di, **/*.ts'
+    stashExcludes:
+      buildDescriptor: '**/node_modules/**/package*.json, **/.xmake/**/setup.py'
+      deployDescriptor: '.pipeline/*.*'
+      git: ''
+      opa5: ''
+      opensourceConfiguration: ''
+      yarnSourceConfiguration: ''
+      pipelineConfigAndTests: ''
+      securityDescriptor: ''
+      tests: '**/pom.xml, **/dub.json, **/package.json, **/sbtDescriptor.json, **/whitesource.config.json'
+      zapFiles: ''
+      traceabilityMapping: ''
+      checkmarx: '**/*.mockserver.js, **/node_modules/**, **/*-preload.js'
+  # defaults for stage wrapper
+  piperStageWrapper:
+    extensionLocation: '.pipeline/extensions/'
+  sapPiperStagePRVoting:
+    maven:
+      dockerImage: 'piper.int.repositories.cloud.sap/piper/maven'
+      dockerWorkspace: '/home/piper'
+    npm:
+      dockerImage: 'piper.int.repositories.cloud.sap/piper/node'
+      dockerWorkspace: '/home/piper'
+
+hooks:
+  sentry:
+    dsn: 'https://c6e1e1164a8b444ea9d9e4c00b3f4c13@sentry.tools.sap.corp/3'

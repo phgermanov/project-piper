@@ -1,0 +1,452 @@
+# sap-piper-pipeline - build.yml
+parameters:
+  - name: preSteps
+    type: stepList
+    default: []
+  - name: postSteps
+    type: stepList
+    default: []
+  - name: checkoutSubmodule
+    type: boolean
+    default: false
+  - name: checkoutLFS
+    type: boolean
+    default: false
+  - name: serviceContainers
+    type: object
+    default: {}
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnMSHostedAgents
+    type: boolean
+    default: false
+  - name: dockerRegistryConnection
+    type: string
+    default: ""
+  - name: sonarPrivateImage
+    type: string
+    default: ""
+
+stages:
+  - stage: Build
+    displayName: Build
+    dependsOn: ["Init"]
+    condition: and(eq(dependencies.Init.outputs['setup.checkIfStepActive.activeBuild'], 'true'), not(or(failed(),canceled())))
+    variables:
+      sapDefaults_b64: $[ stageDependencies.Init.setup.outputs['piper_defaults.DefaultConfig'] ]
+      onProductiveBranch: $[ stageDependencies.Init.setup.outputs['productiveBranch.onProductiveBranch'] ]
+      pipelineEnvironment_b64: $[ stageDependencies.Init.setup.outputs['sapPipelineInit.PipelineEnv'] ]
+      binaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+      osBinaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      isOptimizedAndScheduled: $[ stageDependencies.Init.setup.outputs['optimization.isOptimizedAndScheduled'] ]
+      isCommitIdBasedPipeline: $[ stageDependencies.Init.setup.outputs['commitIdBasedPipeline.useCommitIdForCumulus'] ]
+      isActPullRequest: $[ stageDependencies.Init.setup.outputs['pullRequest.isActPullRequest'] ]
+      activeStepsMap: $[ stageDependencies.Init.setup.outputs['checkIfStepActive.activeStepsBuild'] ]
+      systemTrustToken: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustSessionToken'] ]
+      systemTrustURL: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustURL'] ]
+
+      # the following two variables are only for backward compatibility and should be removed with Piper Azure task v2.
+      # they might be used by pipelines with custom stages or in extensions
+      # use fetch_version.binaryVersion and fetch_version.osBinaryVersion instead
+      piperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      sapPiperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+    pool:
+      name: ${{ parameters.msHostedPool }}
+      vmImage: ${{ parameters.poolVmImage}}
+    jobs:
+      - job: build
+        services: ${{ parameters.serviceContainers }}
+        displayName: Build and Stage
+        steps:
+          - checkout: self
+            submodules: ${{ parameters.checkoutSubmodule }}
+            lfs: ${{ parameters.checkoutLFS }}
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnMSHostedAgents }}
+          - ${{ parameters.preSteps }}
+          - task: piper@1.35.2
+            inputs:
+              stepName: getConfig
+              flags: "--stageConfig --outputFile stage-config.json"
+              restorePipelineDefaults: $(sapDefaults_b64)
+            displayName: Read stage configuration
+          - bash: |
+              echo "##vso[task.setvariable variable=kanikoExecute]$(jq -j .kanikoExecute stage-config.json)"
+              echo "##vso[task.setvariable variable=cnbBuild]$(jq -j .cnbBuild stage-config.json)"
+              echo "##vso[task.setvariable variable=buildTool]$(jq -j .buildTool stage-config.json)"
+            name: stageConfiguration
+          - task: piper@1.35.2
+            displayName: artifactPrepareVersion
+            condition: and(contains(variables.activeStepsMap, '"artifactPrepareVersion":true'),
+                           eq(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: artifactPrepareVersion
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # versioning for pull requests / non productive branches with cloud_noTag
+          - task: piper@1.35.2
+            displayName: artifactPrepareVersion
+            condition: and(contains(variables.activeStepsMap, '"artifactPrepareVersion":true'),
+                           ne(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: artifactPrepareVersion
+              flags: "--versioningType cloud_noTag"
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # sapCumulusUpload needs to generate the pipelineRunKey before gcpPublishEvent can run. The step won't upload any files.
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (generate pipeline run key)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern '' --stepResultType ''"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            name: gcpPublishEvent
+            displayName: gcpPublishEvent (pipelineTaskRunFinished artifactPrepareVersion)
+            condition: and(contains(variables.activeStepsMap, '"gcpPublishEvent":true'),
+                           eq(variables.onProductiveBranch, 'true'))
+            continueOnError: true
+            inputs:
+              stepName: gcpPublishEvent
+              flags: '--eventType sap.hyperspace.pipelineTaskRunFinished --topic hyperspace-pipelinetaskrun-finished --additionalEventData {"\"taskName\":\"artifactPrepareVersion\",\"outcome\":\"success\"}'
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # staging service - prep
+          - task: piper@1.35.2
+            displayName: sapCallStagingService
+            condition: contains(variables.activeStepsMap, '"sapCallStagingService":true')
+            inputs:
+              stepName: sapCallStagingService
+              flags: "--action createGroup"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCallStagingService
+            condition: contains(variables.activeStepsMap, '"sapCallStagingService":true')
+            inputs:
+              stepName: sapCallStagingService
+              flags: "--action createRepositories"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # golang
+          - task: piper@1.35.2
+            displayName: golangBuild
+            condition: contains(variables.activeStepsMap, '"golangBuild":true')
+            inputs:
+              stepName: golangBuild
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # gradle
+          - task: piper@1.35.2
+            displayName: gradleExecuteBuild
+            condition: contains(variables.activeStepsMap, '"gradleExecuteBuild":true')
+            inputs:
+              stepName: gradleExecuteBuild
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # maven
+          - task: piper@1.35.2
+            displayName: mavenBuild
+            condition: contains(variables.activeStepsMap, '"mavenBuild":true')
+            inputs:
+              stepName: mavenBuild
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # npm
+          - task: piper@1.35.2
+            displayName: npmExecuteScripts
+            condition: contains(variables.activeStepsMap, '"npmExecuteScripts":true')
+            inputs:
+              stepName: npmExecuteScripts
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # mta
+          - task: piper@1.35.2
+            displayName: mtaBuild
+            condition: contains(variables.activeStepsMap, '"mtaBuild":true')
+            inputs:
+              stepName: mtaBuild
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # python
+          - task: piper@1.35.2
+            displayName: pythonBuild
+            condition: contains(variables.activeStepsMap, '"pythonBuild":true')
+            inputs:
+              stepName: pythonBuild
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # docker
+          - task: piper@1.35.2
+            displayName: kanikoExecute
+            condition: contains(variables.activeStepsMap, '"kanikoExecute":true')
+            inputs:
+              stepName: kanikoExecute
+              flags: "--createBOM"
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: cnbBuild
+            condition: contains(variables.activeStepsMap, '"cnbBuild":true')
+            inputs:
+              stepName: cnbBuild
+              restorePipelineDefaults: $(sapDefaults_b64)
+              dockerRegistryConnection: ${{ parameters.dockerRegistryConnection }}
+          # hadolintExecute
+          - task: piper@1.35.2
+            displayName: hadolintExecute
+            condition: contains(variables.activeStepsMap, '"hadolintExecute":true')
+            inputs:
+              stepName: hadolintExecute
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # helm
+          - task: piper@1.35.2
+            displayName: helmExecute
+            condition: contains(variables.activeStepsMap, '"helmExecute":true')
+            inputs:
+              stepName: helmExecute
+              restorePipelineDefaults: $(sapDefaults_b64)
+          # build open-component-model version
+          - task: piper@1.35.2
+            displayName: sapOcmCreateComponent
+            condition: contains(variables.activeStepsMap, '"sapOcmCreateComponent":true')
+            inputs:
+              stepName: sapOcmCreateComponent
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # imagePushToRegistry- does not run for PRs
+          - task: piper@1.35.2
+            displayName: imagePushToRegistry
+            condition: and(contains(variables.activeStepsMap, '"imagePushToRegistry":true'),
+                        eq(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: imagePushToRegistry
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (URL log upload)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                           not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/url-log.json --stepResultType access-log"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # generate environment info
+          - task: piper@1.35.2
+            displayName: sapGenerateEnvironmentInfo
+            condition: or(eq(variables.onProductiveBranch, 'true'), eq(variables.isActPullRequest,'true'))
+            inputs:
+              stepName: sapGenerateEnvironmentInfo
+              flags: --buildEnvironment Hyperspace_Azure_native_BuildStep
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - bash: |
+              if [ -f $(Build.Repository.LocalPath)/build-settings.json ]; then
+                  echo "##vso[task.uploadfile]$(Build.Repository.LocalPath)/build-settings.json"
+              fi
+            condition: or(eq(variables.onProductiveBranch, 'true'), eq(variables.isActPullRequest,'true'))
+          - bash: |
+              if [ $(isCommitIdBasedPipeline) == true ] && [ $(isOptimizedAndScheduled) == true ]; then
+                if [ -f $(Build.Repository.LocalPath)/env-scheduled.json ]; then
+                  echo "##vso[task.uploadfile]$(Build.Repository.LocalPath)/env-scheduled.json"
+                fi
+              else
+                if [ -f $(Build.Repository.LocalPath)/env.json ]; then
+                  echo "##vso[task.uploadfile]$(Build.Repository.LocalPath)/env.json"
+                fi
+              fi
+            condition: or(eq(variables.onProductiveBranch, 'true'), eq(variables.isActPullRequest,'true'))
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (environment info)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           or(eq(variables.onProductiveBranch, 'true'), eq(variables.isActPullRequest,'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern env*.json --stepResultType root"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # Upload of env.json for SLC-25 policy
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (environment info for SLC-25 policy)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           or(eq(variables.onProductiveBranch, 'true'), eq(variables.isActPullRequest,'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern env*.json --stepResultType policy-evidence/SLC-25"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # Upload of env.json for SLC-29 policy
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (environment info for SLC-29-PI policy)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           or(eq(variables.isActPullRequest,'true'),
+                              and(eq(variables.onProductiveBranch,'true'),
+                                  ne(variables.isOptimizedAndScheduled, 'true'))))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern env*.json --stepResultType policy-evidence/SLC-29-PI"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # hs-assessmeent file should be uploaded before BOM file
+          # see issue: https://github.wdf.sap.corp/ContinuousDelivery/piper-ita/issues/849
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (HS assessment)
+            # run isActPullRequest or (onProductiveBranch and not isOptimizedAndScheduled )
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           or(eq(variables.isActPullRequest,'true'),
+                              and(eq(variables.onProductiveBranch, 'true'),
+                              ne(variables.isOptimizedAndScheduled, 'true'))))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern hs-assessments.yaml --stepResultType assessment"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (SBom)
+            # run isActPullRequest or (onProductiveBranch and not isOptimizedAndScheduled )
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                       or(eq(variables.isActPullRequest,'true'),
+                          and(eq(variables.onProductiveBranch, 'true'),
+                              ne(variables.isOptimizedAndScheduled, 'true'))))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/bom-*.xml --stepResultType sbom"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (build settings info)
+            # run isActPullRequest or (onProductiveBranch and not isOptimizedAndScheduled )
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           or(eq(variables.isActPullRequest,'true'),
+                              and(eq(variables.onProductiveBranch, 'true'),
+                                  ne(variables.isOptimizedAndScheduled, 'true'))))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern build-settings.json --stepResultType settings"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # Upload of build-settings.json for SLC-29 policy
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (build settings info for SLC-29-PNB policy)
+            # run isActPullRequest or (onProductiveBranch and not isOptimizedAndScheduled )
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                       or(eq(variables.isActPullRequest,'true'),
+                          and(eq(variables.onProductiveBranch, 'true'),
+                              ne(variables.isOptimizedAndScheduled, 'true'))))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern build-settings.json --stepResultType policy-evidence/SLC-29-PNB"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # staging service - post
+          - task: piper@1.35.2
+            displayName: sapCallStagingService
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCallStagingService":true'))
+            inputs:
+              stepName: sapCallStagingService
+              flags: "--action close"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: karmaExecuteTests
+            condition: contains(variables.activeStepsMap, '"karmaExecuteTests":true')
+            inputs:
+              stepName: karmaExecuteTests
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (junit test results)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                              not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/TEST-*.xml --stepResultType junit"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (jacoco code coverage results)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                              not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/jacoco.xml --stepResultType jacoco-coverage"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (cobertura test coverage results)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                              not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/cobertura-coverage.xml --stepResultType cobertura-coverage"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (requirement mapping)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+              eq(variables.onProductiveBranch, 'true'),
+                 not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/requirement.mapping --stepResultType requirement-mapping"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sonarExecuteScan
+            condition: and(always(), contains(variables.activeStepsMap, '"sonarExecuteScan":true'))
+            inputs:
+              stepName: sonarExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+              dockerRegistryConnection: ${{ parameters.dockerRegistryConnection }}
+              ${{ if ne(parameters.dockerRegistryConnection, '') }}:
+                dockerImage: ${{ parameters.sonarPrivateImage }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (sonarqube results)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                              not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/sonarscan-result.json,**/sonarscan.json --stepResultType sonarqube"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (sonarqube results)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                              not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/sonarscan-result.json,**/sonarscan.json --stepResultType policy-evidence/FC-1"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postSteps }}
+          - task: piper@1.35.2
+            name: sapCumulusUpload
+            displayName: sapCumulusUpload (piper-config.yaml)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'),
+                           eq(variables.onProductiveBranch, 'true'),
+                              not(eq(variables.isOptimizedAndScheduled, 'true')))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern piper-config.yaml --stepResultType config"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            name: piper
+            displayName: Export pipeline env
+            condition: always()
+            inputs:
+              stepName: "version"
+              exportPipelineEnv: true

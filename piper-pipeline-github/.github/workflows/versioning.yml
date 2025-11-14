@@ -1,0 +1,81 @@
+name: Versioning stage
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      pipeline-env:
+        required: true
+        type: string
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      # telemetry-template-name input is for internal use by Piper team only. If you are reusing this workflow in
+      # your pipeline, please avoid setting any value for this input.
+      telemetry-template-name:
+        required: false
+        type: string
+        default: ''
+    outputs:
+      pipeline-env:
+        value: ${{ jobs.Versioning.outputs.pipelineEnv }}
+env:
+  PIPER_ACTION_PIPER_VERSION: ${{ inputs.piper-version }}
+  PIPER_ACTION_SAP_PIPER_VERSION: ${{ inputs.sap-piper-version }}
+  PIPER_ACTION_SAP_PIPER_OWNER: project-piper
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: sap-piper
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ github.token }}
+  PIPER_ENTERPRISE_SERVER_URL: ${{ secrets.PIPER_ENTERPRISE_SERVER_URL }}
+  PIPER_ACTION_WDF_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.PIPER_WDF_GITHUB_TOKEN }}
+  PIPER_ACTION_PIPELINE_ENV: ${{ inputs.pipeline-env }}
+  PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+  PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+  PIPER_PIPELINE_TEMPLATE_NAME: ${{ inputs.telemetry-template-name }}
+jobs:
+  Versioning:
+    name: 'Versioning'
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    outputs:
+      pipelineEnv: ${{ steps.pipelineEnv.outputs.pipelineEnv }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          submodules: ${{ inputs.checkout-submodules }}
+          lfs: ${{ inputs.checkout-lfs }}
+      - id: stage_config
+        name: Read stage configuration
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: getConfig
+          flags: --stepName artifactPrepareVersion --outputFile stage-config.json
+      - name: artifactPrepareVersion
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: artifactPrepareVersion
+          flags: --versioningType cloud_noTag
+      - name: Export pipeline environment
+        if: always()
+        uses: SAP/project-piper-action@v1.22
+        id: pipelineEnv
+        with:
+          step-name: ''
+          export-pipeline-environment: true

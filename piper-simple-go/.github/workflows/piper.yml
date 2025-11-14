@@ -1,0 +1,16 @@
+name: Piper workflow
+
+on:
+  workflow_dispatch:
+jobs:
+  piper:
+    # if you want to pin specific version use for example @v1.2.3 instead of @main
+    uses: project-piper/piper-pipeline-github/.github/workflows/sap-piper-workflow.yml@main
+    secrets: inherit
+    permissions:
+      contents: write
+      id-token: write
+    with:      
+      piper-version: 'devel:SAP:jenkins-library:892543de5306fe7ea4121104349b80d751b1c7b7'
+#      sap-piper-version: '2.4.5'
+#      runs-on: '[ "self-hosted", "my-custom-runner-tag" ]'

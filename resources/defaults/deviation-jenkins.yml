@@ -1,0 +1,20 @@
+general:
+  globalSettingsFile: 'https://int.repositories.cloud.sap/artifactory/build-releases/settings.xml'
+steps:
+  sonarExecuteScan:
+    dockerImage: public.int.repositories.cloud.sap/com.sap.prd.sonar/sonar-scanner-cache:11.1.1-sap-01
+  artifactPrepareVersion:
+    maven:
+      dockerImage: ''
+    CAP:
+      dockerImage: ''
+    gradle:
+      dockerImage: ''
+  cnbBuild:
+    buildEnvVars:
+      BP_DEPENDENCY_MIRROR_GITHUB_COM: https://int.repositories.cloud.sap/artifactory/github-com-generic
+      BP_DEPENDENCY_MIRROR_NODEJS_ORG: https://int.repositories.cloud.sap/artifactory/nodejs.org
+  detectExecuteScan:
+    dockerImage: ''
+  sapGithubWriteDeployment:
+    environment: 'Piper Release'

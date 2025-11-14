@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "labels": ["dependencies"],
+  "dependencyDashboard": true,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "labels": [
+        "maintenance"
+      ]
+    },
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true,
+      "platformAutomerge": true,
+      "matchPackageNames": [
+        "/lint/"
+      ]
+    },
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "matchPackageNames": [
+        "jest",
+        "expect",
+        "/jest/"
+      ],
+      "automerge": true,
+      "platformAutomerge": true
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+# sap-piper-pipeline - confirm.yml
+parameters:
+  - name: manualConfirmationTimeoutMinutes
+    type: number
+stages:
+  - stage: Confirmation
+    displayName: Manual Confirmation
+    dependsOn:
+      [
+        "Init",
+        "Build",
+        "Acceptance",
+        "Integration",
+        "Performance",
+        "Security",
+        "ipscan_ppms",
+      ]
+    condition: and(not(or(failed(),canceled())), eq(dependencies.Init.outputs['setup.productiveBranch.onProductiveBranch'], 'true'), eq(dependencies.Init.outputs['setup.optimization.isOptimizedAndScheduled'], 'false'), eq(dependencies.Init.outputs['setup.confirm.manualConfirmation'], 'true'))
+    pool: server
+    jobs:
+      - job: confirmation
+        # job timeout needs to be >= step timeout
+        timeoutInMinutes: ${{ parameters.manualConfirmationTimeoutMinutes }}
+        displayName: Wait for manual confirmation
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: ${{ parameters.manualConfirmationTimeoutMinutes }}
+            inputs:
+              instructions: "Shall we proceed to Promote & Release?"
+              onTimeout: "reject"

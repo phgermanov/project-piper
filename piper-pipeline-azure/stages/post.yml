@@ -1,0 +1,121 @@
+# sap-piper-pipeline - post.yml
+parameters:
+  - name: postSteps
+    type: stepList
+    default: []
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnSelfHostedAgents
+    type: boolean
+    default: false
+stages:
+  - stage: Post
+    displayName: Post
+    dependsOn: ['Init', 'Build', 'Promote', 'Release']
+    condition: always()
+    variables:
+      sapDefaults_b64: $[ stageDependencies.Init.setup.outputs['piper_defaults.DefaultConfig'] ]
+      pipelineEnvironment_b64: $[ coalesce(stageDependencies.Promote.promote.outputs['piper.PipelineEnv'], stageDependencies.Build.build.outputs['piper.PipelineEnv']) ]
+      # CPE value comes from the Promote stage; needed for the sapGenerateEnvironmentInfo step
+      onProductiveBranch: $[ stageDependencies.Init.setup.outputs['productiveBranch.onProductiveBranch'] ]
+      binaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+      osBinaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      activeStepsMap: $[ stageDependencies.Init.setup.outputs['checkIfStepActive.activeStepsPost'] ]
+      systemTrustToken: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustSessionToken'] ]
+      systemTrustURL: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustURL'] ]
+
+      # the following two variables are only for backward compatibility and should be removed with Piper Azure task v2.
+      # they might be used by pipelines with custom stages or in extensions
+      # use fetch_version.binaryVersion and fetch_version.osBinaryVersion instead
+      piperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      sapPiperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+    pool:
+      name: ${{ parameters.msHostedPool }}
+      vmImage: ${{ parameters.poolVmImage}}
+    jobs:
+      - job: post
+        displayName: Post Stage
+        steps:
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnSelfHostedAgents }}
+          - script: |
+              collectionUri=$(echo $(System.CollectionUri))
+              organization_name=$(echo $collectionUri | awk -F/ '{print $4}')
+              echo "Azure DevOps Organization Name: $organization_name"
+              echo "##vso[task.setvariable variable=OrganizationName]$organization_name"
+            displayName: Setting Organization name
+          - task: piper@1.35.2
+            displayName: sapReportPipelineStatus
+            condition: and(always(), contains(variables.activeStepsMap, '"sapReportPipelineStatus":true'))
+            inputs:
+              stepName: sapReportPipelineStatus
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+              flags: '--azureToken $(System.AccessToken)'
+          - task: piper@1.35.2
+            displayName: vaultRotateSecretId
+            condition: contains(variables.activeStepsMap, '"vaultRotateSecretId":true')
+            inputs:
+              stepName: vaultRotateSecretId
+              # vaultAppRoleSecretTokenCredentialsId needs to be hardcoded as there is no reference for this variable in config.yml
+              flags: "--secretStore ado --adoOrganization $(OrganizationName) --adoProject $(System.TeamProjectId) --adoPipelineId $(System.DefinitionId) --vaultAppRoleSecretTokenCredentialsId hyperspace.vault.secretId"
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (cumulus-configuration)
+            condition: eq(variables.onProductiveBranch, 'true')
+            inputs:
+              stepName: sapCumulusUpload
+              flags: '--filePattern **/cumulus-configuration.json --stepResultType root'
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (pipelineLog)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'), eq(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: '--filePattern ./pipelineLog*.log --stepResultType log'
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            name: gcpPublishEvent
+            displayName: gcpPublishEvent (pipelineRunFinished)
+            condition: and(contains(variables.activeStepsMap, '"gcpPublishEvent":true'), eq(variables.onProductiveBranch, 'true'))
+            continueOnError: true
+            inputs:
+              stepName: gcpPublishEvent
+              flags: "--eventType sap.hyperspace.pipelineRunFinished --topic hyperspace-pipelinerun-finished"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # generate and upload release status file. It must be done after pipelineTaskRunFinished event (gcpPublishEvent).
+          # See for details: https://jira.tools.sap/browse/HSPIPER-508
+          - task: piper@1.35.2
+            displayName: sapGenerateEnvironmentInfo
+            condition: and(contains(variables.activeStepsMap, '"sapGenerateEnvironmentInfo":true'), eq(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: sapGenerateEnvironmentInfo
+              flags: --generateFiles releaseStatus
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (release status info)
+            condition: and(contains(variables.activeStepsMap, '"sapCumulusUpload":true'), eq(variables.onProductiveBranch, 'true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: '--filePattern "**/release-status-*.json" --stepResultType .status-log/release'
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postSteps }}

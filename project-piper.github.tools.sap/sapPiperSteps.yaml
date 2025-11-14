@@ -1,0 +1,23 @@
+- name: internal
+  binaryName: sap-piper
+  libraryName: piper-lib
+  steps:
+    - sapCallFossService
+    - sapCheckECCNCompliance
+    - sapCheckPPMSCompliance
+    - sapCreateFosstarsReport
+    - sapCumulusUpload
+    - sapCumulusDownload
+    - sapDasterExecuteScan
+    - sapExecuteCentralPolicy
+    - sapExecuteCustomPolicy
+    - sapCollectPolicyResults
+    - sapDownloadArtifact
+    - sapDwCStageRelease
+    - sapExecuteFastlane
+    - sapGenerateEnvironmentInfo
+    - sapSUPAExecuteTests
+    - sapURLScan
+    - sapXmakeExecuteBuild
+    - sapExecuteApiMetadataValidator
+    - sapCollectInsights

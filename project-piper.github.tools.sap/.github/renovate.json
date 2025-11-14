@@ -1,0 +1,41 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "labels": [
+    "dependencies"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "git-refs",
+      "depNameTemplate": "project-piper/.github",
+      "packageNameTemplate": "https://github.tools.sap/project-piper/.github",
+      "matchStrings": [
+        "uses: project-piper/.github/.github/workflows/verify-*.yml@(?<currentValue>.*)"
+      ],
+      "managerFilePatterns": [
+        "/.github/workflows/.+\\.ya?ml$/"
+      ]
+    },
+    {
+      "datasourceTemplate": "pypi",
+      "autoReplaceStringTemplate": "pip install {{depName}}=={{newValue}}",
+      "matchStrings": [
+        "pip install (?<depName>.*)==(?<currentValue>.*)"
+      ],
+      "managerFilePatterns": [
+        "/.github/workflows/.+\\.ya?ml$/"
+      ],
+      "customType": "regex",
+      "matchStringsStrategy": "any"
+    }
+  ],
+  "packageRules": [
+    {
+      "groupName": "mkdocs-material",
+      "matchPackageNames": [
+        "mkdocs-material",
+        "squidfunk/mkdocs-material"
+      ]
+    }
+  ]
+}

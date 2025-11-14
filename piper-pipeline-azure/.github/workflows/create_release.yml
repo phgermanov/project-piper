@@ -1,0 +1,89 @@
+name: Release Piper GPP for Azure DevOps
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:  # trigger release manually
+  schedule:
+    - cron: '30 9 * * 1'  # at 9:30 am every Monday
+
+jobs:
+  check_if_should_run:
+    name: Check if should run
+    runs-on: self-hosted
+    outputs:
+      should_run: ${{ steps.should_run.outputs.should_run || steps.manual_trigger.outputs.should_run }}
+      latest_release_tag: ${{ steps.latest_tag.outputs.latest_release_tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get tags
+        run: git fetch --tags --prune --unshallow
+
+      - name: Get latest release tag
+        id: latest_tag
+        run: echo "latest_release_tag=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+
+      # For scheduled runs check if there has been a commit since last release
+      - id: should_run
+        if: ${{ github.event_name == 'schedule' }}
+        name: Check latest commits
+        run: |
+          if [[ -n $(git log ${{ steps.latest_tag.outputs.latest_release_tag }}..HEAD --format=%H --max-count=5) ]]
+          then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No commits since last release. Release will be skipped"
+          fi
+
+      # For manual release trigger. Release will be created even if there has been no commits since last release
+      - id: manual_trigger
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "should_run=true" >> "$GITHUB_OUTPUT"
+
+  release:
+    name: Release
+    needs: check_if_should_run
+    if: ${{ needs.check_if_should_run.outputs.should_run == 'true' }}
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Increment version
+        id: version
+        env:
+          current_version: ${{ needs.check_if_should_run.outputs.latest_release_tag }}
+        run: .github/workflows/scripts/increment_version.sh
+
+      - name: Publish release
+        run: >
+          curl -L -X POST
+          -H "Accept: application/vnd.github+json"
+          -H "Authorization: Bearer ${{ github.token }}"
+          ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/releases
+          -d '{
+            "tag_name": "${{ steps.version.outputs.v_version }}",
+            "generate_release_notes": true,
+            "make_latest": "true"
+          }'
+
+  post:
+    name: Post Actions
+    needs: [release]
+    if: always()
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report status to Uptime
+        uses: project-piper/.github/.github/actions/uptime-push@main
+        if: success() || failure()
+        with:
+          monitor-token: ${{ secrets.UPTIME_PUSH_TOKEN_RELEASE }}
+          job_status: ${{ job.status }}
+          message: ${{ github.run_id}}
+
+      - name: Notify Piper team on failure
+        env:
+          ENV_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENV_SMTP_USER: ${{ secrets.SMTP_USER }}
+          ENV_SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: .github/workflows/scripts/notify_on_failure.sh

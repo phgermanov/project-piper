@@ -1,0 +1,14 @@
+name: Piper
+on:
+  workflow_dispatch:
+  pull_request:
+jobs:
+  piper:
+    uses: project-piper/piper-pipeline-github/.github/workflows/sap-piper-workflow.yml@main
+    secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      extensibility-enabled: true
+      custom-defaults-paths: 'https://github.tools.sap/api/v3/repos/piper-test/gha-demo-k8s-node/contents/.pipeline/custom-defaults.yml'

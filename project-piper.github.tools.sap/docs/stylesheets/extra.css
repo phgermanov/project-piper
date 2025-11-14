@@ -1,0 +1,19 @@
+:root {
+  --md-primary-fg-color: #00032A; 
+  --md-text-link-color:  #1980A3; 
+  --md-text-color: #00032A; 
+  --md-accent-fg-color: #1980A3; 
+  --md-accent-bg-color: #1980A3; 
+}
+
+.md-top:focus, .md-top:hover {
+  color: white; 
+}
+
+.md-top {
+  color: #00032A; 
+}
+
+.md-content {
+  --md-typeset-a-color: #1980A3;  
+}

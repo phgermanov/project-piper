@@ -1,0 +1,12 @@
+steps:
+  artifactPrepareVersion:
+    maven:
+      dockerImage: ''
+    CAP:
+      dockerImage: ''
+    gradle:
+      dockerImage: ''
+  cnbBuild:
+    dockerImage: paketobuildpacks/builder-jammy-base:latest
+  sapGithubWriteDeployment:
+    environment: 'Piper Release'

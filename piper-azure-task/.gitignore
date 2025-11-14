@@ -1,0 +1,6 @@
+*.vsix
+.scannerwork
+/.idea
+/node_modules
+/tools
+/tmp

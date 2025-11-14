@@ -1,0 +1,10 @@
+name: Piper OSS workflow
+
+on:
+  workflow_dispatch:
+  schedule:
+   - cron: '0 5 * * 1-5'
+jobs:
+  piper:
+    uses: project-piper/piper-pipeline-github/.github/workflows/sap-oss-ppms-workflow.yml@main
+    secrets: inherit

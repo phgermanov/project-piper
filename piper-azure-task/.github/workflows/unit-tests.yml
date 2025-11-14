@@ -1,0 +1,78 @@
+name: '[Template] Unit tests'
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        type: string
+        default: 22.x
+
+jobs:
+  unit-test:
+    permissions:
+      checks: write
+      pull-requests: write
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Cache node_modules
+        id: cache-nodemodules
+        uses: actions/cache@v4
+        with:
+          path: piper/node_modules
+          key: "${{ runner.os }}-build-node_modules-${{ hashFiles('**/package-lock.json') }}"
+
+      - name: Install Dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        working-directory: ./piper
+        run: npm ci
+
+      - name: Execute Linter
+        working-directory: ./piper
+        run: npm run lint:ci
+
+      - name: Build
+        working-directory: ./piper
+        run: npm run build
+
+      - name: Execute Unit Tests
+        working-directory: ./piper
+        run: npm run test:ci
+
+      # sonar token required to run this
+      #      - name: SonarQube Scan
+      #        uses: sonarsource/sonarqube-scan-action@v2
+      #        env:
+      #          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # Publish unit test results to GitHub workflow summary and as a comment in pull request.
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            piper/reports/unit-tests.xml
+
+      - name: Publish Code Coverage Summary
+        id: publish_coverage
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        if: always()
+        with:
+          filename: piper/reports/cobertura-coverage.xml
+          output: both
+          format: markdown
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request' && steps.publish_coverage.conclusion == 'success'
+        continue-on-error: true
+        with:
+          recreate: true
+          path: code-coverage-results.md

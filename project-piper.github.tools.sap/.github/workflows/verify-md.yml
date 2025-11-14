@@ -1,0 +1,15 @@
+name: Markdown
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  reuse:
+    # reuses https://github.tools.sap/project-piper/.github/blob/main/.github/workflows/verify-md.yml
+    uses: project-piper/.github/.github/workflows/verify-md.yml@dff54802516e47697bbb233bd0371fa6fa0bdff4

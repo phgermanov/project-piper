@@ -1,0 +1,15 @@
+name: NodeJS
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  reuse:
+    # reuses https://github.tools.sap/project-piper/.github/blob/main/.github/workflows/verify-npm.yml
+    uses: project-piper/.github/.github/workflows/verify-npm.yml@main

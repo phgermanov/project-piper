@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "matchStringsStrategy": "any",
+      "managerFilePatterns": [
+        "/defaults/defaults.yml$/"
+      ],
+      "matchStrings": [
+        "syftDownloadUrl: 'https://github.com/(?<depName>.*)/releases/download/v(?<currentValue>.*)/.*'"
+      ],
+      "depTypeTemplate": "dependencies",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "autoReplaceStringTemplate": "syftDownloadUrl: 'https://github.com/{{depName}}/releases/download/v{{newValue}}/syft_{{newValue}}_linux_amd64.tar.gz'"
+    }
+  ]
+}

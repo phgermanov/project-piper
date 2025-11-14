@@ -1,0 +1,206 @@
+name: OSS stage
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      on-productive-branch:
+        required: true
+        type: string
+      is-optimized-and-scheduled:
+        required: false
+        type: string
+        default: 'false'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      active-stages-map:
+        required: true
+        type: string
+      active-steps-map:
+        required: true
+        type: string
+      pipeline-env:
+        required: true
+        type: string
+      vault-base-path:
+        required: false
+        type: string
+        default: ''
+      vault-pipeline-name:
+        required: false
+        type: string
+        default: ''
+      extensibility-enabled:
+        type: boolean
+        default: false
+      global-extensions-repository: # format: owner/repo
+        type: string
+        default: ''
+      global-extensions-ref:
+        type: string
+        default: '' # empty string means use the default branch
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      # telemetry-template-name input is for internal use by Piper team only. If you are reusing this workflow in
+      # your pipeline, please avoid setting any value for this input.
+      telemetry-template-name:
+        required: false
+        type: string
+        default: ''
+    outputs:
+      pipeline-env:
+        value: ${{ jobs.OSS.outputs.pipelineEnv }}
+env:
+  PIPER_ACTION_PIPER_VERSION: ${{ inputs.piper-version }}
+  PIPER_ACTION_SAP_PIPER_VERSION: ${{ inputs.sap-piper-version }}
+  PIPER_ACTION_SAP_PIPER_OWNER: project-piper
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: sap-piper
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ github.token }}
+  PIPER_ENTERPRISE_SERVER_URL: ${{ secrets.PIPER_ENTERPRISE_SERVER_URL }}
+  PIPER_ACTION_WDF_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.PIPER_WDF_GITHUB_TOKEN }}
+  PIPER_ACTION_PIPELINE_ENV: ${{ inputs.pipeline-env }}
+  PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+  PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+  vaultBasePath: ${{ inputs.vault-base-path }}
+  vaultPipelineName: ${{ inputs.vault-pipeline-name }}
+  PIPER_PIPELINE_TEMPLATE_NAME: ${{ inputs.telemetry-template-name }}
+jobs:
+  OSS:
+    name: 'Security'
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    if: fromJSON(inputs.active-stages-map).Security == true
+    outputs:
+      pipelineEnv: ${{ steps.pipelineEnv.outputs.pipelineEnv }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          submodules: ${{ inputs.checkout-submodules }}
+          lfs: ${{ inputs.checkout-lfs }}
+      - name: Checkout global extension
+        if: |
+          inputs.extensibility-enabled == true &&
+          inputs.global-extensions-repository != ''
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.global-extensions-repository }}
+          ref: ${{ inputs.global-extensions-ref }}
+          path: .pipeline/tmp/global_extensions
+      # Requires "id-token: write" permissions, which is to be configured in the workflow that imports the OSS & PPMS workflow
+      - name: Retrieve System Trust session token
+        id: system_trust
+        uses: project-piper/system-trust-composite-action@fed8cfb7b9aa6918c315bc26561746a9da8125a6
+        with:
+          api-url: ${{ fromJson(inputs.pipeline-env)['custom/systemTrustURL'] }}
+          pipeline-id: ${{ inputs.vault-pipeline-name }}
+          pipeline-group-id: ${{ inputs.vault-base-path }}
+        continue-on-error: true
+      - name: preOSS
+        if: inputs.extensibility-enabled == true
+        uses: project-piper/piper-pipeline-github/.github/workflows@main # invokes action.yml
+        with:
+          extension: preOSS
+      # WhiteSource
+      - name: whitesourceExecuteScan
+        if: fromJSON(inputs.active-steps-map).Security['whitesourceExecuteScan'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: whitesourceExecuteScan
+      - name: sapCumulusUpload (whitesource-security)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern whitesource/*risk-report.pdf,**/toolrun_whitesource_*.json,**/piper_whitesource_vulnerability_report.html,**/piper_whitesource_vulnerability.sarif,**/piper_whitesource_sbom.xml --stepResultType whitesource-security
+      - name: sapCumulusUpload (whitesource-ip)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/whitesource-ip.json,whitesource/*risk-report.pdf,**/toolrun_whitesource_*.json --stepResultType whitesource-ip
+      - name: sapCumulusUpload (whitesource-ip evidence)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/whitesource-ip.json --stepResultType policy-evidence/PSL-1
+
+      # Detect / BlackDuck
+      - name: detectExecuteScan
+        if: fromJSON(inputs.active-steps-map).Security['detectExecuteScan'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: detectExecuteScan
+      - name: sapCumulusUpload (blackduck-security)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/*BlackDuck_RiskReport.pdf,**/detectExecuteScan_policy_*.json,**/piper_detect_vulnerability_report.html,**/toolrun_detectExecute_*.json,**/piper_detect_vulnerability.sarif,**/piper_hub_detect_sbom.xml --stepResultType blackduck-security
+      - name: sapCumulusUpload (blackduck-ip)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/*BlackDuck_RiskReport.pdf,**/blackduck-ip.json,**/toolrun_detectExecute_*.json,**/piper_detect_policy_violation_report.html --stepResultType blackduck-ip
+      - name: sapCumulusUpload (blackduck-ip evidence)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/blackduck-ip.json --stepResultType policy-evidence/PSL-1
+
+      # Protecode / BlackDuck Binary Analysis
+      - name: protecodeExecuteScan
+        if: fromJSON(inputs.active-steps-map).Security['protecodeExecuteScan'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: protecodeExecuteScan
+      - name: sapCumulusUpload (protecode-security)
+        if: |
+          (success() || failure())
+          && fromJSON(inputs.active-steps-map).Security['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/toolrun_protecode_*.json --stepResultType protecode
+      - name: postOSS
+        if: inputs.extensibility-enabled == true
+        uses: project-piper/piper-pipeline-github/.github/workflows@main # invokes action.yml
+        with:
+          extension: postOSS
+      - name: Export pipeline environment
+        uses: SAP/project-piper-action@v1.22
+        id: pipelineEnv
+        with:
+          step-name: ''
+          export-pipeline-environment: true

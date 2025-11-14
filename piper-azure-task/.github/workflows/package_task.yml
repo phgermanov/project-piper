@@ -1,0 +1,102 @@
+name: Package Azure Task
+
+on:
+  workflow_call:
+    inputs:
+      release:
+        type: boolean
+        default: false
+      node_version:
+        type: string
+        default: 22.x
+        required: false
+      version:
+        type: string
+        required: true
+        description: Version string (with PR suffix for dev builds)
+
+env:
+  task_name: piper-azure-task
+  dev_step_name: piper-dev
+  dev_task_id: 13d0fb42-a9b4-4bf6-90f2-6ae85059b639
+
+jobs:
+  package:
+    name: Package
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Cache node_modules
+        id: cache-nodemodules
+        uses: actions/cache@v4
+        with:
+          path: piper/node_modules
+          key: "${{ runner.os }}-build-node_modules-${{ hashFiles('**/package-lock.json') }}"
+
+      - name: Install Dependencies (if no cache)
+        working-directory: ./piper
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Build the extension
+        working-directory: ./piper
+        run: npm run build:production
+
+      # Parse version components for task.json
+      - name: Parse version
+        id: parse_version
+        run: |
+          VERSION=${{ inputs.version }}
+          echo "major=$(echo $VERSION | cut -d. -f1)" >> "$GITHUB_OUTPUT"
+          echo "minor=$(echo $VERSION | cut -d. -f2)" >> "$GITHUB_OUTPUT"
+          echo "patch=$(echo $VERSION | cut -d. -f3)" >> "$GITHUB_OUTPUT"
+
+      - name: Update task version
+        working-directory: ./piper
+        run: npm run version:update
+        env:
+          MAJOR: ${{ steps.parse_version.outputs.major }}
+          MINOR: ${{ steps.parse_version.outputs.minor }}
+          PATCH: ${{ steps.parse_version.outputs.patch }}
+
+      # Switch task.json to dev version if it's not a release workflow
+      - name: Switch to build dev version
+        if: ${{ !inputs.release }}
+        working-directory: ./piper
+        run: npm run task:set-dev-task-json
+        env:
+          STEP_NAME: ${{ env.dev_step_name }}
+          TASK_ID: ${{ env.dev_task_id }}
+
+      - name: Remove dev dependencies
+        working-directory: ./piper
+        run: npm prune --production
+
+      - name: Install Azure DevOps CLI
+        run: npm install --global tfx-cli
+
+      # Creates release or dev version of the Piper task
+      - name: Create extension
+        env:
+          version: ${{ inputs.version }}
+          publisher: ${{ inputs.release && 'ProjectPiper' || 'ProjectPiperDEV' }}
+          extension_icon_name: ${{ inputs.release && 'vss-extension-icon.png' || 'vss-extension-icon-dev.png' }}
+        run: >
+          tfx extension create
+          --manifests vss-extension.json
+          --publisher ${{ env.publisher }}
+          --override '{"version": "${{ env.version }}", "icons": {"default": "${{ env.extension_icon_name }}"}}'
+          --output-path '${{ env.task_name }}.vsix'
+
+      # Upload .vsix to GitHub workflow artifacts
+      - name: Upload .vsix artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: piper-task-vsix
+          path: ${{ env.task_name }}.vsix

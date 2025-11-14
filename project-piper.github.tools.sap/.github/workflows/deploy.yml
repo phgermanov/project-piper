@@ -1,0 +1,345 @@
+name: Build
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 0/6 * * *"
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  DEFAULT_GOLANG: "1.24.x"
+  DEFAULT_PYTHON: "3.x"
+
+jobs:
+  generate-groovy-piper-steps-docs:
+    runs-on: self-hosted
+    steps:
+      - run: mkdir .m2 && chmod 777 .m2 && ls -la
+      - name: 💾 Cache .m2 directory
+        uses: actions/cache@v4
+        with:
+          key: dot-m2-${{ env.cache_id }}
+          path: .m2
+          restore-keys: |
+            dot-m2-
+      - name: ⤵️ Checkout Project Piper repository
+        run: git clone --branch master https://github.com/SAP/jenkins-library.git piper-os
+      - name: ⤵️ Checkout SAP-Piper steps repository
+        uses: actions/checkout@v5
+        with:
+          github-server-url: https://github.wdf.sap.corp
+          token: ${{ secrets.WDF_PIPER_SERVICE_USER_TOKEN }}
+          repository: ContinuousDelivery/piper-library
+          path: sap-piper
+      - name: ⤵️ Checkout SAP-Piper docs repository
+        uses: actions/checkout@v5
+        with:
+          path: piper-docs
+      - name: ⤵️ Checkout SAP-Piper resources repository
+        uses: actions/checkout@v5
+        with:
+          repository: project-piper/resources
+          path: sap-piper-resources
+      - run: |
+          cp -n piper-os/documentation/docs/steps/*.md piper-docs/docs/steps/
+          cp -n piper-os/documentation/docs/images/*.* piper-docs/docs/images/
+          rm piper-os/vars/piperPipelineStageAcceptance.groovy \
+            piper-os/vars/piperPipelineStageAdditionalUnitTests.groovy \
+            piper-os/vars/piperPipelineStageBuild.groovy \
+            piper-os/vars/piperPipelineStageCompliance.groovy \
+            piper-os/vars/piperPipelineStageInit.groovy \
+            piper-os/vars/piperPipelineStageIntegration.groovy \
+            piper-os/vars/piperPipelineStagePerformance.groovy \
+            piper-os/vars/piperPipelineStagePromote.groovy \
+            piper-os/vars/piperPipelineStagePRVoting.groovy \
+            piper-os/vars/piperPipelineStageRelease.groovy \
+            piper-os/vars/piperPipelineStageSecurity.groovy
+      - run: |
+          cp -n -r sap-piper/src/** piper-os/src/
+          cp -n -r sap-piper/vars/** piper-os/vars/
+      - name: build class-path
+        working-directory: ./piper-os
+        run: |
+          docker run --rm \
+            -v $(pwd)/..:/docs \
+            -v $(pwd)/../.m2:/home/piper/.m2 \
+            --workdir /docs/piper-os \
+            public.int.repositories.cloud.sap/piper/maven:3-jdk-8-20190410062418 \
+            mvn compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt
+      - name: generate step docs
+        working-directory: ./piper-os
+        run: |
+          docker run --rm \
+            -v $(pwd)/..:/docs \
+            -v $(pwd)/../.m2:/home/piper/.m2 \
+            --workdir /docs/piper-os \
+            public.int.repositories.cloud.sap/piper/cf-cli \
+            groovy -cp "target/classes:$(cat target/cp.txt)" documentation/bin/createDocu \
+            --docuDir=../piper-docs/docs/steps \
+            --docuDirStages=../piper-docs/docs/stages \
+            --customDefaults=../../sap-piper-resources/gen/piper-defaults-jenkins-wdf.yml \
+            --stageInitFile=../../sap-piper-resources/stageconfig/piper-stage-config.yml
+      - run: ls -la piper-docs/docs/steps
+      - name: remove unused files
+        run: |
+          find piper-docs/docs/steps -type f \
+            ! -name 'artifactSetVersion.md' \
+            ! -name 'cfManifestSubstituteVariables.md' \
+            ! -name 'buildExecute.md' \
+            ! -name 'checkChangeInDevelopment.md' \
+            ! -name 'checksPublishResults.md' \
+            ! -name 'containerPushToRegistry.md' \
+            ! -name 'debugReportArchive.md' \
+            ! -name 'dockerExecute.md' \
+            ! -name 'dockerExecuteOnKubernetes.md' \
+            ! -name 'dubExecute.md' \
+            ! -name 'durationMeasure.md' \
+            ! -name 'executeBuild.md' \
+            ! -name 'executeBuild.md' \
+            ! -name 'executeDasterScan.md' \
+            ! -name 'executeOpenSourceDependencyScan.md' \
+            ! -name 'gatlingExecuteTests.md' \
+            ! -name 'handlePipelineStepErrors.md' \
+            ! -name 'healthExecuteCheck.md' \
+            ! -name 'jenkinsMaterializeLog.md' \
+            ! -name 'mailSendNotification.md' \
+            ! -name 'multicloudDeploy.md' \
+            ! -name 'neoDeploy.md' \
+            ! -name 'npmExecute.md' \
+            ! -name 'npmExecuteEndToEndTests.md' \
+            ! -name 'piperLoadGlobalExtensions.md' \
+            ! -name 'piperPublishWarnings.md' \
+            ! -name 'pipelineExecute.md' \
+            ! -name 'pipelineRestartSteps.md' \
+            ! -name 'pipelineStashFiles.md' \
+            ! -name 'pipelineStashFilesAfterBuild.md' \
+            ! -name 'pipelineStashFilesBeforeBuild.md' \
+            ! -name 'prepareDefaultValues.md' \
+            ! -name 'sapCreateTraceabilityReport.md' \
+            ! -name 'sapHeliumDeploy.md' \
+            ! -name 'seleniumExecuteTests.md' \
+            ! -name 'setupCommonPipelineEnvironment.md' \
+            ! -name 'slackSendNotification.md' \
+            ! -name 'snykExecute.md' \
+            ! -name 'spinnakerTriggerPipeline.md' \
+            ! -name 'testsPublishResults.md' \
+            ! -name 'transportRequestCreate.md' \
+            ! -name 'transportRequestRelease.md' \
+            ! -name 'transportRequestUploadFile.md' \
+            ! -name 'writeTemporaryCredentials.md' \
+            -print \
+            -delete
+      - run: ls -la piper-docs/docs/steps
+      - name: ⬆️ Upload SAP Piper steps docs (groovy)
+        uses: actions/upload-artifact@v3
+        with:
+          name: groovy-piper-steps-docs
+          path: piper-docs/docs/steps
+          retention-days: 1
+      - name: ⬆️ Upload Piper docs images
+        uses: actions/upload-artifact@v3
+        with:
+          name: piper-docs-images
+          path: piper-docs/docs/images
+          retention-days: 1
+
+  generate-piper-steps-docs:
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: ⤵️ Checkout Project Piper repository
+        run: git clone --branch master https://github.com/SAP/jenkins-library.git piper-os
+      - name: ⤵️ Checkout SAP-Piper docs repository
+        uses: actions/checkout@v5
+        with:
+          path: piper-docs
+      - name: ⤵️ Checkout SAP-Piper resources repository
+        uses: actions/checkout@v5
+        with:
+          repository: project-piper/resources
+          path: sap-piper-resources
+      - name: add SAP-specific step docs section
+        run: |
+          cp ../../piper-docs/docs/steps/__*_sap.md docs/steps
+          ../../piper-docs/scripts/append-sap-specifics-to-os-steps.sh
+        working-directory: ./piper-os/documentation
+      - name: generate step docs
+        working-directory: ./piper-os
+        run: |
+          go run pkg/documentation/generator.go \
+            --includeAzure \
+            --includeGHA \
+            --customLibraryStepFile ../piper-docs/sapPiperSteps.yaml \
+            --customDefaultFile resources/default_pipeline_environment.yml \
+            --customDefaultFile ../sap-piper-resources/gen/piper-defaults-jenkins-wdf.yml
+      - run: ls -la piper-os/documentation/docs/steps
+      - name: ⬆️ Upload Project Piper steps docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: piper-steps-docs
+          path: piper-os/documentation/docs/steps
+          retention-days: 1
+
+  generate-sap-piper-steps-docs:
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: ⤵️ Checkout Project Piper repository
+        run: git clone --branch master https://github.com/SAP/jenkins-library.git piper-os
+      - name: ⤵️ Checkout SAP-Piper steps repository
+        uses: actions/checkout@v5
+        with:
+          github-server-url: https://github.wdf.sap.corp
+          token: ${{ secrets.WDF_PIPER_SERVICE_USER_TOKEN }}
+          repository: ContinuousDelivery/piper-library
+          path: sap-piper-steps
+      - name: ⤵️ Checkout SAP-Piper docs repository
+        uses: actions/checkout@v5
+        with:
+          path: sap-piper-docs
+      - name: ⤵️ Checkout SAP-Piper resources repository
+        uses: actions/checkout@v5
+        with:
+          repository: project-piper/resources
+          path: sap-piper-resources
+      - name: generate step docs
+        working-directory: ./piper-os
+        run: |
+          go run pkg/documentation/generator.go \
+            --includeAzure \
+            --includeGHA \
+            --metadataDir ../sap-piper-steps/resources/metadata \
+            --docuDir ../sap-piper-docs/docs/steps/ \
+            --customLibraryStepFile ../sap-piper-docs/sapPiperSteps.yaml \
+            --customDefaultFile ../piper-os/resources/default_pipeline_environment.yml \
+            --customDefaultFile ../sap-piper-resources/gen/piper-defaults-jenkins-wdf.yml
+      - run: ls -la sap-piper-docs/docs/steps/
+      - name: ⬆️ Upload SAP Piper steps docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: sap-piper-steps-docs
+          path: sap-piper-docs/docs/steps/
+          retention-days: 1
+
+  generate-sap-piper-stages-docs:
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: ⤵️ Checkout Project Piper repository
+        run: git clone --branch master https://github.com/SAP/jenkins-library.git piper-os
+      - name: ⤵️ Checkout SAP-Piper resources repository
+        uses: actions/checkout@v5
+        with:
+          repository: project-piper/resources
+          path: sap-piper-resources
+      - run: mkdir -p piper-os/gpp
+      - name: generate stages docs
+        working-directory: ./piper-os/gpp/
+        run: |
+          go run ../pkg/documentation/generator.go \
+            --generateStageConfig \
+            --stageMetadataPath ../../sap-piper-resources/stageconfig/piper-stage-config.yml \
+            --stageTargetPath ./
+      - run: ls -la piper-os/gpp
+      - name: ⬆️ Upload SAP Piper stages docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: sap-piper-stages-docs
+          path: piper-os/gpp
+          retention-days: 1
+
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    needs:
+      - generate-groovy-piper-steps-docs
+      - generate-piper-steps-docs
+      - generate-sap-piper-steps-docs
+      - generate-sap-piper-stages-docs
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v5
+      - name: ⬇️ Download Project Piper steps docs
+        uses: actions/download-artifact@v3
+        with:
+          name: piper-steps-docs
+          path: docs/steps
+      - name: ⬇️ Download SAP Piper steps docs
+        uses: actions/download-artifact@v3
+        with:
+          name: sap-piper-steps-docs
+          path: docs/steps
+      - name: ⬇️ Download Project Piper stages docs
+        uses: actions/download-artifact@v3
+        with:
+          name: sap-piper-stages-docs
+          path: docs/stages/gpp
+      - name: ⬇️ Download Project Piper steps docs (groovy)
+        uses: actions/download-artifact@v3
+        with:
+          name: groovy-piper-steps-docs
+          path: docs/steps
+      - name: ⬇️ Download Piper docs images
+        uses: actions/download-artifact@v3
+        with:
+          name: piper-docs-images
+          path: docs/images
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: 🏗 Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - name: 💾 Cache .cache directory
+        uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - name: 🏗 Install mk-docs
+        run: pip install mkdocs-material==9.6.20
+      - name: 🏗 Install RSS plugin
+        run: pip install mkdocs-rss-plugin
+
+      # Preview Deployment
+      - name: 🏗 Build mkdocs
+        if: github.event_name == 'pull_request'
+        run: mkdocs build --strict
+        env:
+          PREVIEW_TITLE: "🏗 PR-${{ github.event.number }} Preview 🚧"
+          PREVIEW_URL: "https://pages.github.tools.sap/project-piper/pr-preview/pr-${{ github.event.number }}/"
+      - name: 🚀 Deploy preview to Pages branch
+        if: github.event_name == 'pull_request'
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./docs-gen/
+          pages-base-url: pages.github.tools.sap/project-piper
+      # Production Deployment
+      - name: 🚀 Build Deploy to gh-pages branch
+        if: github.event_name != 'pull_request'
+        run: mkdocs gh-deploy --strict --force

@@ -1,0 +1,25 @@
+parameters:
+  - name: disableCaching
+    type: boolean
+    default: false
+
+steps:
+  - ${{ if eq(parameters.disableCaching, false) }}:
+      - task: Cache@2
+        inputs:
+          key: '"piper" | "$(Agent.OS)" | "$(Agent.OSArchitecture)" | "$(binaryVersion)"'
+          path: $(Agent.ToolsDirectory)/piper
+        displayName: Piper binary cache
+        condition: ne(variables['binaryVersion'], '')
+        continueOnError: true
+        retryCountOnTaskFailure: 3
+        timeoutInMinutes: 3
+      - task: Cache@2
+        inputs:
+          key: '"osPiper" | "$(Agent.OS)" | "$(Agent.OSArchitecture)" | "$(osBinaryVersion)"'
+          path: $(Agent.ToolsDirectory)/osPiper
+        displayName: OS binary cache
+        condition: ne(variables['osBinaryVersion'], '')
+        continueOnError: true
+        retryCountOnTaskFailure: 3
+        timeoutInMinutes: 3

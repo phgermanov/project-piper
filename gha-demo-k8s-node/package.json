@@ -1,0 +1,48 @@
+{
+  "name": "@sap/gha-demo-k8s-node",
+  "version": "1.0.1",
+  "private": false,
+  "url": "https://github.tools.sap/piper-demo/gha-demo-k8s-node.git",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.tools.sap/piper-demo/gha-demo-k8s-node.git"
+  },
+  "scripts": {
+    "test": "gulp test:unit",
+    "start": "node src/app.js",
+    "karma": "gulp test:opa"
+  },
+  "dependencies": {
+    "cfenv": "1.2.1",
+    "express": "4.17.1",
+    "sigmund": "1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "chai-http": "^4.3.0",
+    "chai-spies": "^0.7.1",
+    "coveralls": "^3.1.0",
+    "grunt": "^1.4.1",
+    "grunt-karma": "^4.0.2",
+    "gulp": "^4.0.2",
+    "gulp-istanbul": "^1.1.2",
+    "gulp-mocha": "^7.0.2",
+    "gulp-plumber": "^1.1.0",
+    "karma": "^5.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-junit-reporter": "^1.2.0",
+    "karma-openui5": "^0.2.1",
+    "karma-qunit": "^1.2.1",
+    "karma-webdriver-launcher": "^1.0.5",
+    "mocha": "^8.1.0",
+    "mocha-junit-reporter": "^1.13.0",
+    "qunitjs": "^1.22.0",
+    "sinon": "^2.3.8",
+    "supertest": "^3.0.0"
+  }
+} 

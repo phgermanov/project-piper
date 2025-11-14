@@ -1,0 +1,5 @@
+project:
+  name: Piper General Purpose Pipeline for GitHub Actions
+  tz: Europe/Berlin
+  adrFolder: ./docs/adr
+  packages: []

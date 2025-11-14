@@ -1,0 +1,7 @@
+.pipeline
+test
+target
+
+.xmake.cfg
+whitesource.config.json
+**/manifest*.yml

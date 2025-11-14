@@ -1,0 +1,83 @@
+metadata:
+  name: shellExecute
+  description: Step executes defined script
+  longDescription: Step executes defined script provided in the 'sources' parameter
+  errors:
+    # File and permission errors
+    - pattern: "No such file or directory"
+      message: "Required file not found. Check file paths and existence."
+      category: "file"
+    - pattern: "Permission denied"
+      message: "Insufficient permissions. Check file/directory permissions and user access."
+      category: "permission"
+
+    # Exit code patterns
+    - pattern: "exit status 1"
+      message: "Script execution failed with general error. Check script logic and dependencies."
+      category: "execution"
+    - pattern: "exit status 2"
+      message: "Script execution failed with invalid usage. Check command syntax and arguments."
+      category: "execution"
+    - pattern: "exit status 126"
+      message: "Script not executable. Check file permissions and execute bit."
+      category: "permission"
+    - pattern: "exit status 127"
+      message: "Command not found. Check if required commands/tools are installed and in PATH."
+      category: "environment"
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        description: Jenkins credentials ID containing the github token.
+        type: jenkins
+    params:
+      - name: sources
+        type: "[]string"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: Scripts paths that must be present in the current workspace or https links to scripts.
+            Only https urls from github are allowed and must be in the format :https://{githubBaseurl}/api/v3/repos/{owner}/{repository}/contents/{path to script}
+            Authentication for the download is only supported via the 'githubToken' param. Make sure the script has the necessary execute permissions.
+      - name: githubToken
+        description: "GitHub personal access token as per
+          https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubVaultSecretName
+      - name: scriptArguments
+        type: "[]string"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "scriptArguments that need to be passed to the scripts."
+        longDescription: |-
+          The scriptArguments list is a flat list and has a positional relationship to the `sources` parameter.
+
+          For example, the `scriptArguments` string at position 0 will be considered as the argument(s) for script at position 0 in `sources` list.
+          `--sources ".pipeline/firstScript.sh" --sources ".pipeline/secondScript.sh" --scriptArguments "$(first_script_arg)" --scriptArguments "$(second_script_arg)"`
+
+          For multiple arguments for a particular script, please add them as a comma-separated string enclosed in additional quotes, e.g.:
+          `--sources ".pipeline/yourScript.sh" --scriptArguments "\"$(first_arg),$(second_arg)\""`
+
+          For multiple scripts with multiple arguments per each script your command would look like:
+          `--sources ".pipeline/firstScript.sh" --sources ".pipeline/secondScript.sh" --scriptArguments "\"$(first_script_arg1),$(first_script_arg2)\"" --scriptArguments "\"$(second_script_arg1),$(second_script_arg2)\""`
+        mandatory: false
+  containers:
+    - name: shell
+      image: node:24-bookworm
+      workingDir: /home/node

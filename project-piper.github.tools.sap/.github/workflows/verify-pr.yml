@@ -1,0 +1,15 @@
+name: Pull-Request
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  reuse:
+    # reuses https://github.tools.sap/project-piper/.github/blob/main/.github/workflows/verify-pr.yml
+    uses: project-piper/.github/.github/workflows/verify-pr.yml@main

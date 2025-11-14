@@ -1,0 +1,18 @@
+kind: Component
+metadata:
+  displayName: Documentation
+  labels:
+    language: markdown
+spec:
+  logo: https://avatars.github.tools.sap/u/29490
+  type:
+    name: Docs
+  docs:
+    helpDocsLinks:
+      - name: Docs
+        url: https://url.sap/piper
+        description: User Documentation
+  ci:
+    pipelineLinks:
+      - name: Build Pipeline
+        url: https://github.tools.sap/project-piper/project-piper.github.tools.sap/actions/workflows/deploy.yml

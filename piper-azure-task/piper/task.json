@@ -1,0 +1,253 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "13d0fb42-a9b4-4bf6-90f2-6ae85059b638",
+  "name": "piper",
+  "friendlyName": "Project Piper",
+  "description": "Execute a step from the SAP Piper library",
+  "helpMarkDown": "[Learn more about this task](https://github.tools.sap/project-piper/piper-azure-task) or [see the PIPER documentation](https://go.sap.corp/piper)",
+  "category": "Utility",
+  "author": "SAP SE",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Echo $(samplestring)",
+  "inputs": [
+    {
+      "name": "stepName",
+      "type": "string",
+      "label": "Step Name",
+      "defaultValue": "help",
+      "required": true,
+      "helpMarkDown": "The name of a Piper step to execute."
+    },
+    {
+      "name": "flags",
+      "type": "string",
+      "label": "command options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Option flags for Piper step"
+    },
+    {
+      "name": "piperVersion",
+      "type": "string",
+      "label": "Piper Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the exact version of the OS Piper binary to use, overriding the default version. 'latest' is not allowed; only exact versions are permitted.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "sapPiperVersion",
+      "type": "string",
+      "label": "SAP Piper Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the exact version of the SAP Piper binary to use, overriding the default version. 'latest' is not allowed; only exact versions are permitted.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "customConfigLocation",
+      "type": "string",
+      "label": "Custom Config",
+      "defaultValue": ".pipeline/config.yml",
+      "required": false,
+      "helpMarkDown": "Path to configuration file for Piper. If not present, path `.pipeline/config.yml will be used`",
+      "groupName": "advanced"
+    },
+    {
+      "name": "customDefaults",
+      "type": "string",
+      "label": "Custom defaults",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Paths to custom default configurations for Piper. Can also take multiple files by passing a multi-line string (using literal style with a '\\|' ), in which the files are in ascending order of importance.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "restorePipelineDefaults",
+      "type": "string",
+      "label": "Pipeline default config",
+      "required": false,
+      "helpMarkDown": "Imports the pipeline default config from an given base-64 encoded YAML string.",
+      "groupName": "expert"
+    },
+    {
+      "name": "restorePipelineStageConditions",
+      "type": "string",
+      "label": "Pipeline stage conditions",
+      "required": false,
+      "helpMarkDown": "DEPRECATED. Refer to <https://github.tools.sap/project-piper/piper-pipeline-azure/pull/304> and input createCheckIfStepActiveMaps instead.",
+      "groupName": "expert"
+    },
+    {
+      "name": "exportPipelineEnv",
+      "type": "boolean",
+      "label": "Export Pipeline Environment",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Exports the pipeline environment to an output variable for later use.",
+      "groupName": "expert"
+    },
+    {
+      "name": "preserveDefaultConfig",
+      "type": "boolean",
+      "label": "Preserve Default Config",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Exports the default configuration to an output variable for later use.",
+      "groupName": "expert"
+    },
+    {
+      "name": "preserveStageConditions",
+      "type": "boolean",
+      "label": "Preserve Stage Conditions",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "DEPRECATED. Refer to <https://github.tools.sap/project-piper/piper-pipeline-azure/pull/304> and input createCheckIfStepActiveMaps instead.",
+      "groupName": "expert"
+    },
+    {
+      "name": "createCheckIfStepActiveMaps",
+      "type": "boolean",
+      "label": "Create checkIfStepActive maps",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Create active steps and stages maps in the .pipeline folder",
+      "groupName": "expert"
+    },
+    {
+      "name": "dockerImage",
+      "type": "string",
+      "label": "Docker Image",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Docker image to run the step in, use 'none' to run without docker.",
+      "groupName": "docker"
+    },
+    {
+      "name": "dockerOptions",
+      "type": "string",
+      "label": "Docker Options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The options to pass to the docker run command.",
+      "groupName": "docker"
+    },
+    {
+      "name": "dockerEnvVars",
+      "type": "string",
+      "label": "Docker Environment Variables",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The environment variables to pass to the docker run command, as JSON string (e.g. '{\"testKey\": \"testValue\"}').",
+      "groupName": "docker"
+    },
+    {
+      "name": "sidecarImage",
+      "type": "string",
+      "label": "Sidecar Docker Image",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Docker image to run as a sidecar container",
+      "groupName": "docker"
+    },
+    {
+      "name": "sidecarOptions",
+      "type": "string",
+      "label": "Sidecar Docker Options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Docker options for the sidecar container",
+      "groupName": "docker"
+    },
+    {
+      "name": "sidecarEnvVars",
+      "type": "string",
+      "label": "Sidecar Docker Environment Variables",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The environment variables to pass to the docker run command for the sidecar container.",
+      "groupName": "docker"
+    },
+    {
+      "name": "gitHubConnection",
+      "type": "connectedService:githubenterprise",
+      "label": "GitHub Enterprise connection (OAuth or PAT)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the name of the GitHub service connection to use to connect to the GitHubEnterprise repository. The connection must be based on a GitHub user's GitHub personal access token."
+    },
+    {
+      "name": "gitHubComConnection",
+      "type": "connectedService:github",
+      "label": "GitHub connection (OAuth or PAT)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "DEPRECATED. Setting this parameter doesn't affect anything. Will be removed in future releases."
+    },
+    {
+      "name": "dockerRegistryConnection",
+      "type": "connectedService:dockerregistry",
+      "label": "Docker registry connection (PAT)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the name of the Docker registry service connection to use to pull an image that is used to run Piper with. The connection must be have a username and PAT as password."
+    },
+    {
+      "name" : "getSapPiperLatestVersion",
+      "type": "boolean",
+      "label": "Get SAP Piper Latest Version",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "DEPRECATED. Setting this parameter doesn't affect anything. Will be removed in future releases."
+    },
+    {
+      "name" : "fetchPiperBinaryVersionTag",
+      "type": "boolean",
+      "label": "Fetch version tag of Piper binary",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Fetch version tag of Piper binary from releases and output variable for later use, such as for the Cache task"
+    }
+  ],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    },
+    {
+      "name": "docker",
+      "displayName": "Docker",
+      "isExpanded": false
+    },
+    {
+      "name": "expert",
+      "displayName": "Expert",
+      "isExpanded": false
+    }
+  ],
+  "minimumAgentVersion": "3.232.1",
+  "execution": {
+    "Node20_1": {
+      "target": "dist/index.js"
+    }
+  },
+  "messages": {
+    "DownloadPiperFailedFromLocation": "Failed to download piper from location %s. Error %s",
+    "PiperNotFoundInFolder": "Piper executable not found in path %s",
+    "PiperDownloadFailed": "Failed to download piper from location %s. Error %s",
+    "VerifyPiperInstallation": "Verifying piper installation..."
+  },
+  "dataSourceBindings": [
+    {
+      "target": "userRepository",
+      "endpointId": "$(gitHubConnection)",
+      "dataSourceName": "UserRepositories",
+      "resultTemplate": "{ \"Value\" : \"{{full_name}}\", \"DisplayValue\" : \"{{full_name}}\" }"
+    }
+  ]
+}

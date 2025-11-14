@@ -1,0 +1,285 @@
+<!-- Custom HTML site displayed as the Home chapter -->
+
+{% extends "main.html" %}
+{% block tabs %}
+{{ super() }}
+<style>
+
+    .md-main {
+        flex-grow: 0
+    }
+
+    .md-main__inner {
+        display: flex;
+        height: 100%;
+    }
+
+    .tx-container {
+        padding-top: .0rem;
+        background: linear-gradient(to bottom, var(--md-primary-fg-color), #14CABB)
+    }
+
+    .tx-hero {
+        margin: 0px 0.5rem;
+        color: var(--md-primary-bg-color);
+        justify-content: center;
+        text-align: left;
+    }
+
+    .tx-hero h1 {
+        margin-bottom: 1rem;
+        color: currentColor;
+        font-weight: 700
+    }
+
+    .tx-hero__content {
+        padding-bottom: 1rem;
+        margin: 0 auto;
+    }
+
+    .tx-hero__image{
+        width:17rem;
+        height:17rem;
+        order:1;
+        padding-right: 2.5rem;
+    }
+
+    .tx-hero .md-button {
+        margin-top: .5rem;
+        margin-right: .5rem;
+        color: var(--md-primary-bg-color)
+    }
+
+    .tx-hero .md-button--primary {
+        background-color: var(--md-primary-bg-color);
+        color: #00032A;
+        border-color: var(--md-primary-bg-color)
+    }
+
+    .tx-hero .md-button:focus,
+    .tx-hero .md-button:hover {
+        background-color: #14CABB;
+        color: var(--md-default-bg-color);
+        border-color: #14CABB;
+    }
+
+    .feature-item h2 svg {
+        height: 30px;
+        float: left;
+        margin-right: 10px;
+        transform: translateY(10%);
+    }
+
+    .top-hr {
+        margin-top: 42px;
+    }
+
+    .feature-item {
+        font-family: 'Roboto';
+        font-weight: 400;
+        box-sizing: border-box;
+        padding: 15px;
+        word-break: break-word;
+        color: #00032A;
+    }
+
+    .feature-item h2 {
+        color: #00032A;
+        font-weight: 400;
+        font-size: 1.2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: normal;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-family: 'Roboto';
+    }
+
+    .feature-item p {
+        font-size: .8rem;
+        line-height: 1.8em;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        color: #00032A;
+        margin: 0 0 10px;
+        display: block;
+    }
+
+    .feature-item li {
+        font-size: .8rem;
+        line-height: 1.8em;
+        margin: 0 0 10px;
+        list-style-type: disc;
+    }
+
+    .feature-item a{
+        color:#1980A3;
+    }
+
+   @media screen and (max-width:30em) {
+        .tx-hero h1 {
+            font-size: 1.4rem
+        }
+    }
+
+    @media screen and (min-width:60em) {
+        .md-sidebar--secondary {
+            display: none
+        }
+
+        .tx-hero {
+            display: block;
+            align-items: left;
+            justify-content: left;
+        }
+
+        .tx-hero__content {
+            max-width: 35rem;
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+            margin-left: 0rem;
+            margin-right: 4rem;
+            align-items: center;
+        }
+    }
+
+    @media screen and (min-width:76.25em) {
+        .md-sidebar--primary {
+            display: none
+        }
+
+        .top-hr {
+            width: 100%;
+            display: flex;
+            max-width: 61rem;
+            margin-right: auto;
+            margin-left: auto;
+            padding: 0 .2rem;
+        }
+
+        .bottom-hr {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            max-width: 61rem;
+            margin-right: auto;
+            margin-left: auto;
+            padding: 0 .2rem;
+        }
+
+        .feature-item {
+            flex: 1;
+            min-width: 0;
+            font-family: 'Roboto';
+        }
+
+    }
+
+    .hr {
+        border-bottom: 1px solid #eee;
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    .text-center {
+        text-align: center;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top: 15px;
+        font-size: 23px;
+        font-weight: 400;
+        padding-bottom: 10px;
+    }
+
+    .logos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: row wrap;
+        margin: 0 auto;
+    }
+
+    .logos img {
+        flex: 1 1 auto;
+        padding: 25px;
+        max-height: 130px;
+        vertical-align: middle;
+    }
+
+    .hr-logos {
+        margin-top: 0;
+        margin-bottom: 30px;
+    }
+
+</style>
+
+<!-- Main site Entry button descriptions -->
+<section class="tx-container">
+    <div class="md-grid md-typeset">
+      <div class="tx-hero">
+        <div class="tx-hero__content">
+            <img src="Logo-Piper-White.svg" height= "60" width="160" style="float:left; margin-right:50px; margin-top: 50px; margin-bottom: 50px;"/>
+            <h1> Piper </h1>
+            <p>Piper helps you to get your software changes out into the cloud - quick and in a reliable manner. Its reusable capabilities support you in developing, building, testing and deploying your cloud services in compliance to SAP's corporate standards.</p>
+          <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | striptags }}" class="md-button md-button--primary">
+            Get started
+          </a>
+        </div>
+      </div>
+    </div>
+</section>
+
+<!-- Main site box descriptions -->
+<div class="top-hr">
+    <div class="feature-item">
+        <p>Depending on your use case and prerequisites, Piper can be consumed in various flavors.</p>
+        <p>To get you started quickly, Piper offers you the following: </p>
+        <ul>
+            <li><a href="https://pages.github.tools.sap/project-piper/stages/">Piper ready-made pipelines</a> (e.g. general purpose pipeline with main focus on cloud applications and services)</li>
+            <li><a href="https://pages.github.tools.sap/project-piper/lib/">Piper step library</a></li>
+            <li><a href="https://pages.github.tools.sap/project-piper/configuration/">Piper common configuration layer</a></li>
+        </ul>
+        <p>Continue reading and find out which parts of Piper are right for you.</p>
+
+    </div>
+</div>
+
+{% endblock %}
+<!-- {% block content %}{% endblock %} -->
+{% block footer %}<footer class="md-footer" style="background-color: #00032A; position: absolute; bottom: 0; width: 100%;">
+
+  <!-- Further information -->
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+
+      <!-- Copyright and theme information -->
+      <div class="md-copyright">
+        {% if config.copyright %}
+          <div class="md-footer-copyright__highlight">
+            {{ config.copyright }}
+          </div>
+        {% endif %}
+        {% if not config.extra.generator == false %}
+        Made with Material for MkDocs | Part of the
+          <a
+            href="https://url.sap/hyperspace"
+            target="_blank" rel="noopener"
+            style="color: #14CABB;"
+          >
+            Hyperspace
+          </a>
+          family &#10084
+        {% endif %}
+        {{ extracopyright }}
+      </div>
+
+      <!-- Social links -->
+      {% include "partials/social.html" %}
+    </div>
+  </div>
+</footer>{% endblock %}
+
+

@@ -1,0 +1,6 @@
+general:
+  maven:
+    globalSettingsFile: settings.xml
+    createBOM: true
+steps:
+stages:

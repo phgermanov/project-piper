@@ -1,0 +1,78 @@
+name: Release Piper Azure task
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1"  # at 9 am every Monday
+
+jobs:
+  # Get release version and check if we should create a release
+  versioning:
+    name: Versioning
+    if: github.ref_name == 'main'
+    uses: ./.github/workflows/versioning.yml
+    with:
+      release: true
+
+  unit-tests:
+    name: Run unit tests
+    needs: versioning
+    if: needs.versioning.outputs.release_should_run == 'true'
+    uses: ./.github/workflows/unit-tests.yml
+    secrets: inherit
+
+  package:
+    uses: ./.github/workflows/package_task.yml
+    if: needs.versioning.outputs.release_should_run == 'true'
+    secrets: inherit
+    needs: [versioning, unit-tests]
+    with:
+      release: true
+      node_version: 20.x
+      version: ${{ needs.versioning.outputs.version }}
+
+  publish:
+    uses: ./.github/workflows/publish_task.yml
+    if: needs.versioning.outputs.release_should_run == 'true'
+    secrets: inherit
+    needs: [versioning, package]
+
+  release:
+    name: Create GitHub release
+    needs: [versioning, publish]
+    if: needs.versioning.outputs.release_should_run == 'true'
+    runs-on: self-hosted
+    steps:
+      - name: Publish draft release as latest
+        if: needs.versioning.outputs.release_should_run == 'true'
+        run: |
+          set -e
+          curl -L -X PATCH \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          ${{ github.api_url }}/repos/${{ github.repository }}/releases/${{ needs.versioning.outputs.draft_release_id }} \
+          -d '{
+            "draft": false,
+            "make_latest": "true"
+          }'
+      - name: Report status to Uptime
+        uses: project-piper/.github/.github/actions/uptime-push@main
+        if: success() || failure()
+        with:
+          monitor-token: ${{ secrets.UPTIME_PUSH_TOKEN_RELEASE }}
+          job_status: ${{ job.status }}
+          message: ${{ github.run_id}}
+
+  post:
+    name: Post Actions
+    needs: [release]
+    if: always()
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Notify Piper team on failure
+        env:
+          ENV_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENV_SMTP_USER: ${{ secrets.SMTP_USER }}
+          ENV_SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: .github/workflows/scripts/notify_on_failure.sh

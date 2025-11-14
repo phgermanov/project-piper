@@ -1,0 +1,195 @@
+name: Release stage
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      on-productive-branch:
+        required: true
+        type: string
+      is-optimized-and-scheduled:
+        required: false
+        type: string
+        default: 'false'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      active-stages-map:
+        required: true
+        type: string
+      active-steps-map:
+        required: true
+        type: string
+      pipeline-env:
+        required: true
+        type: string
+      vault-base-path:
+        required: false
+        type: string
+        default: ''
+      vault-pipeline-name:
+        required: false
+        type: string
+        default: ''
+      extensibility-enabled:
+        type: boolean
+        default: false
+      global-extensions-repository: # format: owner/repo
+        type: string
+        default: ''
+      global-extensions-ref:
+        type: string
+        default: '' # empty string means use the default branch
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      environment:
+        required: false
+        type: string
+        default: 'Piper Release'
+      # telemetry-template-name input is for internal use by Piper team only. If you are reusing this workflow in
+      # your pipeline, please avoid setting any value for this input.
+      telemetry-template-name:
+        required: false
+        type: string
+        default: ''
+    outputs:
+      pipeline-env:
+        value: ${{ jobs.Release.outputs.pipelineEnv }}
+env:
+  PIPER_ACTION_PIPER_VERSION: ${{ inputs.piper-version }}
+  PIPER_ACTION_SAP_PIPER_VERSION: ${{ inputs.sap-piper-version }}
+  PIPER_ACTION_SAP_PIPER_OWNER: project-piper
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: sap-piper
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ github.token }}
+  PIPER_ENTERPRISE_SERVER_URL: ${{ secrets.PIPER_ENTERPRISE_SERVER_URL }}
+  PIPER_ACTION_WDF_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.PIPER_WDF_GITHUB_TOKEN }}
+  PIPER_ACTION_PIPELINE_ENV: ${{ inputs.pipeline-env }}
+  PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+  PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+  vaultBasePath: ${{ inputs.vault-base-path }}
+  vaultPipelineName: ${{ inputs.vault-pipeline-name }}
+  PIPER_PIPELINE_TEMPLATE_NAME: ${{ inputs.telemetry-template-name }}
+  # telemetry-stage-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+  PIPER_PIPELINE_STAGE_TEMPLATE_NAME: hyperspace-piper-release
+jobs:
+  Release:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+    if: |
+      fromJSON(inputs.active-stages-map).Release == true &&
+      inputs.on-productive-branch == 'true'
+    outputs:
+      pipelineEnv: ${{ steps.pipelineEnv.outputs.pipelineEnv }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          submodules: ${{ inputs.checkout-submodules }}
+          lfs: ${{ inputs.checkout-lfs }}
+      - name: Setup Go for development builds
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+        if: ${{ startsWith(inputs.piper-version, 'devel' ) ||  startsWith(inputs.sap-piper-version, 'devel' ) }}
+        with:
+          go-version: '1.24'
+          check-latest: true
+      - name: Checkout global extension
+        if: |
+          inputs.extensibility-enabled == true &&
+          inputs.global-extensions-repository != ''
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.global-extensions-repository }}
+          ref: ${{ inputs.global-extensions-ref }}
+          path: .pipeline/tmp/global_extensions
+      # Requires "id-token: write" permissions, which is to be configured in the workflow that imports the GPP
+      - name: Retrieve System Trust session token
+        id: system_trust
+        uses: project-piper/system-trust-composite-action@fed8cfb7b9aa6918c315bc26561746a9da8125a6
+        with:
+          api-url: ${{ fromJson(inputs.pipeline-env)['custom/systemTrustURL'] }}
+          pipeline-id: ${{ inputs.vault-pipeline-name }}
+          pipeline-group-id: ${{ inputs.vault-base-path }}
+        continue-on-error: true
+      - name: preRelease
+        if: inputs.extensibility-enabled == true
+        uses: project-piper/piper-pipeline-github/.github/workflows@main # invokes action.yml
+        with:
+          extension: preRelease
+      - name: terraformExecute
+        if: fromJSON(inputs.active-steps-map)[github.job]['terraformExecute'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: terraformExecute
+      - name: gitopsUpdateDeployment
+        if: fromJSON(inputs.active-steps-map)[github.job]['gitopsUpdateDeployment'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: gitopsUpdateDeployment
+          # username and password will be overridden by secrets in Vault if set
+          flags: --username github-actions --password ${{ github.token }}
+      - name: sapDownloadArtifact
+        if: fromJSON(inputs.active-steps-map)[github.job]['sapDownloadArtifact'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapDownloadArtifact
+          flags: '--fromStaging=false'
+      - name: cloudFoundryDeploy
+        if: fromJSON(inputs.active-steps-map)[github.job]['cloudFoundryDeploy'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: cloudFoundryDeploy
+      - name: kubernetesDeploy
+        if: fromJSON(inputs.active-steps-map)[github.job]['kubernetesDeploy'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: kubernetesDeploy
+          # githubToken will be overridden by secret in Vault (if set)
+          flags: --githubToken ${{ github.token }}
+      - name: sapDwCStageRelease
+        if: fromJSON(inputs.active-steps-map)[github.job]['sapDwCStageRelease'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapDwCStageRelease
+      - name: sapCollectInsights
+        if: fromJSON(inputs.active-steps-map)[github.job]['sapCollectInsights'] == true
+        uses: SAP/project-piper-action@v1.22
+        continue-on-error: true
+        with:
+          step-name: sapCollectInsights
+          # githubToken will be overridden by secret in Vault (if set)
+          flags: --githubToken ${{ github.token }}
+      - name: githubPublishRelease
+        if: fromJSON(inputs.active-steps-map)[github.job]['githubPublishRelease'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: githubPublishRelease
+          # githubToken will be overridden by secret in Vault (if set)
+          flags: --token ${{ github.token }}
+      - name: postRelease
+        if: inputs.extensibility-enabled == true
+        uses: project-piper/piper-pipeline-github/.github/workflows@main # invokes action.yml
+        with:
+          extension: postRelease
+      - name: Export pipeline environment
+        if: always()
+        uses: SAP/project-piper-action@v1.22
+        id: pipelineEnv
+        with:
+          step-name: ''
+          export-pipeline-environment: true

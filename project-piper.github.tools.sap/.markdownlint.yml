@@ -1,0 +1,7 @@
+default: true
+
+# ignore
+MD013: false  # line-length
+MD033: false  # no-inline-html
+MD046: false  # Code block style
+MD029: false  # numbered list prefix

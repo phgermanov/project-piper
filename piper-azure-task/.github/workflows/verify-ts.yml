@@ -1,0 +1,58 @@
+name: Typescript
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  DEFAULT_NODE: 20
+
+jobs:
+  lint:
+    name: 'Lint'
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Set up Node ${{ env.DEFAULT_NODE }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.DEFAULT_NODE }}
+      - run: npm --prefix piper clean-install
+      - name: 🚀 Lint Typescript files
+        run: npm --prefix piper run lint:ci
+      - name: ⬆️ Upload lint report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lint report
+          path: piper/reports/eslint-report.json
+#  unit:
+#    name: 'Test'
+#    runs-on: self-hosted
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-node@v3
+#        with:
+#          node-version: 16
+#      - run: npm --prefix piper clean-install
+#      - run: npm --prefix piper run test:ci
+#      - uses: actions/upload-artifact@v3
+#        if: always()
+#        with:
+#          name: test report
+#          path: piper/reports/sonar-report.xml
+#      - uses: actions/upload-artifact@v3
+#        if: always()
+#        with:
+#          name: coverage report
+#          path: piper/reports/lcov.info
+#      - name: Publish Test Results
+#        uses: EnricoMi/publish-unit-test-result-action@v2
+#        if: always()
+#        with:
+#          files: piper/reports/TEST-jest.xml
+#          comment_mode: off

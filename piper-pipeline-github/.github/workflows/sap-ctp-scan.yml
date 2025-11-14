@@ -1,0 +1,159 @@
+name: CTP scan
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      extensibility-enabled:
+        type: boolean
+        default: false
+      custom-defaults-paths:
+        required: false
+        type: string
+        default: ''
+      custom-stage-conditions-path:
+        required: false
+        type: string
+        default: ''
+      # can be set to 'true' or 'recursive': https://github.com/actions/checkout?tab=readme-ov-file#usage
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      ctp-flags:
+        required: false
+        type: string
+        default: ''
+      execute-build:
+        required: false
+        type: string
+        default: true
+      vault-base-path:
+        required: false
+        type: string
+        default: ''
+      vault-pipeline-name:
+        required: false
+        type: string
+        default: ''
+env:
+  PIPER_ACTION_SAP_PIPER_OWNER: project-piper
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: sap-piper
+  vaultBasePath: ${{ inputs.vault-base-path }}
+  vaultPipelineName: ${{ inputs.vault-pipeline-name }}
+
+jobs:
+  Init:
+    uses: ./.github/workflows/init.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      custom-defaults-paths: ${{ inputs.custom-defaults-paths }}
+      custom-stage-conditions-path: ${{ inputs.custom-stage-conditions-path }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-ctp
+
+  Build:
+    needs: Init
+    if: ${{ inputs.execute-build == 'true' }}
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Init.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-ctp
+
+  CTPScan:
+    needs: [Init, Build]
+    name: 'CTP Scan'
+    # the condition ensures the stage will run regardless of the build stage being skipped
+    if: |
+      always() && !cancelled() && !failure()
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    outputs:
+      pipelineEnv: ${{ steps.pipelineEnv.outputs.pipelineEnv }}
+    env:
+      PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+      PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+      PIPER_ACTION_PIPELINE_ENV: ${{ needs.Build.outputs.pipeline-env }}
+      PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ github.token }}
+      PIPER_PIPELINE_TEMPLATE_NAME: hyperspace-piper-ctp
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          submodules: ${{ inputs.checkout-submodules }}
+          lfs: ${{ inputs.checkout-lfs }}
+      - name: sapDownloadArtifact
+        if: ${{ inputs.execute-build == 'true' }}
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapDownloadArtifact
+      - name: detectExecuteScan (CTP Scan)
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: detectExecuteScan
+          flags: ${{ inputs.ctp-flags }}
+      - name: Export pipeline environment
+        uses: SAP/project-piper-action@v1.22
+        id: pipelineEnv
+        with:
+          step-name: ''
+          export-pipeline-environment: true
+
+  Post:
+    needs: [Init, Build, CTPScan]
+    uses: ./.github/workflows/post.yml
+    if: always() && !cancelled()
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Build.outputs.pipeline-env || needs.Init.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-ctp

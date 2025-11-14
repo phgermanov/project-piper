@@ -1,0 +1,7 @@
+Stages:
+  Build:
+    sonarExecuteScan: false
+steps:
+  gaugeExecuteTests:
+    installCommand: npm install -g @getgauge/cli
+    runCommand: run gauge-test/specs

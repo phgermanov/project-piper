@@ -1,0 +1,12 @@
+kind: Component
+metadata:
+  displayName: piper-pipeline-azure
+  description: 'Pipeline template for Azure DevOps. '
+  tags:
+    - azure-pipelines
+    - cicd
+    - pipelines
+    - piper
+spec:
+  type:
+    name: reuse-template

@@ -1,0 +1,91 @@
+parameters:
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnMSHostedAgents
+    type: boolean
+    default: false
+# sap-piper-pipeline - promote.yml
+stages:
+  - stage: Promote
+    displayName: Promote
+    dependsOn: ["Init", "Build", "Confirmation"]
+    condition: and(eq(dependencies.Init.outputs['setup.checkIfStepActive.activePromote'], 'true'), not(or(failed(),canceled())), eq(dependencies.Init.outputs['setup.productiveBranch.onProductiveBranch'], 'true'), in(dependencies.Confirmation.result, 'Succeeded', 'Skipped'), eq(dependencies.Init.outputs['setup.optimization.isOptimizedAndScheduled'], 'false'))
+    variables:
+      sapDefaults_b64: $[ stageDependencies.Init.setup.outputs['piper_defaults.DefaultConfig'] ]
+      pipelineEnvironment_b64: $[ stageDependencies.Build.build.outputs['piper.PipelineEnv'] ]
+      binaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+      osBinaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      activeStepsMap: $[ stageDependencies.Init.setup.outputs['checkIfStepActive.activeStepsPromote'] ]
+      systemTrustToken: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustSessionToken'] ]
+      systemTrustURL: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustURL'] ]
+
+      # the following two variables are only for backward compatibility and should be removed with Piper Azure task v2.
+      # they might be used by pipelines with custom stages or in extensions
+      # use fetch_version.binaryVersion and fetch_version.osBinaryVersion instead
+      piperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      sapPiperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+    pool:
+      name: ${{ parameters.msHostedPool }}
+      vmImage: ${{ parameters.poolVmImage}}
+    jobs:
+      - job: promote
+        steps:
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnMSHostedAgents }}
+          - task: piper@1.35.2
+            displayName: sapCallStagingService
+            condition: contains(variables.activeStepsMap, '"sapCallStagingService":true')
+            inputs:
+              stepName: sapCallStagingService
+              flags: "--action promote"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          # read stage configuration and store productiveBranch and lockPipelineRun
+          - task: piper@1.35.2
+            displayName: Read stage configuration
+            condition: contains(variables.activeStepsMap, '"getConfig":true')
+            inputs:
+              stepName: getConfig
+              flags: "--stageConfig --outputFile stage-config.json"
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - bash: |
+              echo "##vso[task.setvariable variable=productiveBranch]$(jq -j .productiveBranch stage-config.json)"
+              echo "##vso[task.setvariable variable=lockPipelineRun]$(jq -j .lockPipelineRun stage-config.json)"
+          - bash: |
+              echo "Writing lock-run.json for productive branch '$(productiveBranch)'"
+              touch lock-run.json
+            condition: and(succeeded(), eq(variables.productiveBranch, variables['Build.SourceBranchName']), eq(variables.lockPipelineRun, 'true'))
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (lock-run.json)
+            condition: and(succeeded(), eq(variables.productiveBranch, variables['Build.SourceBranchName']), eq(variables.lockPipelineRun, 'true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: '--filePattern "**/lock-run.json" --stepResultType root'
+              # do not restore the PipelineEnv or the changes done in sapCallStagingService are overwritten
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+
+          ####################################################################
+          # TODO: make sure that we always have the commonPipelineEnvironment!
+          ####################################################################
+
+          - task: piper@1.35.2
+            name: piper
+            displayName: Export pipeline env
+            inputs:
+              stepName: version
+              exportPipelineEnv: true

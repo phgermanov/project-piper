@@ -1,0 +1,32 @@
+name: Markdown
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  DEFAULT_GOLANG: '1.19.x'
+
+jobs:
+  reuse:
+    # reuses https://github.tools.sap/project-piper/.github/blob/main/.github/workflows/verify-md.yml
+    uses: project-piper/.github/.github/workflows/verify-md.yml@main
+  readme-is-up-to-date:
+    name: 'Generate'
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: 🚀 Build readme file
+        run: go generate
+        working-directory: docs
+      - name: 🔎 Inspect differences
+        run: git diff --name-only --exit-code

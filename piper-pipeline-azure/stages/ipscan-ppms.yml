@@ -1,0 +1,188 @@
+# sap-piper-pipeline - ipscan-ppms.yml
+parameters:
+  - name: preIpScanSteps
+    type: stepList
+    default: []
+  - name: postIpScanSteps
+    type: stepList
+    default: []
+  - name: prePPMSSteps
+    type: stepList
+    default: []
+  - name: postPPMSSteps
+    type: stepList
+    default: []
+  - name: checkoutSubmodule
+    type: boolean
+    default: false
+  - name: checkoutLFS
+    type: boolean
+    default: false
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: ""
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+  - name: disableCachingOnSelfHostedAgents
+    type: boolean
+    default: false
+stages:
+  - stage: ipscan_ppms
+    displayName: IPScan and PPMS
+    dependsOn: ["Init", "Build", "Security"]
+    condition: and(eq(dependencies.Init.outputs['setup.checkIfStepActive.activeIPScanandPPMS'], 'true'), or(and(not(or(failed(),canceled())), eq(dependencies.Init.outputs['setup.productiveBranch.onProductiveBranch'], 'true'), or(not(eq(dependencies.Init.outputs['setup.optimization.pipelineOptimization'], 'true')), eq(dependencies.Init.outputs['setup.optimization.isOptimizedAndScheduled'], 'true'))), and(failed(), eq(dependencies.Init.outputs['setup.productiveBranch.onProductiveBranch'], 'true'), eq(dependencies.Init.outputs['setup.optimization.isOptimizedAndScheduled'], 'true'))))
+    variables:
+      sapDefaults_b64: $[ stageDependencies.Init.setup.outputs['piper_defaults.DefaultConfig'] ]
+      pipelineEnvironment_b64: $[ stageDependencies.Security.OSS.outputs['piper.PipelineEnv'] ]
+      binaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+      osBinaryVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      activeStepsMap: $[ stageDependencies.Init.setup.outputs['checkIfStepActive.activeStepsIPScanandPPMS'] ]
+      systemTrustToken: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustSessionToken'] ]
+      systemTrustURL: $[ stageDependencies.Init.setup.outputs['getSystemTrustToken.systemTrustURL'] ]
+
+      # the following two variables are only for backward compatibility and should be removed with Piper Azure task v2.
+      # they might be used by pipelines with custom stages or in extensions
+      # use fetch_version.binaryVersion and fetch_version.osBinaryVersion instead
+      piperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.osBinaryVersion'] ]
+      sapPiperCacheVersion: $[ stageDependencies.Init.setup.outputs['fetch_version.binaryVersion'] ]
+    jobs:
+      - job: IPScan
+        pool:
+          name: ${{ parameters.selfHostedPool }}
+          vmImage: ${{ parameters.poolVmImage}}
+        condition: and(not(or(failed(),canceled())), not(eq(stageDependencies.Security.OSS.outputs['ip.ipStepsExecuted'], 'true')))
+        steps:
+          - checkout: self
+            submodules: ${{ parameters.checkoutSubmodule }}
+            lfs: ${{ parameters.checkoutLFS }}
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnSelfHostedAgents }}
+          - ${{ parameters.preIpScanSteps }}
+          # ToDo: add logic to only execute one IP scanning tool -> can we handle this via stage conditions?
+          - task: piper@1.35.2
+            displayName: whitesourceExecuteScan
+            condition: contains(variables.activeStepsMap, '"whitesourceExecuteScan":true')
+            inputs:
+              stepName: whitesourceExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (whitesource-ip)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              # dont keep spaces between file names (comma is required for step). parameter gets cut at the space and only value before space is considered
+              flags: "--filePattern whitesource/**,whitesource/*risk-report.pdf --stepResultType whitesource-ip"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (whitesource-ip evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/whitesource-ip.json --stepResultType policy-evidence/PSL-1"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              sapPiperVersion: $(sapPiperCacheVersion)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (whitesource-security)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern whitesource/**,whitesource/*risk-report.pdf --stepResultType whitesource-security"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: detectExecuteScan
+            condition: contains(variables.activeStepsMap, '"detectExecuteScan":true')
+            inputs:
+              stepName: detectExecuteScan
+              restorePipelineDefaults: $(sapDefaults_b64)
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (blackduck-ip)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/*BlackDuck_RiskReport.pdf,blackduck-ip.json,**/toolrun_detectExecute_*.json --stepResultType blackduck-ip"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              sapPiperVersion: $(sapPiperCacheVersion)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload (blackduck-ip evidence)
+            condition: and(always(), contains(variables.activeStepsMap, '"sapCumulusUpload":true'))
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/blackduck-ip.json --stepResultType policy-evidence/PSL-1"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postIpScanSteps }}
+      - job: PPMS
+        pool:
+          name: ${{ parameters.selfHostedPool }}
+          vmImage: ${{ parameters.poolVmImage}}
+        dependsOn: IPScan
+        condition: not(or(failed(),canceled()))
+        steps:
+          # ToDo: add possibility to consume whitesourceProjectNames in case execution is done in this stage and not in Security stage
+          - template: /steps/binary-cache.yml
+            parameters:
+              disableCaching: ${{ parameters.disableCachingOnSelfHostedAgents }}
+          - ${{ parameters.prePPMSSteps }}
+          - task: piper@1.35.2
+            displayName: sapCheckPPMSCompliance
+            condition: contains(variables.activeStepsMap, '"sapCheckPPMSCompliance":true')
+            inputs:
+              stepName: sapCheckPPMSCompliance
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload
+            condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/piper_whitesource_ppms_report.* --stepResultType whitesource-ip"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload
+            condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/piper_whitesource_ppms_report.* --stepResultType whitesource-security"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload
+            condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+            inputs:
+              stepName: sapCumulusUpload
+              # dont keep spaces between file names (comma is required for step). parameter gets cut at the space and only value before space is considered
+              flags: "--filePattern **/piper_blackduck_ppms_report.* --stepResultType blackduck-ip"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCumulusUpload
+            condition: contains(variables.activeStepsMap, '"sapCumulusUpload":true')
+            inputs:
+              stepName: sapCumulusUpload
+              flags: "--filePattern **/piper_blackduck_ppms_report.* --stepResultType blackduck-security"
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - task: piper@1.35.2
+            displayName: sapCheckECCNCompliance
+            condition: contains(variables.activeStepsMap, '"sapCheckECCNCompliance":true')
+            inputs:
+              stepName: sapCheckECCNCompliance
+              restorePipelineDefaults: $(sapDefaults_b64)
+              gitHubConnection: ${{ parameters.gitHubToolsConnectionName }}
+          - ${{ parameters.postPPMSSteps }}

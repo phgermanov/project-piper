@@ -1,0 +1,79 @@
+name: '[Template] Update version'
+
+on:
+  workflow_call:
+    inputs:
+      release:
+        type: boolean
+        default: false
+    outputs:
+      release_should_run:
+        value: ${{ jobs.versioning.outputs.release_should_run }}
+      version:
+        value: ${{ jobs.versioning.outputs.version }}
+      draft_release_id:
+        value: ${{ jobs.versioning.outputs.draft_release_id }}
+
+jobs:
+  versioning:
+    name: Version
+    runs-on: self-hosted
+    outputs:
+      release_should_run: ${{ steps.latest_release.outputs.isDraft == 'true' }}
+      version: ${{ steps.release_version.outputs.version || steps.dev_version.outputs.version }}
+      draft_release_id: ${{ steps.latest_release.outputs.draft_release_id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Get the latest draft release version from GitHub API
+      - name: Get latest draft release
+        id: latest_release
+        run: |
+          RELEASES=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            ${{ github.api_url }}/repos/${{ github.repository }}/releases)
+
+          # Find the first (most recent) draft release
+          DRAFT_RELEASE=$(echo "$RELEASES" | jq '[.[] | select(.draft==true)] | first')
+
+          if [ "$DRAFT_RELEASE" != "null" ] && [ -n "$DRAFT_RELEASE" ]; then
+            TAG=$(echo "$DRAFT_RELEASE" | jq -r '.tag_name')
+            echo "::debug::Found draft release with tag: $TAG"
+
+            # Remove v prefix if present
+            VERSION=${TAG#v}
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "isDraft=true" >> "$GITHUB_OUTPUT"
+            echo "draft_release_id=$(echo "$DRAFT_RELEASE" | jq -r '.id')" >> "$GITHUB_OUTPUT"
+          else
+            # If no draft release found, get the latest release instead
+            LATEST_RELEASE=$(curl -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest)
+
+            VERSION=$(echo "$LATEST_RELEASE" | jq -r '.tag_name')
+            VERSION=${VERSION#v}
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "isDraft=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # For release versions
+      - name: Set release version
+        id: release_version
+        if: inputs.release
+        run: |
+          echo "version=${{ steps.latest_release.outputs.version }}" >> "$GITHUB_OUTPUT"
+
+      # For development: use latest version with patch replaced by run number
+      - name: Set dev version
+        id: dev_version
+        if: ${{ !inputs.release }}
+        run: |
+          VERSION="${{ steps.latest_release.outputs.version }}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          RUN_NUMBER=${{ github.run_number }}
+
+          echo "version=$MAJOR.$MINOR.$RUN_NUMBER" >> "$GITHUB_OUTPUT"

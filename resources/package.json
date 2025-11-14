@@ -1,0 +1,36 @@
+{
+  "name": "resources",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "npm run build:clean && npm run build:azure && npm run build:github && npm run build:jenkins",
+    "build:windows": "npm run build:clean && npm run build:azure:windows && npm run build:github:windows && npm run build:jenkins:windows",
+    "build:azure": "npm run build:azure:tools && npm run build:azure:wdf",
+    "build:azure:windows": "npm run build:azure:tools:windows && npm run build:azure:wdf:windows",
+    "build:github": "npm run build:github:tools && npm run build:github:wdf",
+    "build:github:windows": "npm run build:github:tools:windows && npm run build:github:wdf:windows",
+    "build:jenkins": "npm run build:jenkins:tools && npm run build:jenkins:wdf",
+    "build:jenkins:windows": "npm run build:jenkins:tools:windows && npm run build:jenkins:wdf:windows",
+    "build:tools": "npm run build:azure:tools && npm run build:github:tools",
+    "build:tools:windows": "npm run build:azure:tools:windows && npm run build:github:tools:windows",
+    "build:azure:tools": "./node_modules/.bin/merge-yaml -i defaults/defaults.yml defaults/deviation-azure.yml defaults/deviation-tools.yml -o gen/piper-defaults-azure-tools.yml",
+    "build:azure:tools:windows": ".\\node_modules\\.bin\\merge-yaml -i defaults/defaults.yml defaults/deviation-azure.yml defaults/deviation-tools.yml -o gen/piper-defaults-azure-tools.yml",
+    "build:github:tools": "./node_modules/.bin/merge-yaml -i defaults/defaults.yml defaults/deviation-github.yml defaults/deviation-tools.yml -o gen/piper-defaults-github-tools.yml",
+    "build:github:tools:windows": ".\\node_modules\\.bin\\merge-yaml -i defaults/defaults.yml defaults/deviation-github.yml defaults/deviation-tools.yml -o gen/piper-defaults-github-tools.yml",
+    "build:jenkins:tools": "exit 0",
+    "build:jenkins:tools:windows": "exit 0",
+    "build:wdf": "npm run build:github:wdf && npm run build:jenkins:wdf",
+    "build:wdf:windows": "npm run build:github:wdf:windows && npm run build:jenkins:wdf:windows",
+    "build:azure:wdf": "exit 0",
+    "build:azure:wdf:windows": "exit 0",
+    "build:github:wdf": "./node_modules/.bin/merge-yaml -i defaults/defaults.yml defaults/deviation-github.yml defaults/deviation-wdf.yml -o gen/piper-defaults-github-wdf.yml",
+    "build:github:wdf:windows": ".\\node_modules\\.bin\\merge-yaml -i defaults/defaults.yml defaults/deviation-github.yml defaults/deviation-wdf.yml -o gen/piper-defaults-github-wdf.yml",
+    "build:jenkins:wdf": "./node_modules/.bin/merge-yaml -i defaults/defaults.yml defaults/deviation-jenkins.yml defaults/deviation-wdf.yml -o gen/piper-defaults-jenkins-wdf.yml",
+    "build:jenkins:wdf:windows": ".\\node_modules\\.bin\\merge-yaml -i defaults/defaults.yml defaults/deviation-jenkins.yml defaults/deviation-wdf.yml -o gen/piper-defaults-jenkins-wdf.yml",
+    "build:clean": "rm gen/piper-defaults-*.yml | exit 0 && mkdir gen | exit 0"
+  },
+  "author": "Christopher Fenner",
+  "private": true,
+  "devDependencies": {
+    "merge-yaml-cli": "1.1.2"
+  }
+}

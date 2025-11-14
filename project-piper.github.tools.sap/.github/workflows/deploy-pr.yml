@@ -1,0 +1,54 @@
+name: Preview
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+concurrency: preview-${{ github.ref }}
+
+env:
+  DEFAULT_PYTHON: "3.x"
+  PREVIEW_TITLE: "🏗 PR-${{ github.event.number }} Preview 🚧"
+  PREVIEW_URL: "https://pages.github.tools.sap/project-piper/pr-preview/pr-${{ github.event.number }}/"
+
+jobs:
+  deploy-preview:
+    name: Deploy
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v5
+      - name: 🏗 Set up Python ${{ env.DEFAULT_PYTHON }}
+        if: github.event.action != 'closed'
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: 🏗 Install mk-docs
+        if: github.event.action != 'closed'
+        run: pip install mkdocs-material==9.6.20
+      - name: 🏗 Install RSS plugin
+        run: pip install mkdocs-rss-plugin  # Method 1 - RSS
+      - name: 🏗 Build mkdocs
+        if: github.event.action != 'closed'
+        run: mkdocs build
+      - name: Check if rss.xml exists
+        run: |
+            ls -R ./docs-gen/
+            if [ -f "./docs-gen/feed_rss_created.xml" ]; then
+              echo "✅ RSS feed generated."
+            else
+              echo "❌ RSS feed not found!"
+            fi
+      - name: Check RSS contents
+        run: |
+          grep -q "<rss" docs-gen/feed_rss_created.xml && echo "Looks like valid RSS." || exit 1
+      - name: 🚀 Deploy preview to Pages branch
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./docs-gen/
+          pages-base-url: pages.github.tools.sap/project-piper

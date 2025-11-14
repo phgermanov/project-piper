@@ -1,0 +1,222 @@
+name: Piper general purpose pipeline
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      extensibility-enabled:
+        type: boolean
+        default: false
+      custom-defaults-paths:
+        required: false
+        type: string
+        default: ''
+      custom-stage-conditions-path:
+        required: false
+        type: string
+        default: ''
+      # can be set to 'true' or 'recursive': https://github.com/actions/checkout?tab=readme-ov-file#usage
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      fetch-depth:
+        required: false
+        type: string
+        default: '1'
+    outputs:
+      pipeline-env:
+        value: ${{ jobs.Post.outputs.pipeline-env }}
+
+jobs:
+  Init:
+    uses: ./.github/workflows/init.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      custom-defaults-paths: ${{ inputs.custom-defaults-paths }}
+      custom-stage-conditions-path: ${{ inputs.custom-stage-conditions-path }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Build:
+    needs: Init
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Init.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      fetch-depth: ${{ inputs.fetch-depth }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Integration:
+    needs: [Init, Build]
+    uses: ./.github/workflows/integration.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Build.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Build.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Acceptance:
+    needs: [Init, Build]
+    uses: ./.github/workflows/acceptance.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Build.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Build.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Performance:
+    needs: [Init, Build]
+    uses: ./.github/workflows/performance.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Build.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Build.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Promote:
+    needs: [Init, Build, Integration, Acceptance, Performance]
+    # the condition ensures the stage will run regardless of the integration stage etc. being skipped
+    if: |
+      always() && !cancelled() && !failure()
+    uses: ./.github/workflows/promote.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Build.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Build.outputs.pipeline-env }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Release:
+    needs: [Init, Build, Promote]
+    # the condition ensures the stage will run regardless of the integration stage etc. being skipped
+    if: |
+      always() && !cancelled() && !failure()
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Build.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Promote.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp
+
+  Post:
+    needs: [Init, Build, Promote, Release]
+    # TODO: why is this condition not in the stage?
+    if: always() && !cancelled() && fromJSON(needs.Build.outputs.active-stages-map).Post == true
+    uses: ./.github/workflows/post.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Build.outputs.active-steps-map }}
+      # we need the cpe value from promote for the release status json in post during sapGenerateEnvironmentInfo
+      pipeline-env: ${{ needs.Promote.outputs.pipeline-env || needs.Build.outputs.pipeline-env }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-gpp

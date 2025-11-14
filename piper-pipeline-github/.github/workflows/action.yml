@@ -1,0 +1,59 @@
+name: Extension Composite Action
+description: |
+  This composite action checks and applies extensions from the local or global repository
+inputs:
+  extension:
+    type: string
+    required: true
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # local extension
+    - name: Install local extension
+      id: install_local_extension
+      env:
+        EXTENSION_POINT: ${{ inputs.extension }}
+        EXTENSION_RUNTIME_PATH: .pipeline/tmp/extension_runtime
+      shell: bash
+      run: |
+        if [ -f .pipeline/extensions/$EXTENSION_POINT/action.y*ml ]; then
+          echo "local_extension=true" >> $GITHUB_OUTPUT
+          echo "Preparing runtime version of extension $EXTENSION_POINT"
+          # command "install" (https://www.gnu.org/software/coreutils/manual/html_node/install-invocation.html)
+          install -v -D -t $EXTENSION_RUNTIME_PATH .pipeline/extensions/$EXTENSION_POINT/*
+        else
+          echo "Local extension ${{ inputs.extension }} not found"
+        fi
+    # global extension
+    - name: Install global extension
+      id: install_global_extension
+      if: |
+        steps.install_local_extension.outputs.local_extension != 'true'
+      env:
+        EXTENSION_POINT: ${{ inputs.extension }}
+        EXTENSION_RUNTIME_PATH: .pipeline/tmp/extension_runtime
+      shell: bash
+      run: |
+        if [ -f .pipeline/tmp/global_extensions/$EXTENSION_POINT/action.y*ml ]; then
+          echo "global_extension=true" >> $GITHUB_OUTPUT
+          echo "Preparing runtime version of extension $EXTENSION_POINT"
+          install -v -D -t $EXTENSION_RUNTIME_PATH .pipeline/tmp/global_extensions/$EXTENSION_POINT/*
+        else
+          echo "Global extension ${{ inputs.extension }} not found"
+        fi
+    # extension call
+    - name: Run extension ${{ inputs.extension }}
+      if: |
+        steps.install_local_extension.outputs.local_extension == 'true' ||
+        steps.install_global_extension.outputs.global_extension == 'true'
+      uses: ./.pipeline/tmp/extension_runtime
+    # clean-up
+    - name: Clean-up
+      if: |
+        steps.install_local_extension.outputs.local_extension == 'true' ||
+        steps.install_global_extension.outputs.global_extension == 'true'
+      shell: bash
+      run: |
+        rm -rf .pipeline/tmp/extension_runtime

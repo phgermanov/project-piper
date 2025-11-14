@@ -1,0 +1,43 @@
+name: Update Piper task dev branch
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Dev version
+        required: true
+        type: string
+  push:
+    branches:
+      - main
+
+env:
+  DEV_AZURE_TASK_BRANCH: devAzureTask
+
+jobs:
+  update_dev_azure_task_branch:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Azure task dev branch
+        run: git fetch origin $DEV_AZURE_TASK_BRANCH:$DEV_AZURE_TASK_BRANCH
+      - name: Delete Azure task dev branch
+        run: |
+          git push -d origin $DEV_AZURE_TASK_BRANCH
+          git branch -D $DEV_AZURE_TASK_BRANCH
+      - name: Recreate dev branch
+        run: |
+          git checkout -b $DEV_AZURE_TASK_BRANCH
+          git push --set-upstream origin $DEV_AZURE_TASK_BRANCH
+      - name: Replace Piper task with dev version
+        env:
+          version: ${{ inputs.version || '1' }}
+        run: sed -i -r -e 's/piper@[0-9]+\.{0,1}[0-9]*\.{0,1}[0-9]*/piper-dev@${{ env.version }}/g' stages/*.yml
+      - name: Push changes
+        run: |
+          git config --global user.name 'piper'
+          git config --global user.email 'piper@github.tools.sap'
+          git add -u
+          git commit -m "use piper-dev task"
+          git push

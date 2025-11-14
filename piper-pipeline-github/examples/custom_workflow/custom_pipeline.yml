@@ -1,0 +1,28 @@
+name: Piper workflow
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+
+jobs:
+  piper-init:
+    uses: project-piper/piper-pipeline-github/.github/workflows/init.yml@main
+    secrets: inherit
+  piper-build:
+    needs: piper-init
+    secrets: inherit
+    uses: project-piper/piper-pipeline-github/.github/workflows/build.yml@main
+    with:
+      on-productive-branch: ${{ needs.piper-init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.piper-init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.piper-init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.piper-init.outputs.pipeline-env }}
+  piper-promote:
+    needs: [piper-init, piper-build]
+    secrets: inherit
+    uses: project-piper/piper-pipeline-github/.github/workflows/promote.yml@main
+    with:
+      on-productive-branch: ${{ needs.piper-init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.piper-build.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.piper-build.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.piper-build.outputs.pipeline-env }}

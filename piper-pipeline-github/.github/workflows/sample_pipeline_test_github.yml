@@ -1,0 +1,225 @@
+name: Sample pipeline tests
+
+# yamllint disable-line rule:truthy
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write # Required for pushing and deleting test branches
+  pull-requests: write # Required for accessing PR information
+  actions: write # Required for creating and monitoring workflow runs
+  statuses: write # Required for creating commit status checks
+
+jobs:
+  test_pipelines:
+    name: Test sample pipelines
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/test' }}
+    runs-on: self-hosted
+    env:
+      PIPELINES_ORG: piper-validation
+      SAMPLE_PIPELINES: >
+        hyper-ref-gha-cpath-java
+        system-trust-action-test
+      BRANCH_NAME: ${{ format('gpp-{0}', github.run_id) }}
+    steps:
+      - name: Get PR info
+        id: pr_info
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('head_repo', pr.head.repo.full_name);
+            core.setOutput('head_ref', pr.head.ref);
+            core.setOutput('head_sha', pr.head.sha);
+
+      - name: Check if user is maintainer
+        id: check
+        uses: actions/github-script@v8
+        with:
+          script: |
+            try {
+              console.log(`Checking permissions for user: ${context.actor}`);
+              const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: context.actor
+              });
+              console.log(`User ${context.actor} has permission level: ${permission.permission}`);
+              const allowed = ['admin', 'maintain', 'write'].includes(permission.permission);
+              if (!allowed) {
+                core.setFailed(`User ${context.actor} does not have maintainer permissions`);
+              }
+            } catch (error) {
+              core.setFailed(`Failed to check permissions: ${error.message}`);
+            }
+
+      - name: Checkout pull request under test
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.pr_info.outputs.head_repo }}
+          ref: ${{ steps.pr_info.outputs.head_sha }}
+
+      - name: Set initial status
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // Set status check
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: '${{ steps.pr_info.outputs.head_sha }}',
+              state: 'pending',
+              target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: 'Running sample pipeline tests',
+              context: 'Sample Pipeline Tests'
+            });
+
+      - name: Generate GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.PIPER_VALIDATION_GITHUB_APP_ID }}
+          private-key: ${{ secrets.PIPER_VALIDATION_GITHUB_APP_PRIVATE_KEY }}
+          owner: ${{ env.PIPELINES_ORG }}
+
+      - name: Prepare test branches
+        env:
+          GH_APP_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          # Parse pipelines into array
+          pipelines=($SAMPLE_PIPELINES)
+
+          # setup for pushing
+          git config --global user.name 'piper'
+          git config --global user.email 'piper@github.tools.sap'
+
+          for pipeline in "${pipelines[@]}"; do
+            # clone sample pipeline and create new branch for this GPP PR
+            git clone https://x-access-token:${GH_APP_TOKEN}@github.tools.sap/$PIPELINES_ORG/$pipeline.git
+            cd $pipeline
+            git checkout -b $BRANCH_NAME
+
+            # Update pipeline configuration
+            PR_REPO="${{ steps.pr_info.outputs.head_repo }}"
+            PR_BRANCH="${{ steps.pr_info.outputs.head_ref }}"
+            yq -i ".jobs.piper.uses |= sub(\"^([^/]+/[^/]+)/\", \"$PR_REPO/\")" .github/workflows/piper.yml
+            yq -i ".jobs.piper.uses |= sub(\"@main$\", \"@$PR_BRANCH\")" .github/workflows/piper.yml
+            yq -i '.general.productiveBranch |= strenv(BRANCH_NAME)' .pipeline/config.yml
+
+            git add .github/workflows/piper.yml
+            git add .pipeline/config.yml
+            git commit -m "piper-pipeline-github PR check"
+            git push --set-upstream origin $BRANCH_NAME
+            cd ..
+          done
+
+      - name: Trigger and monitor workflows
+        id: monitor
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          script: |
+            const pipelines = process.env.SAMPLE_PIPELINES.split(/\s+/).filter(Boolean);
+            const branchName = process.env.BRANCH_NAME;
+            const runIds = [];
+
+            // Trigger all workflows first
+            for (const pipeline of pipelines) {
+              // Trigger workflow
+              await github.rest.actions.createWorkflowDispatch({
+                owner: process.env.PIPELINES_ORG,
+                repo: pipeline,
+                workflow_id: 'piper.yml',
+                ref: branchName
+              });
+
+              // Wait a moment for the workflow to start
+              await new Promise(resolve => setTimeout(resolve, 5000));
+
+              // Get the latest workflow run
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: process.env.PIPELINES_ORG,
+                repo: pipeline,
+                workflow_id: 'piper.yml',
+                branch: branchName,
+                per_page: 1
+              });
+
+              if (!runs.workflow_runs.length) {
+                core.setFailed(`No workflow run found for ${process.env.PIPELINES_ORG}/${pipeline}`);
+                return;
+              }
+
+              const run = runs.workflow_runs[0];
+              console.log(`Started workflow ${process.env.PIPELINES_ORG}/${pipeline} with run ID ${run.id}`);
+              runIds.push({ pipeline, runId: run.id });
+            }
+
+            // Monitor all workflows in parallel
+            const maxDuration = 25 * 60; // 25 minutes in seconds
+            const interval = 60;
+            const completedPipelines = new Set();
+
+            for (let elapsed = 0; elapsed < maxDuration; elapsed += interval) {
+              let allCompleted = true;
+
+              for (const { pipeline, runId } of runIds) {
+                if (completedPipelines.has(pipeline)) continue;
+
+                const { data: runStatus } = await github.rest.actions.getWorkflowRun({
+                  owner: process.env.PIPELINES_ORG,
+                  repo: pipeline,
+                  run_id: runId
+                });
+
+                if (runStatus.status === 'completed') {
+                  if (runStatus.conclusion !== 'success') {
+                    core.setFailed(`Workflow ${process.env.PIPELINES_ORG}/${pipeline} failed - see ${runStatus.html_url}`);
+                    return;
+                  }
+                  console.log(`Workflow ${process.env.PIPELINES_ORG}/${pipeline} completed successfully - ${runStatus.html_url}`);
+                  completedPipelines.add(pipeline);
+                } else {
+                  allCompleted = false;
+                }
+              }
+
+              if (allCompleted) break;
+              await new Promise(resolve => setTimeout(resolve, interval * 1000));
+            }
+
+      - name: Update final status
+        if: always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const status = '${{ steps.monitor.outcome }}' === 'success' ? 'success' : 'failure';
+            const description = status === 'success' ? 'All tests passed' : 'Tests failed';
+
+            // Update status check
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: '${{ steps.pr_info.outputs.head_sha }}',
+              state: status,
+              target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: description,
+              context: 'Sample Pipeline Tests'
+            });
+
+      - name: Delete test branches
+        env:
+          GH_APP_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          pipelines=($SAMPLE_PIPELINES)
+
+          for pipeline in "${pipelines[@]}"; do
+            cd $pipeline
+            git push -d origin $BRANCH_NAME
+            cd ..
+          done

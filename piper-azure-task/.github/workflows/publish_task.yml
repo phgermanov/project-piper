@@ -1,0 +1,74 @@
+name: Publish Azure Task
+
+on:
+  workflow_call:
+  workflow_run:
+    workflows:
+      - "Pull Request Package (dev)"
+    types:
+      - completed
+
+env:
+  task_name: piper-azure-task
+
+jobs:
+  publish:
+    name: Publish
+    # Publish is executed either when called from the Release workflow or automatically by the Piper packaging task after commits are made to PRs (dev version)
+    if: >
+      github.actor != 'ospo-renovate[bot]' &&
+      (
+        github.event_name != 'workflow_run' ||
+        github.event.workflow_run.conclusion == 'success'
+      )
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Install Azure DevOps CLI
+        run: npm install --global tfx-cli
+
+      # Fetch artifact if triggered manually or on schedule
+      - name: Fetch .vsix artifact
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        uses: actions/download-artifact@v3
+        with:
+          name: piper-task-vsix
+
+      # - name: Fetch .vsix artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: piper-task-vsix
+      #     run-id: ${{ github.event.workflow_run.id }}
+
+      # Since v4 of actions/download-artifact is currently not supported by GHES
+      # we have to use API calls to download artifact from another workflow run
+      - name: Fetch .vsix artifact (pull request)
+        if: github.event_name == 'workflow_run'
+        id: search_artifact
+        run: |
+          curl -L -o response.json \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          ${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts?name=piper-task-vsix
+
+          artifact_id=$(cat response.json | jq .artifacts[0].id)
+          rm response.json
+
+          curl -L -o piper-task-vsix.zip \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          "${{ github.api_url }}/repos/${{ github.repository }}/actions/artifacts/${artifact_id}/zip"
+
+          unzip piper-task-vsix.zip
+
+      - name: Publish Azure DevOps extension
+        run: >
+          tfx extension publish
+          --token ${{ secrets.AZURE_TOKEN }}
+          --vsix ${{ env.task_name }}.vsix

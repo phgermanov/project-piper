@@ -1,0 +1,117 @@
+name: Piper open source compliance
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      # can be set to 'true' or 'recursive': https://github.com/actions/checkout?tab=readme-ov-file#usage
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      custom-defaults-paths:
+        required: false
+        type: string
+        default: ''
+      extensibility-enabled:
+        type: boolean
+        default: false
+      vault-base-path:
+        required: false
+        type: string
+        default: ''
+      vault-pipeline-name:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  Init:
+    uses: ./.github/workflows/init.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      custom-defaults-paths: ${{ inputs.custom-defaults-paths }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-oss-ppms
+
+  Versioning:
+    needs: [Init]
+    uses: ./.github/workflows/versioning.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      pipeline-env: ${{ needs.Init.outputs.pipeline-env }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-oss-ppms
+
+  OSS:
+    needs: [Init, Versioning]
+    name: 'Security'
+    uses: ./.github/workflows/oss.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.Versioning.outputs.pipeline-env }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-oss-ppms
+
+  PPMS:
+    needs: [Init, OSS, Versioning]
+    name: 'IPScan and PPMS'
+    uses: ./.github/workflows/ppms.yml
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      on-productive-branch: ${{ needs.Init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.Init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.Init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.OSS.outputs.pipeline-env }}
+      runs-on: ${{ inputs.runs-on }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+      checkout-lfs: ${{ inputs.checkout-lfs }}
+      vault-base-path: ${{ needs.Init.outputs.vault-base-path }}
+      vault-pipeline-name: ${{ needs.Init.outputs.vault-pipeline-name }}
+      extensibility-enabled: ${{ inputs.extensibility-enabled }}
+      global-extensions-repository: ${{ needs.Init.outputs.global-extensions-repository }}
+      global-extensions-ref: ${{ needs.Init.outputs.global-extensions-ref }}
+      # telemetry-template-name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+      telemetry-template-name: hyperspace-piper-oss-ppms

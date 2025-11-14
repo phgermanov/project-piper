@@ -1,0 +1,4 @@
+kind: Component
+spec:
+  type:
+    name: reuse-template

@@ -1,0 +1,185 @@
+metadata:
+  name: gradleExecuteBuild
+  description: This step runs a gradle build command with parameters provided to the step.
+  longDescription: This step runs a gradle build command with parameters provided to the step.Supports execution of gradle tasks with or without wrapper.Gradle tasks and flags can be specified via 'task' or 'buildFlags' parameter. If both are not specified 'build' task will run by default.
+spec:
+  inputs:
+    params:
+      - name: path
+        aliases:
+          - name: buildGradlePath
+            deprecated: false
+        type: string
+        description: Path to the folder with build.gradle (or build.gradle.kts) file which should be executed.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: false
+      - name: task
+        type: string
+        description: A single gradle task that should be executed. If you prefer more than one, use 'buildFlags' parameter. If 'buildFlags' parameter is specified, this parameter will be ignored.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: false
+        default: build
+      - name: publish
+        type: bool
+        description: Configures gradle to publish the artifact to a repository.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        default: false
+      - name: repositoryUrl
+        type: string
+        description: Url to the repository to which the project artifacts should be published.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/repositoryUrl
+      - name: repositoryPassword
+        type: string
+        description: Password for the repository to which the project artifacts should be published.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/repositoryPassword
+      - name: repositoryUsername
+        type: string
+        description: Username for the repository to which the project artifacts should be published.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/repositoryUsername
+      - name: createBOM
+        type: bool
+        description: Creates the bill of materials (BOM) using CycloneDX plugin.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: artifactVersion
+        type: string
+        description: Version of the artifact to be built.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+      - name: artifactGroupId
+        type: string
+        description: The group of the artifact.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: groupId
+      - name: artifactId
+        type: string
+        description: The name of the artifact.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactId
+      - name: useWrapper
+        type: bool
+        description: If set to false all commands are executed using 'gradle', otherwise 'gradlew' is executed.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        default: false
+      - name: applyPublishingForAllProjects
+        type: bool
+        description: If set to false publishing logic will be applied in 'rootProject' directive, otherwise 'allprojects' will be directive used
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        default: false
+      - name: excludeCreateBOMForProjects
+        description: Defines which projects/subprojects will be ignored during bom creation. Only if applyCreateBOMForAllProjects is set to true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: "[]string"
+      - name: excludePublishingForProjects
+        description: Defines which projects/subprojects will be ignored during publishing. Only if applyCreateBOMForAllProjects is set to true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: "[]string"
+      - name: buildFlags
+        type: "[]string"
+        description: Defines a list of tasks and/or arguments to be provided for gradle in the respective order to be executed. This list takes precedence if specified over 'task' parameter
+        longDescription: |
+          Defines a list of tasks and/or arguments to be provided for gradle in the respective order to be executed. This list takes precedence if specified over 'task' parameter
+          To run command `gradle clean build -x test` , it can be achieved as follows
+
+          ```
+          steps:
+            gradleExecuteBuild:
+              buildFlags:
+                - clean
+                - build
+                - -x
+                - test
+          ```
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: buildSettingsInfo
+        type: string
+        description: build settings info is typically filled by the step automatically to create information about the build settings that were used during the gradle build. This information is typically used for compliance related processes.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/buildSettingsInfo
+  outputs:
+    resources:
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "**/bom-gradle.xml"
+            type: sbom
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/artifacts
+            type: "piperenv.Artifacts"
+          - name: custom/buildSettingsInfo
+  containers:
+    - name: gradle
+      image: gradle:6-jdk11-alpine

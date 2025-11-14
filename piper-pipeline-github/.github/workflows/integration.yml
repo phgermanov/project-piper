@@ -1,0 +1,160 @@
+name: Integration stage
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      sap-piper-version:
+        required: false
+        type: string
+        default: 'latest'
+      on-productive-branch:
+        required: true
+        type: string
+      is-optimized-and-scheduled:
+        required: false
+        type: string
+        default: 'false'
+      runs-on:
+        required: false
+        type: string
+        default: '[ "self-hosted" ]'
+      active-stages-map:
+        required: true
+        type: string
+      active-steps-map:
+        required: true
+        type: string
+      pipeline-env:
+        required: true
+        type: string
+      vault-base-path:
+        required: false
+        type: string
+        default: ''
+      vault-pipeline-name:
+        required: false
+        type: string
+        default: ''
+      extensibility-enabled:
+        type: boolean
+        default: false
+      global-extensions-repository: # format: owner/repo
+        type: string
+        default: ''
+      global-extensions-ref:
+        type: string
+        default: '' # empty string means use the default branch
+      checkout-submodules:
+        required: false
+        type: string
+        default: 'false'
+      checkout-lfs:
+        required: false
+        type: string
+        default: 'false'
+      # telemetry-template-name input is for internal use by Piper team only. If you are reusing this workflow in
+      # your pipeline, please avoid setting any value for this input.
+      telemetry-template-name:
+        required: false
+        type: string
+        default: ''
+    outputs:
+      pipeline-env:
+        value: ${{ jobs.Integration.outputs.pipelineEnv }}
+env:
+  PIPER_ACTION_PIPER_VERSION: ${{ inputs.piper-version }}
+  PIPER_ACTION_SAP_PIPER_VERSION: ${{ inputs.sap-piper-version }}
+  PIPER_ACTION_SAP_PIPER_OWNER: project-piper
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: sap-piper
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ github.token }}
+  PIPER_ENTERPRISE_SERVER_URL: ${{ secrets.PIPER_ENTERPRISE_SERVER_URL }}
+  PIPER_ACTION_WDF_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.PIPER_WDF_GITHUB_TOKEN }}
+  PIPER_ACTION_PIPELINE_ENV: ${{ inputs.pipeline-env }}
+  PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+  PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+  vaultBasePath: ${{ inputs.vault-base-path }}
+  vaultPipelineName: ${{ inputs.vault-pipeline-name }}
+  PIPER_PIPELINE_TEMPLATE_NAME: ${{ inputs.telemetry-template-name }}
+jobs:
+  Integration:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    if: |
+      fromJSON(inputs.active-stages-map).Integration == true &&
+      inputs.on-productive-branch == 'true'
+    outputs:
+      pipelineEnv: ${{ steps.pipelineEnv.outputs.pipelineEnv }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          submodules: ${{ inputs.checkout-submodules }}
+          lfs: ${{ inputs.checkout-lfs }}
+      - name: Setup Go for development builds
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+        if: ${{ startsWith(inputs.piper-version, 'devel' ) ||  startsWith(inputs.sap-piper-version, 'devel' ) }}
+        with:
+          go-version: '1.24'
+          check-latest: true
+      - name: Checkout global extension
+        if: |
+          inputs.extensibility-enabled == true &&
+          inputs.global-extensions-repository != ''
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.global-extensions-repository }}
+          ref: ${{ inputs.global-extensions-ref }}
+          path: .pipeline/tmp/global_extensions
+      # Requires "id-token: write" permissions, which is to be configured in the workflow that imports the GPP
+      - name: Retrieve System Trust session token
+        id: system_trust
+        uses: project-piper/system-trust-composite-action@fed8cfb7b9aa6918c315bc26561746a9da8125a6
+        with:
+          api-url: ${{ fromJson(inputs.pipeline-env)['custom/systemTrustURL'] }}
+          pipeline-id: ${{ inputs.vault-pipeline-name }}
+          pipeline-group-id: ${{ inputs.vault-base-path }}
+        continue-on-error: true
+      - name: preIntegration
+        if: inputs.extensibility-enabled == true
+        uses: project-piper/piper-pipeline-github/.github/workflows@main # invokes action.yml
+        with:
+          extension: preIntegration
+      - name: mavenExecuteIntegration
+        if: fromJSON(inputs.active-steps-map)[github.job]['mavenExecuteIntegration'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: mavenExecuteIntegration
+      - name: sapCumulusUpload
+        if: fromJSON(inputs.active-steps-map)[github.job]['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: '--filePattern **/TEST-*.xml --stepResultType integration-test'
+      - name: sapCumulusUpload
+        if: fromJSON(inputs.active-steps-map)[github.job]['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: '--filePattern **/requirement.mapping --stepResultType requirement-mapping'
+      - name: sapCumulusUpload
+        if: fromJSON(inputs.active-steps-map)[github.job]['sapCumulusUpload'] == true
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: sapCumulusUpload
+          flags: '--filePattern **/delivery.mapping --stepResultType delivery-mapping'
+      - name: postIntegration
+        if: inputs.extensibility-enabled == true
+        uses: project-piper/piper-pipeline-github/.github/workflows@main # invokes action.yml
+        with:
+          extension: postIntegration
+      - name: Export pipeline environment
+        uses: SAP/project-piper-action@v1.22
+        id: pipelineEnv
+        with:
+          step-name: ''
+          export-pipeline-environment: true

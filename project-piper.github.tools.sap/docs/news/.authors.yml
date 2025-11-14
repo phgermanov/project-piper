@@ -1,0 +1,65 @@
+authors:
+  team:
+    name: Piper
+    description: Development Team
+    avatar: images/piper_400_white.png
+  amandeep:
+    name: Amandeep Kaur
+    description: Product Owner
+    avatar: https://github.tools.sap/I065942.png
+    url: https://github.tools.sap/I065942
+  anil:
+    name: Anil Keshav
+    description: Team Architect
+    avatar: https://github.tools.sap/d068192.png
+    url: https://github.tools.sap/d068192
+  christopher:
+    name: Christopher Fenner
+    description: Developer
+    avatar: https://github.tools.sap/d065687.png
+    url: https://github.tools.sap/d065687
+  vyacheslav:
+    name: Vyacheslav Starostin
+    description: Developer
+    avatar: https://github.tools.sap/C5347299.png
+    url: https://github.tools.sap/C5347299
+  jordi:
+    name: Jordi van Liempt
+    description: Developer
+    avatar: https://github.tools.sap/I557621.png
+    url: https://github.tools.sap/I557621
+  philip:
+    name: Philip Germanov
+    description: Developer
+    avatar: https://github.tools.sap/C5386120.png
+    url: https://github.tools.sap/C5386120
+  gulomjon:
+    name: Gulomjon Alimov
+    description: Developer
+    avatar: https://github.tools.sap/C5368764.png
+    url: https://github.tools.sap/C5368764
+  ashly:
+    name: Ashly Mathew
+    description: Developer
+    avatar: https://github.tools.sap/I560834.png
+    url: https://github.tools.sap/I560834
+  max:
+    name: Maksim Bondarenko
+    description: Developer
+    avatar: https://github.tools.sap/C5387846.png
+    url: https://github.tools.sap/C5387846
+  oliver:
+    name: Oliver Nocon
+    description: Solution Manager
+    avatar: https://github.tools.sap/D032835.png
+    url: https://github.tools.sap/D032835
+  petko:
+    name: Petko Dimitrov
+    description: Developer
+    avatar: https://github.tools.sap/C5399877.png
+    url: https://github.tools.sap/C5399877
+  valentin:
+    name: Valentin Uchkunev
+    description: Developer
+    avatar: https://github.wdf.sap.corp/C5390782.png
+    url: https://github.wdf.sap.corp/C5390782

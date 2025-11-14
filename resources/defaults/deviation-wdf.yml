@@ -1,0 +1,77 @@
+steps:
+  artifactPrepareVersion:
+    maven:
+      customTlsCertificateLinks:
+        - https://aia.pki.co.sap.com/aia/SAPNetCA_G2_2.crt
+        - https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt
+    gradle:
+      customTlsCertificateLinks:
+        - https://aia.pki.co.sap.com/aia/SAPNetCA_G2_2.crt
+        - https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt
+    CAP:
+      customTlsCertificateLinks:
+        - https://aia.pki.co.sap.com/aia/SAPNetCA_G2_2.crt
+        - https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt
+  codeqlExecuteScan:
+    stashContent:
+      - 'buildDescriptor'
+      - 'tests'
+  fortifyExecuteScan:
+    spotCheckMinimum: 10
+    spotCheckMinimumUnit: 'percentage'
+    spotCheckMaximum: 10
+  golangBuild:
+    customTlsCertificateLinks:
+      - 'https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt'
+  executeOpenSourceDependencyScan:
+    buildDescriptorExcludeList: []
+    protecodeActive:
+      - dub
+      - docker
+      - golang
+    vulasActive:
+      - java
+      - maven
+      - mta
+      - pip
+    detectActive:
+      - java
+      - maven
+      - mta
+    whitesourceActive:
+      - golang
+    whitesourceActiveOld:
+      - dub
+      - mta
+      - npm
+      - yarn
+      - sbt
+  executePitTests:
+    dockerImage: 'maven:3.6-jdk-8'
+  sapCreateFosstarsReport:
+    customTlsCertificateLinks:
+      - 'https://aia.pki.co.sap.com/aia/SAPNetCA_G2_2.crt'
+      - 'https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt'
+  hadolintExecute:
+    customTlsCertificateLinks:
+      - https://aia.pki.co.sap.com/aia/SAPNetCA_G2_2.crt
+      - https://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt
+  handlePipelineStepErrors:
+    stepTimeouts:
+      checkmarxOneExecuteScan: 60
+  publishTestResults:
+    jmeter:
+      filterRegex: ''
+  # defaults for stage steps
+  sapPiperStagePRVoting:
+    globalSettingsFile: 'https://int.repositories.cloud.sap/artifactory/build-releases/settings.xml'
+    defaultNpmRegistry: 'https://int.repositories.cloud.sap/artifactory/api/npm/build-releases-npm'
+    maven:
+      dockerImage: 'maven:3.8.6-jdk-8'
+    npm:
+      dockerImage: 'node:lts-bookworm'
+
+stages:
+  'Central Build':
+    createBOM: true
+    publish: true

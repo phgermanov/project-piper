@@ -1,0 +1,5 @@
+project:
+  name: Piper Azure DevOps Task
+  tz: Europe/Berlin
+  adrFolder: ./docs/adr
+  packages: []

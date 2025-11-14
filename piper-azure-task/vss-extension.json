@@ -1,0 +1,71 @@
+{
+  "manifestVersion": 1,
+  "id": "piper-azure-task-dev",
+  "name": "SAP Piper library",
+  "version": "0.0.0",
+  "branding": {
+    "color": "rgb(117, 117, 117)",
+    "theme": "dark"
+  },
+  "publisher": "ProjectPiper",
+  "homepage": "https://www.project-piper.io",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Makes use of Project Piper to execute it's pipeline steps.",
+  "categories": ["Azure Pipelines"],
+  "tags": ["piper", "azure", "sap", "ci", "continuous integration"],
+  "icons": {},
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.tools.sap/project-piper/piper-azure-task"
+  },
+  "links": {
+    "home": {
+      "uri": "https://www.project-piper.io"
+    },
+    "repository": {
+      "uri": "https://github.tools.sap/project-piper/piper-azure-task"
+    },
+    "issues": {
+      "uri": "https://github.tools.sap/project-piper/piper-azure-task/issues"
+    }
+  },
+  "files": [
+    {
+      "path": "piper/dist/"
+    },
+    {
+      "path": "piper/node_modules/"
+    },
+    {
+      "path": "piper/package-lock.json"
+    },
+    {
+      "path": "piper/package.json"
+    },
+    {
+      "path": "piper/task.json"
+    },
+    {
+      "path": "piper/icon.png"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "piper-azure-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "piper"
+      }
+    }
+  ]
+}

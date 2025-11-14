@@ -1,0 +1,32 @@
+<footer class="md-footer" style="background-color: #00032A;">
+
+  <!-- Further information -->
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+
+      <!-- Copyright and theme information -->
+      <div class="md-copyright">
+        {% if config.copyright %}
+          <div class="md-footer-copyright__highlight">
+            {{ config.copyright }}
+          </div>
+        {% endif %}
+        {% if not config.extra.generator == false %}
+        Made with Material for MkDocs | Part of the
+          <a
+            href="https://url.sap/hyperspace"
+            target="_blank" rel="noopener"
+            style="color: #14CABB;"
+          >
+            Hyperspace
+          </a>
+          family &#10084
+        {% endif %}
+        {{ extracopyright }}
+      </div>
+
+      <!-- Social links -->
+      {% include "partials/social.html" %}
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,40 @@
+name: Piper workflow
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+
+jobs:
+  piper-init:
+    uses: project-piper/piper-pipeline-github/.github/workflows/init.yml@main
+    secrets: inherit
+  piper-build:
+    needs: piper-init
+    secrets: inherit
+    uses: project-piper/piper-pipeline-github/.github/workflows/build.yml@main
+    with:
+      on-productive-branch: ${{ needs.piper-init.outputs.on-productive-branch }}
+      active-stages-map: ${{ needs.piper-init.outputs.active-stages-map }}
+      active-steps-map: ${{ needs.piper-init.outputs.active-steps-map }}
+      pipeline-env: ${{ needs.piper-init.outputs.pipeline-env }}
+  custom-security:
+    runs-on: self-hosted
+    needs: piper-build
+    env:
+      PIPER_ACTION_GITHUB_TOOLS_TOKEN: ${{ github.token }}
+      PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+      PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+      PIPER_ACTION_PIPELINE_ENV: ${{ needs.piper-build.outputs.pipeline-env }}
+      PIPER_ACTION_PIPER_VERSION: 'latest'
+      PIPER_ACTION_SAP_PIPER_VERSION: 'latest'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        if: ${{ startsWith(inputs.piper-version, 'devel' ) ||  startsWith(inputs.sap-piper-version, 'devel' ) }}
+        with:
+          go-version: '1.24'
+          check-latest: true
+      - name: whitesourceExecuteScan
+        uses: project-piper/piper-github-action@main
+        with:
+          step-name: whitesourceExecuteScan

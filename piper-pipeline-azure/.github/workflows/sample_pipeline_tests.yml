@@ -1,0 +1,239 @@
+name: Sample pipeline tests
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  issue_comment:
+    types:
+      - created
+      - edited
+
+env:
+  # token needs to have write access to sample pipeline repos
+  GITHUB_TOKEN: ${{ secrets.GH_TOOLS_TOKEN }}
+
+jobs:
+  start:
+    name: Init PR check
+    if: github.event.comment.body == '/test'
+    runs-on: self-hosted
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+      pr_branch_name: ${{ steps.pr_branch_name.outputs.pr_branch_name }}
+    steps:
+      # when a workflow is triggered by a comment, it runs on the default branch, so we need to retrieve the branch name of this PR
+      # also see https://github.com/SAP/jenkins-library/blob/master/.github/workflows/integration-tests-pr.yml
+      - name: Get pull request URL
+        id: pull_request
+        run: |
+          echo "pull_request=$(curl -H 'Authorization: token ${{secrets.GITHUB_TOKEN}}' ${{ github.event.comment.issue_url }} |
+          jq '.pull_request.url' |
+          sed 's/\"//g')" >> "$GITHUB_OUTPUT"
+      - name: Get repository
+        id: repository
+        run: |
+          echo "repository=$(curl -H 'Authorization: token ${{secrets.GITHUB_TOKEN}}' ${{ steps.pull_request.outputs.pull_request }} |
+          jq '.head.repo.full_name' |
+          sed 's/\"//g')" >> "$GITHUB_OUTPUT"
+      - name: Get branch name
+        id: pr_branch_name
+        run: |
+          echo "pr_branch_name=$(curl -H 'Authorization: token ${{secrets.GITHUB_TOKEN}}' ${{ steps.pull_request.outputs.pull_request }} |
+          jq '.head.ref' |
+          sed 's/\"//g')" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.repository.outputs.repository }}
+          ref: ${{ steps.pr_branch_name.outputs.pr_branch_name }}
+      - name: Get commit SHA
+        id: sha
+        run: |
+          echo "sha=$(git log --format=%H -n 1)" >> "$GITHUB_OUTPUT"
+      - name: Update PR check status
+        run: |
+          curl \
+            --location \
+            --request POST 'https://github.tools.sap/api/v3/repos/project-piper/piper-pipeline-azure/statuses/${{ steps.sha.outputs.sha }}' \
+            -H 'Content-Type: application/json' \
+            --data '{"state": "pending",
+                    "context": "Run sample pipelines",
+                    "target_url": "https://github.tools.sap/project-piper/piper-pipeline-azure/actions/runs/${{ github.run_id }}"}' \
+            -H 'Authorization: token ${{secrets.GITHUB_TOKEN}}'
+  run_pipelines:
+    runs-on: self-hosted
+    name: Run sample pipelines
+    needs:
+      - start
+    env:
+      # pipeline names and orgs have to be space-separated strings and correspond with each other
+      PIPELINE_NAMES: >
+        azure-demo-k8s-node
+        azure-demo-k8s-go
+        hyper-dev-azure-cpath-java
+        hyper-dev-azure-cpath-node
+      PIPELINE_ORGS: >
+        project-piper
+        project-piper
+        hyper-dev-pipelines-azure
+        hyper-dev-pipelines-azure
+      BRANCH_NAME: ${{ format('gpp-{0}', github.run_id) }}
+      AZURE_TOKEN: ${{ secrets.AZURE_TOKEN }}
+
+    steps:
+      - name: Prepare test branches
+        run: |
+          # parse pipeline names into array
+          pipeline_names=($PIPELINE_NAMES)
+          pipeline_orgs=($PIPELINE_ORGS)
+
+          # setup for pushing
+          git config --global user.name 'piper'
+          git config --global user.email 'piper@github.tools.sap'
+
+          for (( i=0; i< ${#pipeline_names[@]}; i++ )); do
+            pipeline_name=${pipeline_names[i]}
+            pipeline_org=${pipeline_orgs[i]}
+
+            # clone sample pipeline and create new branch for this GPP PR
+            git clone https://piper:$GITHUB_TOKEN@github.tools.sap/$pipeline_org/$pipeline_name.git
+            cd $pipeline_name
+            git checkout -b $BRANCH_NAME
+
+            # set GPP branch to this PR and update productiveBranch
+            yq -i '.resources.repositories.0.ref = "${{ needs.start.outputs.pr_branch_name }}"' azure-pipelines.yml
+            yq -i '.general.productiveBranch = strenv(BRANCH_NAME)' .pipeline/config.yml
+
+            git add azure-pipelines.yml
+            git add .pipeline/config.yml
+            git commit -m "piper-pipeline-azure PR check"
+            git push --set-upstream origin $BRANCH_NAME
+
+            cd $PWD
+          done
+      - name: Trigger and poll sample pipelines
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            # parse pipeline names into array
+            pipeline_names=($PIPELINE_NAMES)
+            pipeline_orgs=($PIPELINE_ORGS)
+
+            # Log into ADO
+            az config set extension.use_dynamic_install=yes_without_prompt
+            echo logging into Azure DevOps using PAT from repository secret...
+            echo $AZURE_TOKEN | az devops login --org https://dev.azure.com/hyperspace-pipelines
+
+            # trigger sample pipelines and store their run IDs for status checking
+            run_ids=()
+            results=()
+            for (( i=0; i< ${#pipeline_names[@]}; i++ )); do
+                pipeline_name=${pipeline_names[i]}
+                pipeline_org=${pipeline_orgs[i]}
+                echo triggering pipeline "$pipeline_name" on branch "$BRANCH_NAME"...
+                run_id="$(az pipelines run --org https://dev.azure.com/hyperspace-pipelines --project "$pipeline_org" --name "$pipeline_name" --branch "$BRANCH_NAME" | jq '.id' | cat)"
+                pipeline_url=$(az pipelines runs show --org https://dev.azure.com/hyperspace-pipelines --project "$pipeline_org" --id $run_id | jq -r '.url' | cat)
+                echo triggered pipeline with ID: "$run_id" and URL: "$pipeline_url"
+                run_ids+=($run_id)
+                results+=("unfinished")
+            done
+
+            # poll all pipelines and return exit code 1 once one of them has failed
+            echo start polling pipeline statuses...
+            duration=1500 # 25 minutes
+            interval=60
+            for ((i = 0; i < duration; i+=interval));
+            do
+                sleep ${interval}
+
+                # poll
+                for (( i=0; i< ${#run_ids[@]}; i++ )); do
+                    pipeline_name=${pipeline_names[i]}
+                    pipeline_org=${pipeline_orgs[i]}
+                    run_id=${run_ids[i]}
+
+                    status=$(az pipelines runs show --org https://dev.azure.com/hyperspace-pipelines --project "$pipeline_org" --id $run_id | jq -r '.status' | cat)
+                    echo "$pipeline_name" status: "${status}"
+                    if [ "$status" = "completed" ];
+                    then
+                        result=$(az pipelines runs show --org https://dev.azure.com/hyperspace-pipelines --project "$pipeline_org" --id $run_id | jq -r '.result' | cat)
+                        echo "$pipeline_name" completed with result: "${result}"
+                        results[$i]=$result
+
+                        if [ "$result" != "succeeded" ];
+                        then
+                            exit 1
+                        fi
+                    fi
+                done
+
+                # if all pipelines have completed, stop polling
+                allPipelinesCompleted=true
+                for result in "${results[@]}"
+                do
+                  if [ "$result" != "succeeded" ]
+                  then
+                      allPipelinesCompleted=false
+                  fi
+                done
+
+                if [ "$allPipelinesCompleted" = true ]
+                  then
+                      break
+                fi
+            done
+
+            # in case a pipeline didn't finish within the max duration, one of the results will be "unfinished" and the step should fail
+            for result in "${results[@]}"
+            do
+                if [ "$result" != "succeeded" ]
+                then
+                    echo failed because result of one of the pipelines is "$result"
+                    exit 1
+                fi
+            done
+
+      - name: Delete test branches
+        if: always()
+        run: |
+          # parse pipeline names into array
+          pipeline_names=($PIPELINE_NAMES)
+
+          for pipeline_name in "${pipeline_names[@]}"
+          do
+            cd $pipeline_name
+            git push -d origin $BRANCH_NAME
+            cd $PWD
+          done
+
+  finish:
+    name: Update PR check status
+    if: always() && github.event.comment.body == '/test'
+    needs:
+      - start
+      - run_pipelines
+    runs-on: self-hosted
+    steps:
+      - name: Update PR check status
+        run: |
+          if [[ "${{ needs.run_pipelines.result }}" == "success" ]]
+          then
+            curl \
+              --location \
+              --request POST 'https://github.tools.sap/api/v3/repos/project-piper/piper-pipeline-azure/statuses/${{ needs.start.outputs.sha }}' \
+              -H 'Content-Type: application/json' \
+              --data '{"state": "success",
+                      "context": "Run sample pipelines",
+                      "target_url": "https://github.tools.sap/project-piper/piper-pipeline-azure/actions/runs/${{ github.run_id }}"}' \
+              -H 'Authorization: token ${{secrets.GITHUB_TOKEN}}'
+            exit 0
+          else
+            curl \
+              --location \
+              --request POST 'https://github.tools.sap/api/v3/repos/project-piper/piper-pipeline-azure/statuses/${{ needs.start.outputs.sha }}' \
+              -H 'Content-Type: application/json' \
+              --data '{"state": "failure",
+                      "context": "Run sample pipelines",
+                      "target_url": "https://github.tools.sap/project-piper/piper-pipeline-azure/actions/runs/${{ github.run_id }}"}' \
+              -H 'Authorization: token ${{secrets.GITHUB_TOKEN}}'
+            exit 1
+          fi

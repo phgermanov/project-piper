@@ -1,0 +1,41 @@
+name: CI
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  PIPER_ACTION_SAP_PIPER_OWNER: project-piper
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: sap-piper
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DEFAULT_NODE: '18'
+
+jobs:
+  build:
+    name: Defaults
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        orchestrator: ['azure', 'github', 'jenkins']
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Set up Node ${{ env.DEFAULT_NODE }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.DEFAULT_NODE }}
+      - name: 🏗 Install yarn dependencies
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install --frozen-lockfile
+      - name: 🚀 Build files
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: build:${{ matrix.orchestrator }}
+      - name: 🔎 Inspect differences
+        run: git diff --exit-code

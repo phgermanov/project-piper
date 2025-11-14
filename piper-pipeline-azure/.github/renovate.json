@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "azure-pipelines": {
+    "managerFilePatterns": [
+      "/sap-piper-pipeline\\.yml$/",
+      "/team-pipeline\\.yml$/",
+      "/stages/.*\\.yml$/"
+    ],
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "piper"
+      ],
+      "matchManagers": [
+        "azure-pipelines"
+      ],
+      "overrideDatasource": "github-releases",
+      "overridePackageName": "project-piper/piper-azure-task",
+      "registryUrls": [
+        "https://github.tools.sap"
+      ]
+    }
+  ],
+  "baseBranchPatterns": [
+    "main",
+    "test_renovate"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "name": "@sap/piper-azure-task",
+  "description": "Piper task for Azure DevOps",
+  "author": "SAP SE",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "clean": "rm -r dist/ reports/ || exit 0",
+    "version:update": "cat task.json | jq --argjson major \"$MAJOR\" '.version.Major=$major' | jq --argjson minor \"$MINOR\" '.version.Minor=$minor' | jq --argjson patch \"$PATCH\" '.version.Patch=$patch' | sponge task.json",
+    "task:set-dev-task-json": "cat task.json | jq '.name=$ENV.STEP_NAME' | jq '.id=$ENV.TASK_ID' | sponge task.json",
+    "build": "npm run clean && tsc",
+    "build:production": "npm run clean && tsc --project tsconfig.build.json",
+    "start": "node dist/index.js",
+    "build-set-start": "npm run build:production && INPUT_STEPNAME=kanikoExecute INPUT_PIPERVERSION=1.165.0 AGENT_TEMPDIRECTORY=./tmp AGENT_TOOLSDIRECTORY=./tools npm run start",
+    "lint": "eslint src/**/*.ts tests/**/*.ts",
+    "lint:ci": "eslint src/**/*.ts tests/**/*.ts --format json --output-file reports/eslint-report.json || exit 0",
+    "test": "npm run build && jest --preset ts-jest --coverage --coverageReporters=text-summary --detectOpenHandles",
+    "test:watch": "npm run build && jest --watch --preset ts-jest",
+    "test:cover": "npm run build && jest --watch --preset ts-jest --coverage --coverageReporters=text-summary",
+    "test:ci": "jest --ci --detectOpenHandles"
+  },
+  "dependencies": {
+    "@octokit/core": "4.2.4",
+    "@octokit/plugin-retry": "4.1.6",
+    "@octokit/rest": "19.0.13",
+    "azure-pipelines-task-lib": "^4.17.3",
+    "azure-pipelines-tool-lib": "^2.0.8",
+    "js-yaml": "4.1.0",
+    "uuid": "11.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.34.0",
+    "@types/jest": "30.0.0",
+    "@types/js-yaml": "4.0.9",
+    "@types/node": "^22.10.10",
+    "@types/uuid": "10.0.0",
+    "eslint": "9.34.0",
+    "jest": "30.1.3",
+    "jest-junit": "16.0.0",
+    "mock-os": "1.0.0",
+    "neostandard": "0.12.2",
+    "nock": "14.0.10",
+    "sponge": "0.1.0",
+    "ts-jest": "29.4.1",
+    "typescript": "5.7.3",
+    "typescript-eslint": "8.42.0"
+  },
+  "jest": {
+    "verbose": true,
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "reports",
+          "outputName": "unit-tests.xml"
+        }
+      ]
+    ],
+    "collectCoverage": true,
+    "coverageDirectory": "reports/",
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ],
+    "testPathIgnorePatterns": [
+      ".js"
+    ],
+    "preset": "ts-jest"
+  }
+}

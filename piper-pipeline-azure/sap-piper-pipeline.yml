@@ -1,0 +1,328 @@
+# sap-piper-pipeline.yml
+# entrypoint for general purpose pipeline on Azure DevOps
+
+# schedules: # -> https://docs.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml
+# -> needs to be defined in azure-pipelines.yml
+# Eg.,
+# - cron: 0 18 * * *
+#   displayName: Nightly Schedule
+#   branches:
+#     include:
+#     - main
+#     - master
+# triggers: # -> https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops
+parameters:
+  - name: piperVersion
+    type: string
+    default: "latest"
+  - name: sapPiperVersion
+    type: string
+    default: "latest"
+  - name: customDefaults
+    type: string
+    default: ""
+  - name: customStageConditions
+    type: string
+    default: ""
+  - name: checkoutSubmodule
+    type: boolean
+    default: false
+  - name: checkoutLFS
+    type: boolean
+    default: false
+  # extending build stage
+  - name: buildPreSteps
+    type: stepList
+    default: []
+  - name: buildPostSteps
+    type: stepList
+    default: []
+  - name: buildServiceContainers
+    type: object
+    default: {}
+  # extending acceptance stage
+  - name: skipAcceptanceStage
+    type: boolean
+    default: false
+  - name: acceptanceOverwriteSteps
+    type: stepList
+    default: []
+  - name: acceptancePreSteps
+    type: stepList
+    default: []
+  - name: acceptancePostSteps
+    type: stepList
+    default: []
+  - name: acceptanceServiceContainers
+    type: object
+    default: {}
+  # extending integration stage
+  - name: skipIntegrationStage
+    type: boolean
+    default: false
+  - name: integrationOverwriteSteps
+    type: stepList
+    default: []
+  - name: integrationPreSteps
+    type: stepList
+    default: []
+  - name: integrationPostSteps
+    type: stepList
+    default: []
+  - name: integrationServiceContainers
+    type: object
+    default: {}
+  # extending performance stage
+  - name: skipPerformanceStage
+    type: boolean
+    default: false
+  - name: performanceOverwriteSteps
+    type: stepList
+    default: []
+  - name: performancePreSteps
+    type: stepList
+    default: []
+  - name: performancePostSteps
+    type: stepList
+    default: []
+  - name: performanceServiceContainers
+    type: object
+    default: {}
+  # extending security stage
+  - name: SASTPreSteps
+    type: stepList
+    default: []
+  - name: SASTPostSteps
+    type: stepList
+    default: []
+  - name: OSSPreSteps
+    type: stepList
+    default: []
+  - name: OSSPostSteps
+    type: stepList
+    default: []
+  # extending ipscan-ppms stage
+  - name: ipScanPreSteps
+    type: stepList
+    default: []
+  - name: ipScanPostSteps
+    type: stepList
+    default: []
+  - name: PPMSPreSteps
+    type: stepList
+    default: []
+  - name: PPMSPostSteps
+    type: stepList
+    default: []
+  # extending release stage
+  - name: skipReleaseStage
+    type: boolean
+    default: false
+  - name: releaseOverwriteSteps
+    type: stepList
+    default: []
+  - name: releasePreSteps
+    type: stepList
+    default: []
+  - name: releasePostSteps
+    type: stepList
+    default: []
+  - name: manualConfirmationTimeoutMinutes
+    type: number
+    # 30 days
+    default: 43200
+  # extending post stage
+  - name: postPostSteps
+    type: stepList
+    default: []
+  - name: gitHubComConnectionName  # DEPRECATED. To be removed in the future with v2 of Piper task
+    type: string
+    default: ""
+  - name: gitHubToolsConnectionName
+    type: string
+    default: "github.tools.sap"
+  - name: selfHostedPool
+    type: string
+    default: "Self-hosted"
+  - name: msHostedPool
+    type: string
+    default: "Azure Pipelines"
+    values:
+      - "Azure Pipelines"
+  - name: poolVmImage
+    type: string
+    default: "ubuntu-latest"
+    values:
+      - "ubuntu-latest"
+  - name: resourceContainers
+    type: object
+    default: []
+  - name: disableCachingOnSelfHostedAgents
+    type: boolean
+    default: false
+  - name: disableCachingOnMSHostedAgents
+    type: boolean
+    default: false
+  # can be used for testing purposes to mimic scheduled pipelines
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+  - name: overrideBuildReason
+    type: string
+    default: ""
+  - name: dockerRegistryConnection
+    type: string
+    default: ""
+  # When a service connection to the Common Repository is available, the Sonar step will be configured to use this configured image
+  - name: sonarPrivateImage
+    type: string
+    default: "build-milestones.common.repositories.cloud.sap/com.sap.prd.sonar/sonar-scanner-cache:11.1.1-sap-01"
+
+variables:
+  - name: hyperspace.piper.version  # OS Piper version from: https://github.com/SAP/jenkins-library/releases
+    value: ${{ parameters.piperVersion }}
+  - name: hyperspace.sappiper.version # Inner-source Piper version from: https://github.tools.sap/project-piper/sap-piper/releases
+    value: ${{ parameters.sapPiperVersion }}
+  - name: hyperspace.sappiper.repository
+    value: sap-piper
+  - name: hyperspace.sappiper.owner
+    value: project-piper
+    # piper.pipeline.template.name is for internal use by Piper team only. If you've copied/forked this workflow, please remove this variable.
+    # this variable translates into environment variable `PIPER_PIPELINE_TEMPLATE_NAME` in the pipeline.
+  - name: piper.pipeline.template.name
+    value: hyperspace-piper-gpp
+  - name: hyperspace.piper.enforcedOSArch
+    value:
+  # Workaround for HTTP request timeout: https://jira.tools.sap/browse/DTXMAKE-5209
+  - name: AZURE_PIPELINES_DEDUP_PARALLELISM
+    value: 16
+  - name: VSO_DEDUP_REDIRECT_TIMEOUT_IN_SEC
+    value: 5
+
+resources:
+  containers: ${{ parameters.resourceContainers }}
+
+stages:
+  - template: /stages/init.yml
+    parameters:
+      customDefaults: ${{ parameters.customDefaults }}
+      customStageConditions: ${{ parameters.customStageConditions }}
+      checkoutSubmodule: ${{ parameters.checkoutSubmodule }}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnMSHostedAgents: ${{ parameters.disableCachingOnMSHostedAgents }}
+      overrideBuildReason: ${{ parameters.overrideBuildReason }}
+  - template: /stages/build.yml
+    parameters:
+      preSteps: ${{ parameters.buildPreSteps }}
+      postSteps: ${{ parameters.buildPostSteps }}
+      checkoutSubmodule: ${{ parameters.checkoutSubmodule }}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      serviceContainers: ${{ parameters.buildServiceContainers }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnMSHostedAgents: ${{ parameters.disableCachingOnMSHostedAgents }}
+      dockerRegistryConnection: ${{ parameters.dockerRegistryConnection }}
+      sonarPrivateImage: ${{ parameters.sonarPrivateImage }}
+  - template: /stages/security.yml
+    parameters:
+      preSASTSteps: ${{ parameters.SASTPreSteps }}
+      postSASTSteps: ${{ parameters.SASTPostSteps }}
+      preOSSSteps: ${{ parameters.OSSPreSteps }}
+      postOSSSteps: ${{ parameters.OSSPostSteps }}
+      checkoutSubmodule: ${{ parameters.checkoutSubmodule }}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnSelfHostedAgents: ${{ parameters.disableCachingOnSelfHostedAgents }}
+  - template: /stages/integration.yml
+    parameters:
+      skipStage: ${{ parameters.skipIntegrationStage }}
+      overwriteSteps: ${{ parameters.integrationOverwriteSteps }}
+      preSteps: ${{ parameters.integrationPreSteps }}
+      postSteps: ${{ parameters.integrationPostSteps }}
+      checkoutSubmodule: ${{ parameters.checkoutSubmodule }}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      serviceContainers: ${{ parameters.integrationServiceContainers }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnMSHostedAgents: ${{ parameters.disableCachingOnMSHostedAgents }}
+  - template: /stages/acceptance.yml
+    parameters:
+      skipStage: ${{ parameters.skipAcceptanceStage }}
+      overwriteSteps: ${{ parameters.acceptanceOverwriteSteps }}
+      preSteps: ${{ parameters.acceptancePreSteps }}
+      postSteps: ${{ parameters.acceptancePostSteps }}
+      checkoutSubmodule: ${{parameters.checkoutSubmodule}}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      serviceContainers: ${{ parameters.acceptanceServiceContainers }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnMSHostedAgents: ${{ parameters.disableCachingOnMSHostedAgents }}
+  - template: /stages/performance.yml
+    parameters:
+      skipStage: ${{ parameters.skipPerformanceStage }}
+      overwriteSteps: ${{ parameters.performanceOverwriteSteps }}
+      preSteps: ${{ parameters.performancePreSteps }}
+      postSteps: ${{ parameters.performancePostSteps }}
+      checkoutSubmodule: ${{parameters.checkoutSubmodule}}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      serviceContainers: ${{ parameters.performanceServiceContainers }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnSelfHostedAgents: ${{ parameters.disableCachingOnSelfHostedAgents }}
+  - template: /stages/ipscan-ppms.yml
+    parameters:
+      preIpScanSteps: ${{ parameters.ipScanPreSteps }}
+      postIpScanSteps: ${{ parameters.ipScanPostSteps }}
+      prePPMSSteps: ${{ parameters.PPMSPreSteps }}
+      postPPMSSteps: ${{ parameters.PPMSPostSteps }}
+      checkoutSubmodule: ${{parameters.checkoutSubmodule}}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnSelfHostedAgents: ${{ parameters.disableCachingOnSelfHostedAgents }}
+  - template: /stages/confirm.yml  # https://docs.microsoft.com/en-us/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#set-up-manual-validation
+    parameters:
+      manualConfirmationTimeoutMinutes: ${{parameters.manualConfirmationTimeoutMinutes}}
+  - template: /stages/promote.yml
+    parameters:
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnMSHostedAgents: ${{ parameters.disableCachingOnMSHostedAgents }}
+  - template: /stages/release.yml
+    parameters:
+      skipStage: ${{ parameters.skipReleaseStage }}
+      overwriteSteps: ${{ parameters.releaseOverwriteSteps }}
+      preSteps: ${{ parameters.releasePreSteps }}
+      postSteps: ${{ parameters.releasePostSteps }}
+      checkoutSubmodule: ${{parameters.checkoutSubmodule}}
+      checkoutLFS: ${{ parameters.checkoutLFS }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnMSHostedAgents: ${{ parameters.disableCachingOnMSHostedAgents }}
+  - template: /stages/post.yml
+    parameters:
+      postSteps: ${{ parameters.postPostSteps }}
+      gitHubToolsConnectionName: ${{ parameters.gitHubToolsConnectionName }}
+      msHostedPool: ${{ parameters.msHostedPool }}
+      selfHostedPool: ${{ parameters.selfHostedPool }}
+      poolVmImage: ${{ parameters.poolVmImage }}
+      disableCachingOnSelfHostedAgents: ${{ parameters.disableCachingOnSelfHostedAgents }}
