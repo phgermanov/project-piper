@@ -26,6 +26,8 @@ This command generates static content into the `build` directory and can be serv
 
 ## Deployment
 
+### GitHub Pages
+
 Using SSH:
 
 ```bash
@@ -39,3 +41,33 @@ GIT_USER=<Your GitHub username> yarn deploy
 ```
 
 If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+
+### Coolify / Docker Deployment
+
+This documentation site can be deployed to Coolify with built-in authentication:
+
+1. **See [COOLIFY_DEPLOYMENT.md](./COOLIFY_DEPLOYMENT.md)** for complete deployment instructions
+2. **Quick start with Docker**:
+
+```bash
+# Build the image
+docker build -t project-piper-docs .
+
+# Run locally
+docker run -p 8080:80 project-piper-docs
+
+# Or use docker-compose
+docker-compose up
+```
+
+3. **Setup authentication**:
+
+```bash
+# Create .htpasswd file for authentication
+./create-auth.sh
+```
+
+Access at: `http://localhost:8080`
+Default credentials: `admin` / `changeme` (change for production!)
+
+For detailed Coolify setup instructions, custom authentication, and production deployment, see [COOLIFY_DEPLOYMENT.md](./COOLIFY_DEPLOYMENT.md).

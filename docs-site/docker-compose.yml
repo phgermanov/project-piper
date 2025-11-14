@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: project-piper-docs
+    ports:
+      - "8080:80"
+    environment:
+      # These can be overridden in Coolify
+      - NGINX_HOST=localhost
+    volumes:
+      # Mount custom .htpasswd file if you want to use different credentials
+      # Create with: htpasswd -c .htpasswd username
+      - ./.htpasswd:/etc/nginx/auth/.htpasswd:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - docs-network
+
+networks:
+  docs-network:
+    driver: bridge
