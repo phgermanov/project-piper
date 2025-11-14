@@ -12,9 +12,10 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://phgermanov.github.io',
-  // For GitHub pages deployment
-  baseUrl: '/project-piper/',
+  // Use environment variable for flexibility (Coolify vs GitHub Pages)
+  url: process.env.DOCUSAURUS_URL || 'https://phgermanov.github.io',
+  // For GitHub pages deployment, use /project-piper/, for Coolify use /
+  baseUrl: process.env.DOCUSAURUS_BASE_URL || '/project-piper/',
 
   // GitHub pages deployment config
   organizationName: 'phgermanov',
