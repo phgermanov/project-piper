@@ -4,9 +4,7 @@ Secure handling of credentials and secrets is critical for CI/CD pipelines. This
 
 ## Table of Contents
 
-- [Credentials Management](#credentials-management)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [Overview](#overview)
   - [HashiCorp Vault Integration](#hashicorp-vault-integration)
     - [Vault Setup](#vault-setup)
     - [Authentication Methods](#authentication-methods)

@@ -4,9 +4,7 @@ Project Piper supports multiple CI/CD platforms with platform-specific configura
 
 ## Table of Contents
 
-- [Platform Deviations](#platform-deviations)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [Overview](#overview)
   - [Platform Comparison](#platform-comparison)
   - [Jenkins Configuration](#jenkins-configuration)
     - [Basic Setup](#basic-setup)

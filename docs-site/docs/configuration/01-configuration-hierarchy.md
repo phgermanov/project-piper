@@ -4,9 +4,7 @@ Project Piper uses a sophisticated 7-level hierarchical configuration system tha
 
 ## Table of Contents
 
-- [Configuration Hierarchy](#configuration-hierarchy)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [Overview](#overview)
   - [The 7 Configuration Levels](#the-7-configuration-levels)
     - [Level 1: Default Configuration (Lowest Precedence)](#level-1-default-configuration-lowest-precedence)
     - [Level 2: Custom Default Configuration](#level-2-custom-default-configuration)

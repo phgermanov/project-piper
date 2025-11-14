@@ -4,9 +4,7 @@ This guide provides detailed examples of configuring individual pipeline steps i
 
 ## Table of Contents
 
-- [Step Configuration](#step-configuration)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [Overview](#overview)
   - [Build Steps](#build-steps)
     - [Maven Build](#maven-build)
     - [NPM Build](#npm-build)

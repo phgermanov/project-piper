@@ -414,25 +414,26 @@ View execution in **Actions** tab.
 
 ### Documentation
 
-- [Extensibility Guide](../piper-pipeline-github/docs/extensibility.md)
-- [Architecture Decisions](../piper-pipeline-github/docs/adr/)
-- [Project Piper Action](https://github.com/SAP/project-piper-action)
-- [Piper Steps Reference](https://www.project-piper.io/steps/)
+- [Extensibility Guide](../guides/extensibility) - How to extend pipelines
+- [Project Piper Action](https://github.com/SAP/project-piper-action) - GitHub Action repository
+- [Piper Steps Reference](https://www.project-piper.io/steps/) - Complete step documentation
 
 ### Stage-Specific Documentation
 
-- [01-init-stage.md](01-init-stage.md) - Init configuration
-- [02-build-stage.md](02-build-stage.md) - Build steps and technologies
-- [03-test-stages.md](03-test-stages.md) - Testing stages
-- [04-promote-release-stages.md](04-promote-release-stages.md) - Promotion and release
-- [05-security-compliance.md](05-security-compliance.md) - Security and compliance
-- [06-extensibility.md](06-extensibility.md) - Advanced extensibility
-- [07-troubleshooting.md](07-troubleshooting.md) - Common issues
+- [Init Stage](init-stage) - Pipeline initialization
+- [Build Stage](build-stage) - Build steps and technologies
+- [Integration Stage](integration-stage) - Integration testing
+- [Acceptance Stage](acceptance-stage) - Acceptance testing
+- [Performance Stage](performance-stage) - Performance testing
+- [Promote Stage](promote-stage) - Artifact promotion
+- [Release Stage](release-stage) - Production deployment
+- [Post Stage](post-stage) - Post-processing
+- [OSS & PPMS Stages](oss-ppms-stages) - Security and compliance
 
 ### Examples
 
-- [gha-demo-k8s-node](../gha-demo-k8s-node/) - Node.js + Kubernetes example
-- [Custom Workflows](../piper-pipeline-github/examples/) - Customization patterns
+- [Node.js Example](https://github.com/SAP/project-piper/tree/master/gha-demo-k8s-node) - Node.js + Kubernetes
+- [Go Example](https://github.com/SAP/project-piper/tree/master/piper-simple-go) - Simple Go application
 
 ### Key Differences
 

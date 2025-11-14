@@ -4,9 +4,7 @@ Pipeline stages in Project Piper represent major phases of your CI/CD workflow. 
 
 ## Table of Contents
 
-- [Stage Configuration](#stage-configuration)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [Overview](#overview)
   - [Available Stages](#available-stages)
   - [Stage Configuration Basics](#stage-configuration-basics)
     - [Basic Structure](#basic-structure)

@@ -4,9 +4,7 @@ Project Piper provides a flexible, hierarchical configuration system that allows
 
 ## Table of Contents
 
-- [Configuration System Overview](#configuration-system-overview)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
+- [Introduction](#introduction)
   - [Configuration Files](#configuration-files)
     - [Primary Configuration File](#primary-configuration-file)
     - [Default Configuration](#default-configuration)
