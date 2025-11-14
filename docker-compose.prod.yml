@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DOCUSAURUS_URL: https://piper.phgermanov.com
+        DOCUSAURUS_BASE_URL: /
+    container_name: piper-docs
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.piper-docs.rule=Host(`piper.phgermanov.com`)"
+      - "traefik.http.routers.piper-docs.entrypoints=websecure"
+      - "traefik.http.routers.piper-docs.tls.certresolver=letsencrypt"
+      - "traefik.http.services.piper-docs.loadbalancer.server.port=80"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
