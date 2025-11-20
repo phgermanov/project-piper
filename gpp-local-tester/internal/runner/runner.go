@@ -167,12 +167,6 @@ func (r *Runner) Run(ctx context.Context, workflow string) error {
 		projectPath = filepath.Join(".", projectPath)
 	}
 
-	// Get absolute path to project root for bind mount
-	absProjectRoot, err := filepath.Abs(".")
-	if err != nil {
-		return fmt.Errorf("failed to get absolute path: %w", err)
-	}
-
 	// Build act command
 	// Note: Volume mounting for local Piper binary needs to be handled differently
 	// Act doesn't support direct volume mounting like Docker CLI
