@@ -14,16 +14,16 @@ import (
 )
 
 type StageOutputs struct {
-	ActiveStagesMap          map[string]bool            `json:"activeStagesMap"`
-	ActiveStepsMap           map[string]map[string]bool `json:"activeStepsMap"`
-	OnProductiveBranch       string                     `json:"onProductiveBranch"`
-	PipelineOptimization     string                     `json:"pipelineOptimization"`
-	IsOptimizedAndScheduled  string                     `json:"isOptimizedAndScheduled"`
-	GlobalExtensionsRepo     string                     `json:"globalExtensionsRepository"`
-	GlobalExtensionsRef      string                     `json:"globalExtensionsRef"`
-	VaultBasePath            string                     `json:"vaultBasePath"`
-	VaultPipelineName        string                     `json:"vaultPipelineName"`
-	PipelineEnv              string                     `json:"pipelineEnv"`
+	ActiveStagesMap         map[string]bool            `json:"activeStagesMap"`
+	ActiveStepsMap          map[string]map[string]bool `json:"activeStepsMap"`
+	OnProductiveBranch      string                     `json:"onProductiveBranch"`
+	PipelineOptimization    string                     `json:"pipelineOptimization"`
+	IsOptimizedAndScheduled string                     `json:"isOptimizedAndScheduled"`
+	GlobalExtensionsRepo    string                     `json:"globalExtensionsRepository"`
+	GlobalExtensionsRef     string                     `json:"globalExtensionsRef"`
+	VaultBasePath           string                     `json:"vaultBasePath"`
+	VaultPipelineName       string                     `json:"vaultPipelineName"`
+	PipelineEnv             string                     `json:"pipelineEnv"`
 }
 
 type Orchestrator struct {
@@ -46,7 +46,6 @@ func New(cfg *config.Config) *Orchestrator {
 // RunStagesSequentially runs each stage workflow in sequence
 func (o *Orchestrator) RunStagesSequentially(ctx context.Context) error {
 	green := color.New(color.FgGreen).SprintFunc()
-	blue := color.New(color.FgBlue).SprintFunc()
 	yellow := color.New(color.FgYellow).SprintFunc()
 
 	// Stage execution order
