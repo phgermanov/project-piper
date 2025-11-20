@@ -58,6 +58,7 @@ act:
   flags:
     - "--verbose"
     - "--artifact-server-path=/tmp/artifacts"
+    - "--pull=false"  # Use local images instead of force pulling
 
   # Environment variables to inject
   env:
