@@ -11,6 +11,7 @@ import (
 	"github.com/project-piper/gpp-local-tester/internal/builder"
 	"github.com/project-piper/gpp-local-tester/internal/config"
 	"github.com/project-piper/gpp-local-tester/internal/mock"
+	"github.com/project-piper/gpp-local-tester/internal/orchestrator"
 	"github.com/project-piper/gpp-local-tester/internal/runner"
 	"github.com/spf13/cobra"
 )
@@ -18,6 +19,7 @@ import (
 var (
 	skipBuild      bool
 	skipMockServer bool
+	sequential     bool
 	workflow       string
 )
 
@@ -32,6 +34,7 @@ func init() {
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().BoolVar(&skipBuild, "skip-build", false, "Skip building Piper binary")
 	runCmd.Flags().BoolVar(&skipMockServer, "skip-mock", false, "Skip starting mock server")
+	runCmd.Flags().BoolVar(&sequential, "sequential", true, "Run stages sequentially (workaround for act limitation)")
 	runCmd.Flags().StringVarP(&workflow, "workflow", "w", "", "Workflow file to run (relative to example project)")
 }
 
@@ -118,14 +121,26 @@ func runPipeline(cmd *cobra.Command, args []string) error {
 
 	// Run act
 	printHeader("Running GPP Pipeline with Act")
-	workflowPath := workflow
-	if workflowPath == "" {
-		workflowPath = cfg.ExampleProject.WorkflowFile
-	}
 
-	if err := r.Run(ctx, workflowPath); err != nil {
-		fmt.Printf("\n%s Pipeline failed\n", red("✗"))
-		return err
+	if sequential {
+		// Run stages sequentially (workaround for act's limitation with multiple reusable workflows)
+		fmt.Printf("%s Running stages sequentially to work around act limitation\n\n", blue("ℹ"))
+		orch := orchestrator.New(cfg)
+		if err := orch.RunStagesSequentially(ctx); err != nil {
+			fmt.Printf("\n%s Pipeline failed\n", red("✗"))
+			return err
+		}
+	} else {
+		// Run the main workflow (may fail with act's reusable workflow limitation)
+		workflowPath := workflow
+		if workflowPath == "" {
+			workflowPath = cfg.ExampleProject.WorkflowFile
+		}
+
+		if err := r.Run(ctx, workflowPath); err != nil {
+			fmt.Printf("\n%s Pipeline failed\n", red("✗"))
+			return err
+		}
 	}
 
 	fmt.Printf("\n%s Pipeline completed successfully!\n\n", green("✓"))
