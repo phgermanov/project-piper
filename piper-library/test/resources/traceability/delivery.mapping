@@ -1,0 +1,13 @@
+{
+	"sirius_program": "My sirius program name",
+	"sirius_delivery": "My sirius delivery name",
+	"jira_keys": [
+      "JENKINSBCKLG-3",
+      "JENKINSBCKLG-4",
+      "JENKINSBCKLG-7"
+    ],
+    "github_keys": [
+       "org/repo#3",
+       "org/repo#5"
+    ]
+}

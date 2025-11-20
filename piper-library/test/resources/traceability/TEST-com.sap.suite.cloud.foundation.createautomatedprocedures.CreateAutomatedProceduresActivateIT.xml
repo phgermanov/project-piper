@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" name="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="3.65" tests="12" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="17"/>
+    <property name="sun.jnu.encoding" value="ANSI_X3.4-1968"/>
+    <property name="java.vm.vendor" value="SAP SE"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://sapmachine.io/"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/sapmachine-17/lib"/>
+    <property name="java.vm.version" value="17.0.5+8-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+  <testcase name="activationFailsWhenGenerationStatusAlreadyActive" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.281"/>
+  <testcase name="activationFailsIfNotAuthorized" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.355"/>
+  <testcase name="activatingFailsIfGenerationStatusInProcess" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.226"/>
+  <testcase name="activationFailsIfMetadataFailed" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.315"/>
+  <testcase name="activationFailsWithNoJwt" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.282"/>
+  <testcase name="activatingFailsAndGenerationStatusFailed" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.391"/>
+  <testcase name="procedureCanBeActivated{CreationOrigin}[1]" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.172"/>
+  <testcase name="procedureCanBeActivated{CreationOrigin}[2]" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.11"/>
+  <testcase name="procedureCanBeActivated{CreationOrigin}[3]" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.233"/>
+  <testcase name="activationStoresMetadata" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.222"/>
+  <testcase name="activationFailsWhenMetadataStatusIsRequested" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.398"/>
+  <testcase name="publishErrorSetsPostProcessingStatusToRetry" classname="com.sap.suite.cloud.foundation.createautomatedprocedures.CreateAutomatedProceduresActivateIT" time="0.338"/>
+</testsuite>

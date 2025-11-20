@@ -1,0 +1,52 @@
+metadata:
+  name: sapURLScan
+  description: Analyse given proxy log file to detect insecure URLs.
+  longDescription: |-
+    Scan log file provided by proxy or any other component and discover insecure URLs like http://.
+
+    You can specify path to the log fie and also insecure URL patterns.
+    As a result you will get a report file with all insecure URLs found.
+
+    Insecure URL patterns are specified via 'insecureUrlPatterns' parameter which defines a list of
+    regular expressions to match with discovered URLs in the log file. The syntax of the regular
+    expression accepted is the same general syntax used by Perl, Python, and other languages.
+    More precisely, it is the syntax accepted by RE2 and described at https://golang.org/s/re2syntax.
+
+    One example of the usage of sapURLScan step is to analyse proxy.log file provided by xMake
+    in docker build scenario. Please read more details about xMake configuration for URL Monitoring
+    at https://github.wdf.sap.corp/pages/xmake-ci/User-Guide/Setting_up_a_Build/Build_Plugins/Docker_Build_Plugin/About_Docker_Build_Plugin/#url-monitoring.
+spec:
+  inputs:
+    params:
+      - name: insecureUrlPatterns
+        type: "[]string"
+        description: List of insecure URL patterns
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: [".*http://.*", ".*:8080[^0-9].*", ".*:80[^0-9].*"]
+      - name: proxyLogFile
+        type: string
+        description: Log file to scan
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "proxy.log"
+      - name: reportLogFile
+        type: string
+        description: Output report
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "URLScanReport.log"
+  outputs:
+    resources:
+      - name: influx
+        type: influx
+        params:
+          - name: step_data
+            fields:
+              - name: url

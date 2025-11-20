@@ -1,0 +1,177 @@
+metadata:
+  name: sapGithubWriteDeployment
+  description: Create or update GitHub deployment status
+  longDescription: |
+      Create a new deployment in GitHub or update the status of an existing deployment.
+
+      This step supports three modes:
+
+      1. **Create a new deployment**
+         Set `createNew: true` to create a new deployment. The newly created deployment ID
+         will be stored in the pipeline environment at `git/github_deploymentId` for use in later steps.
+
+      2. **Create a new deployment and set its initial status**
+         Set `createNew: true` and provide a `status` value. This will create the deployment and
+         immediately set a deployment status to track the deployment progress.
+
+      3. **Update the status of an existing deployment**
+         Provide an existing `deploymentID` (for example from `git/github_deploymentId`) along with a `status`.
+         This mode does not create a new deployment; it only creates a new deployment status entry.
+
+      **Deployment Status Values:**
+
+      The most commonly used deployment statuses are:
+      - `in_progress` - Indicates the deployment is currently running
+      - `success` - Indicates the deployment completed successfully
+      - `failure` - Indicates the deployment failed
+
+      Additional valid status values include:
+      - `pending` - Deployment is waiting to start
+      - `queued` - Deployment is queued for execution
+      - `error` - An error occurred during deployment
+      - `inactive` - Deployment is inactive (appears as "destroyed" in GitHub UI)
+
+      Choose the appropriate status based on your deployment lifecycle. Use `in_progress` when starting a deployment,
+      `success` when the deployment completes successfully, and `failure` when issues occur.
+
+      All modes require a valid GitHub token with permissions to create deployments and statuses in the target repository.
+
+      For more details on GitHub deployments, see the
+      [GitHub REST API documentation](https://docs.github.com/en/rest/deployments/deployments?apiVersion=2022-11-28#about-deployments).
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        description: Jenkins 'Secret text' credentials ID containing token to authenticate to GitHub.
+        type: jenkins
+    params:
+      - name: status
+        description: "Deployment status to set. Common values: 'in_progress' (deployment running), 'success' (deployment completed), 'failure' (deployment failed). Additional valid values: 'pending', 'queued', 'error', 'inactive'."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: false
+      - name: createNew
+        description: "If 'true', creates a new deployment instead of updating the status of an existing one"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: bool
+        default: false
+      - name: environment
+        description: "Environment name for the deployment (e.g., 'production', 'staging', 'development'). See GitHub API documentation for details."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: false
+      - name: apiUrl
+        aliases:
+          - name: githubApiUrl
+        description: "GitHub API URL. Use `https://github.tools.sap/api/v3` for GitHub Enterprise or `https://api.github.com` for public GitHub. Specify the appropriate URL based on your repository location."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: https://github.tools.sap/api/v3
+        mandatory: true
+      - name: isProduction
+        description: "Indicates whether this is a production environment deployment. This affects how GitHub displays the deployment."
+        type: bool
+        mandatory: false
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: deploymentID
+        description: "Deployment ID for updating the status of an existing deployment. Automatically retrieved from pipeline environment if available."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/github_deploymentId
+        mandatory: false
+      - name: githubApiTimeout
+        description: "HTTP timeout for GitHub API calls in seconds"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: int
+        default: 30
+      - name: comitish
+        description: "Target git commit, branch, or tag for the deployment"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: "master"
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/headCommitId
+      - name: owner
+        aliases:
+          - name: githubOrg
+        description: "GitHub organization or user name that owns the repository"
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/organization
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: true
+      - name: repository
+        aliases:
+          - name: githubRepo
+        description: "GitHub repository name"
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/repository
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: true
+      - name: token
+        aliases:
+          - name: githubToken
+          - name: access_token
+        description: "GitHub personal access token with 'repo_deployment' scope (recommended) or 'repo' scope for deployment management. For fine-grained tokens, requires 'Deployments' repository permissions (write)."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: true
+        secret: true
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubVaultSecretName
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: git/github_deploymentId

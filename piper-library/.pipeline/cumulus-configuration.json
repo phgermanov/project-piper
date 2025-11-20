@@ -1,0 +1,8 @@
+{
+  "productStandardsToCheck": [
+    "FC-1",
+    "FC-2",
+    "FC-3",
+    "SLC-25"
+  ]
+}

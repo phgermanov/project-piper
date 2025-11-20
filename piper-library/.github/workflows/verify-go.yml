@@ -1,0 +1,115 @@
+name: Go
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  DEFAULT_GOLANG: '1.24.0'
+
+jobs:
+  test:
+    name: Test
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: 🏗 Cache Golang packages
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-format${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-format
+            ${{ runner.os }}-golang-
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🚀 Run tests
+        #run: go run gotest.tools/gotestsum@latest -- -cover ./...
+        run: go run gotest.tools/gotestsum@latest -- -cover -tags=unit  ./...
+  format:
+    name: Format
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: 🏗 Cache Golang packages
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-format${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-format
+            ${{ runner.os }}-golang-
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🚀 Run formatter
+        run: go fmt ./...
+      - name: 🔎 Inspect differences
+        run: git diff --exit-code
+  generate:
+    name: Code Generation
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: 🏗 Cache Golang packages
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-generate${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-generate
+            ${{ runner.os }}-golang-
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🚀 Generate step code
+        run: go run pkg/generator/step-metadata.go
+      - name: 🔎 Inspect differences
+        run: git diff --exit-code
+  dependencies:
+    name: Dependencies
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Set up Golang ${{ env.DEFAULT_GOLANG }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.DEFAULT_GOLANG }}
+      - name: 🏗 Cache Golang packages
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-dependencies${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-dependencies
+            ${{ runner.os }}-golang-
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🚀 Run dependency cleanup
+        run: go mod tidy
+      - name: 🔎 Inspect differences
+        run: git diff --exit-code
+  codespell:
+    name: Codespell
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Install Codespell
+        run: pip install codespell==2.4.1
+      - name: 🚀 Check code for common misspellings
+        run: |
+          shopt -s globstar
+          /home/runner/.local/bin/codespell \
+            --count \
+            ./**/*.go

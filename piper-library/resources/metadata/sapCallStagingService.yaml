@@ -1,0 +1,357 @@
+metadata:
+  name: sapCallStagingService
+  description: This step is related to staging service.
+  errors:
+    - pattern: "request to .*/stage/api/login returned with response 404 Not Found"
+      message: "Staging service login endpoint not found (404). Check if the staging service URL is correct and the service is available."
+      category: "service_unavailable"
+  longDescription: |-
+   With this step you can use the general functionalities of [staging service](https://github.wdf.sap.corp/pages/Repository-services/staging-service/).
+
+   With the parameter `action` you can choose between following tasks:
+
+   - createGroup : Specifying this option, the step will create a staging group. You must specify `profile` parameter.
+   - createRepository: This action will create a repository. You must specify `outputFile` where this step will store the repository info and pass `groupIdFile` name where groupId was stored.
+   - updateGroupMetadata: This action will update group metadata. You must specify `metadata` and `groupIdFile`.
+   - close: This action will close the staging group. You must specify `groupIdFile`.
+   - promote: This action will promote your group. You must specify `groupIdFile`.
+   - getRepositoryCredentials: This action will get repository credentials and store them in a file. You must specify `repositoryId` and `groupIdFile`.
+   - getGroupBom: This action will get group bom and store it in a file. You must specify `groupIdFile` and `outputFile`.
+   - getRepositoryBom: This action will get repository bom and store it in a file. You must specify `repositoryId`, `groupIdFile` and `outputFile`.
+   - getGroupMetadata: This action will get the metadata for a group. You must specify `groupIdFile` and `outputFile`.
+   - getRepositoryMetadata: This action will get the metadata for a repository. You must specify `repositoryId`, `groupIdFile` and `outputFile`.
+   - updateRepositoryMetadata: This action will update the metadata for specific repository. You must specify `repositoryId`, `groupIdFile` and `metadata`.
+   - searchGroupMetadata: This action will search inside the group's metadata. You must specify `outputFile`, `groupIdFile`, `query` and if you want state of group.
+   - signGroup: This action will sign a group. You must specify `groupIdFile`.
+
+   To use this step you must pass `username`, `password`, `tenantId`, `tenantSecret` for authentication to the staging service. **Remark: this is typically done via Jenkins credentials or credentials retrieved from [Vault](https://vault.tools.sap/).
+   You must also pass the url for the staging api.
+spec:
+  inputs:
+    secrets:
+      - name: dockerConfigJsonCredentialsId
+        description: Jenkins 'Secret file' credentials ID containing Docker config.json (with registry credential(s)). You can create it like explained in the Docker Success Center in the article about [how to generate a new auth in the config.json file](https://success.docker.com/article/generate-new-auth-in-config-json-file).
+        type: jenkins
+      - name: stagingTenantCredentialsId
+        description: Jenkins 'Username with password' credentials ID containing tenantId and secret for authentication to staging service
+        type: jenkins
+      - name: stagingUserCredentialsId
+        description: Jenkins 'Username with password' credentials ID containing username and password for authentication to staging service
+        type: jenkins
+    params:
+      - name: action
+        type: string
+        description: You can choose what this step to do for you.You can choose between createGroup,createRepository,close,promote,updateGroupMetadata,getRepositoryCredentials and getRepositoryBom.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - createGroup
+          - createRepository
+          - createRepositories
+          - updateGroupMetadata
+          - close
+          - promote
+          - getRepositoryCredentials
+          - getRepositoryBom
+          - getGroupMetadata
+          - getRepositoryMetadata
+          - updateRepositoryMetadata
+          - searchGroupMetadata
+          - getGroupBom
+          - signGroup
+      - name: dockerConfigJSON
+        type: string
+        description: Path to the file `.docker/config.json` - this is typically provided by your CI/CD system. You can find more details about the Docker credentials in the [Docker documentation](https://docs.docker.com/engine/reference/commandline/login/).
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: dockerConfigJsonCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            default: docker-config
+            name: dockerConfigJsonCredentialsVaultSecretName
+      - name: username
+        type: string
+        description: This username in combination with password and tenant credentials authenticates you in staging service.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: stagingUserCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            default: staging-service
+            name: stagingUserCredentialsVaultSecretName
+      - name: password
+        type: string
+        description: This password in combination with username and tenant credentials authenticates you in staging service.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: stagingUserCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            default: staging-service
+            name: stagingUserCredentialsVaultSecretName
+      - name: tenantId
+        type: string
+        description: This tenantId in combination with username,password and tenantSecret authenticates you in staging service.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: stagingTenantCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            default: staging-service
+            name: stagingTenantCredentialsVaultSecretName
+      - name: tenantSecret
+        type: string
+        description: This tenantSecret in combination with username,password and tenantId authenticates you in staging service.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: stagingTenantCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            default: staging-service
+            name: stagingTenantCredentialsVaultSecretName
+      - name: timeout
+        type: int
+        description: "Timeout in seconds until an HTTP call is forcefully terminated."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: 900
+      - name: profile
+        type: string
+        description: Staging profile for working flow
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: metadata
+        type: string
+        description: Metadata that will be set
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: url
+        type: string
+        description: Url for staging service api
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: http://nexus.wdf.sap.corp:8443/stage
+      - name: outputFile
+        type: string
+        description: Name of file that will be created and used for storing new info.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: staging_output_deprecated.json
+      - name: repositoryId
+        type: string
+        description: Name of repository for which we want to get the credentials.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/stagingRepositoryId
+      - name: mavenBuildArtifacts
+        type: string
+        description: Build coordinates from maven build step, provided from pipeline environment and it's used by PPMS through [pipeline events](https://go.sap.corp/piper/news/2024/06/10/pipeline-events-for-cumulus/).
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/mavenBuildArtifacts
+      - name: npmBuildArtifacts
+        type: string
+        description: Build coordinates from npmExecuteScripts step, provided from pipeline environment and it's used by PPMS through [pipeline events](https://go.sap.corp/piper/news/2024/06/10/pipeline-events-for-cumulus/).
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/npmBuildArtifacts
+      - name: mtaBuildArtifacts
+        type: string
+        description: Build coordinates from mtaBuild step, provided from pipeline environment and it's used by PPMS through [pipeline events](https://go.sap.corp/piper/news/2024/06/10/pipeline-events-for-cumulus/).
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/mtaBuildArtifacts
+      - name: groupId
+        type: string
+        description: Defines the id of the staging service group.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/stagingGroupId
+      - name: repositoryFormat
+        type: string
+        description: Repository format example:docker,maven,npm
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: repositoryFormats
+        type: "[]string"
+        description: List of repository types to be created.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - docker
+          - helm
+          - maven
+          - npm
+          - pypi
+          - raw
+      - name: groupIdFile
+        type: string
+        description: "**Deprecated**: Path to the file that stores the staging groupId. Please use `groupId` instead."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: query
+        type: string
+        description: Query parameter to search in metadata
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: state
+        type: string
+        description: State of group
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: buildTool
+        type: string
+        description: Defines the tool which is used for building the artifact.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - golang
+          - gradle
+          - helm
+          - maven
+          - mta
+          - npm
+          - pip
+          - docker
+          - CAP
+      - name: artifactPattern
+        description: "Defines a pattern (glob style) to select the artifact(s) exported to the pipeline environment (e.g. '{*.war,*.zip}', '*.jar')."
+        type: string
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: commitId
+        type: string
+        description: CommitId of the current build. If a tag is build in artifactPrepareVersion step then this is tag commit id.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/commitId
+      - name: headCommitId
+        type: string
+        description: CommitId of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/headCommitId
+      - name: gitURL
+        type: string
+        description: Git URL of the repository.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/url
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: container/registryUrl
+          - name: container/repositoryUsername
+          - name: container/repositoryPassword
+          - name: custom/dockerConfigJSON
+          - name: custom/helmRepositoryURL
+          - name: custom/helmRepositoryUsername
+          - name: custom/helmRepositoryPassword
+          - name: custom/mavenGlobalSettingsFile
+          - name: custom/mavenRepositoryURL
+          - name: custom/mavenRepositoryUsername
+          - name: custom/mavenRepositoryPassword
+          - name: custom/npmRepositoryURL
+          - name: custom/npmRepositoryUsername
+          - name: custom/npmRepositoryPassword
+          - name: custom/pipRepositoryURL
+          - name: custom/pipRepositoryUsername
+          - name: custom/pipRepositoryPassword
+          - name: custom/rawRepositoryURL
+          - name: custom/rawRepositoryUsername
+          - name: custom/rawRepositoryPassword
+          - name: custom/stagingGroupId
+          - name: custom/stagingRepositoryId
+          - name: custom/repositoryUrl
+          - name: custom/repositoryId
+          - name: custom/repositoryFormat
+          - name: custom/repositoryUsername
+          - name: custom/repositoryPassword
+          - name: custom/stagedArtifactUrls
+            type: '[]string'
+          - name: custom/promotedArtifactUrls
+            type: '[]string'
+          - name: custom/promotedDockerImages
+            type: '[]string'
+          - name: custom/helmChartUrl
+          - name: custom/releaseStatus

@@ -1,0 +1,8 @@
+{
+	"sirius_program": "My sirius program name",
+	"sirius_delivery": "My sirius delivery name",
+    "github_keys": [
+       "org/repo#3",
+       "org/repo#5"
+    ]
+}

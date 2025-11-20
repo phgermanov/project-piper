@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>${reportTitle}</title>
+<style type="text/css">
+${style}
+</style>
+</head>
+<body>
+<h1>${reportTitle}</h1>
+<p>Search filter:</p><div class="code">${searchFilter}</div>
+<p>Overall number of issues: ${jiraIssues.total}</p>
+<p>Snapshot taken:${now} GMT</p>
+<table>
+    <tr>
+      <th>Issue #</th>
+      <th>Issue id</th>
+      <th>Issue type</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Creator</th>
+      <th>Assignee</th>
+    </tr>
+
+    ${issueTable}
+
+</table>
+</body>
+</html>

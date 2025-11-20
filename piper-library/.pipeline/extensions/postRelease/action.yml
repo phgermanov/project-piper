@@ -1,0 +1,102 @@
+name: 'PostRelease'
+description: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Expose vault secrets to env vars (github.tools token)
+      uses: SAP/project-piper-action@v1
+      with:
+        step-name: shellExecute
+        flags: >
+          --sources .github/workflows/scripts/expose_vault_secrets.sh
+          --sources .github/workflows/scripts/expose_vault_secrets.sh
+          --scriptArguments GITHUB_TOOLS_TOKEN
+          --scriptArguments GITHUB_WDF_TOKEN
+    - name: Download release prerequisites
+      shell: bash
+      run: >
+        .github/workflows/scripts/download_release_prerequisites.sh
+
+    - name: Rename downloaded files for compatibility
+      shell: bash
+      run: |
+        mv sap-piper-linux.amd64 sap-piper
+        mv sap-piper-darwin.amd64 sap-piper-darwin.x86_64
+        chmod +x sap-piper sap-piper-darwin.x86_64 sap-piper-darwin.arm64
+        mv piper-defaults-github-wdf.yml piper-defaults-github.yml
+        mv piper-defaults-jenkins-wdf.yml piper-defaults-jenkins.yml
+
+    # Since Jenkins GPP pipelines consume defaults and stage-config from /resources.
+    # we need to update them with each release.
+    # Commit will be skipped if there was no changes
+    - name: Update defaults and stage-config in /resources directory of this repo
+      shell: bash
+      run: >
+        .github/workflows/scripts/update_resources.sh
+
+    # CPE/artifactVersion will be release version.
+    - name: Read artifact version from CPE
+      id: read_version
+      shell: bash
+      run: echo "releaseVersion=$(cat .pipeline/commonPipelineEnvironment/artifactVersion)" >> "$GITHUB_OUTPUT"
+
+    - name: Upload assets to draft release
+      id: upload_assets
+      shell: bash
+      run: |
+        # Find the draft release (don't create one)
+        RELEASES_RESPONSE=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" \
+          "${{ github.api_url }}/repos/${{ github.repository }}/releases")
+
+        RELEASE_ID=$(echo "$RELEASES_RESPONSE" | jq -r '.[] | select(.draft == true) | .id' | head -1)
+
+        if [ "$RELEASE_ID" != "null" ] && [ -n "$RELEASE_ID" ]; then
+          echo "Found draft release with ID: $RELEASE_ID"
+          echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+
+          # Use reusable script to upload assets to existing draft
+          # 'piper-stage-config.yml' and 'piper-defaults-github.yml' are here only for compatibility
+          # with users of GPP in ContinuousDeliver org. It should be cleaned up in the future
+          .github/workflows/scripts/upload_release_assets.sh \
+            "${{ github.api_url }}" \
+            "${{ github.repository_owner }}" \
+            "${{ github.event.repository.name }}" \
+            "${{ steps.read_version.outputs.releaseVersion }}" \
+            "${{ github.token }}" \
+            sap-piper piper-stage-config.yml piper-defaults-github.yml piper-defaults-jenkins.yml
+        else
+          echo "Error: No draft release found"
+          exit 1
+        fi
+
+    - name: Rename defaults to upload to github.tools
+      shell: bash
+      run: |
+        mv piper-defaults-azure-tools.yml piper-defaults-azure.yml
+        rm piper-defaults-github.yml && mv piper-defaults-github-tools.yml piper-defaults-github.yml
+
+    - name: Create draft release and upload assets to github.tools
+      id: release_tools
+      shell: bash
+      env:
+        CREATE_DRAFT: "true"
+        RELEASE_NAME: "${{ steps.read_version.outputs.releaseVersion }}"
+        RELEASE_BODY: "Release ${{ steps.read_version.outputs.releaseVersion }}"
+        TARGET_COMMITISH: "master"
+      run: |
+        # Use reusable script to create draft release and upload assets
+        .github/workflows/scripts/upload_release_assets.sh \
+          "https://github.tools.sap/api/v3" \
+          "project-piper" \
+          "sap-piper" \
+          "${{ steps.read_version.outputs.releaseVersion }}" \
+          "${{ env.PIPER_VAULTCREDENTIAL_GITHUB_TOOLS_TOKEN }}" \
+          sap-piper sap-piper-darwin.x86_64 sap-piper-darwin.arm64 piper-stage-config.yml piper-defaults-azure.yml piper-defaults-github.yml
+
+    - name: Update release status
+      uses: SAP/project-piper-action@v1
+      if: steps.release_tools.conclusion == 'success'
+      with:
+        step-name: writePipelineEnv
+        flags: --value custom/releaseStatus={"releaseStatus":"released","selectionType":"latest-delivery"}

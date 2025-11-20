@@ -1,0 +1,90 @@
+metadata:
+  name: sapCheckECCNCompliance
+  description: Checks if the PPMS object already has an Export Control Classification.
+  longDescription: |
+    Checks related to [ECCN Manager](https://wiki.one.int.sap/wiki/display/DevFw/ECCN+Manager) can be integrated in your Piper pipeline. If you configure the sapCheckECCNCompliance step properly, your pipeline will check whether the PPMS Object is ECCN classified and gives the following  messages:
+    1. Success message in case the questionnaire is both EU and US classified.
+    For example: `"Questionnaire for CV/PV - <ppms_object_name> is classified with EU classification <classification_value> and US classification <classification_value>!"`
+    2.  Error message in case the questionnaire is only EU classified.
+    For example: `"Questionnaire for CV/PV - <ppms_object_name> is partially classified with EU classification <classification_value> and no US classification"`
+    3.  Error message in case classification is not found.
+    For example: `"Questionnaire for CV/PV - <ppms_object_name> is not yet classified"`
+    4.  Warning message in case of version is greater than one, and the earlier version is both EU and US classification.
+    For example: `"Questionnaire for CV/PV - <ppms_object_name> in reclassification with previous EU classification <classification_value> and US classification <classification_value>!"`
+    5. Information message if questionnaire is not yet created.
+    For example: '"No ECCN data exist for supplied PPMS Object Number"'
+    6. Information message if currently there's a problem in fetching data of the PPMS Object number from PPMS system due to communication failures.
+    For example: '"Issue while fetching details from PPMS"'
+
+    It is currently in BETA mode; thus, incompatible changes may occur although we aim to limit those kinds of changes.
+    > The ECCN Manager Tool is used as part of the [ECCN data collection process](https://sap.sharepoint.com/sites/126097/SitePages/Export-Control-Classification---Process.aspx).The tool allows you to store export control relevant data for the PPMS entities Software Component Version and Product Version.
+    > The data is stored in questionnaires consisting of a set of questions.
+
+    !!! note "Support channel"
+        Create an [IT Direct](https://itdirect.wdf.sap.corp/sap(bD1lbiZjPTAwMSZkPW1pbg==)/bc/bsp/sap/crm_ui_start/default.htm?crm-object-type=AIC_OB_INCIDENT&crm-object-action=D&PROCESS_TYPE=ZINE&CAT_ID=IMFIT_TOOLS_ECCN) ticket (Category ID: **IMFIT_TOOLS_ECCN**) to reach ECCN Manager team for an issue or a feature request.
+
+spec:
+  inputs:
+    secrets:
+      - name: eccnCredentialsId
+        description: Jenkins 'File' credentials ID containing the key file to authenticate to IFP system.
+        type: jenkins
+    params:
+      - name: serverUrl
+        type: string
+        description: HTTPS server URL for ifp system
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: https://ifp.bss.net.sap
+      - name: ppmsID
+        type: string
+        description: PPMS object number of PPMS software component version or PPMS product version.
+        mandatory: true
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: eccnDetails
+        type: bool
+        description: When true, will provide details on the comprised components.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: password
+        type: string
+        description: Password for IFP system.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: eccnCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            name: eccnCredentialsVaultSecretName
+            default: eccn
+      - name: username
+        type: string
+        description: User name for IFP system.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: eccnCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            name: eccnCredentialsVaultSecretName
+            default: eccn

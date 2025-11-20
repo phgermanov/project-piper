@@ -1,0 +1,533 @@
+metadata:
+  name: sapDwCStageRelease
+  description: "This step provides the capability to upload services and UIs to [Deploy with Confidence (DwC)](https://pages.github.tools.sap/deploy-with-confidence/solar-system/)."
+  longDescription: |-
+    You are also able to watch the resulting Vector Deployments on specific Stages to set your pipeline result to success/error.
+
+    To use this step it is necessary that you already have an onboarded DwC instance. If you don't have one yet feel free to follow our [onboarding guide](https://pages.github.tools.sap/deploy-with-confidence/solar-system/onboarding/).
+
+    !!! note "Support channels"
+        If you are facing any problem, want to raise a bug or a feature request, please use our support channels to get in touch with us.
+        You can use one of the following channels:
+
+        * [#sap-dwc](https://sap-btp.slack.com/archives/C0115K14FMG): Slack community channel for discussion, questions, etc.
+        * [GitHub issues](https://github.tools.sap/deploy-with-confidence/issues/issues/new/choose): GitHub issue repository to report bugs and request features
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        description: "Jenkins 'Secret text' credentials ID containing token to authenticate to GitHub."
+        type: jenkins
+      # TODO: remove 'themistoInstanceCertificateCredentialsId' after migrating to DwC API Gateway
+      - name: themistoInstanceCertificateCredentialsId
+        description: "Jenkins 'Secret File' credentials ID containing both the Themisto instance certificate chain and key."
+        type: jenkins
+        aliases:
+          - name: themistoCredentialsId
+      - name: gatewayCertificateCredentialsId
+        description: "Jenkins 'Secret File' credentials ID containing both the Dwc Gateway certificate chain and key."
+        type: jenkins
+        aliases:
+          - name: gatewayCredentialsId
+          - name: dwcGatewayCredentialsId
+    params:
+      - name: appName
+        type: string
+        description: "Defines the name of the application to be uploaded and deployed. The app name is also used as an identifier for routing both inbound services and [Jupiter](https://pages.github.tools.sap/deploy-with-confidence/solar-system/explanations/components#jupiter)."
+        mandatory: false
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: appname
+          - name: dwcAppName
+          - name: dwcAppname
+      - name: apps
+        type: "[]map[string]interface{}"
+        description: |
+          Defines the applications to be uploaded and deployed. An entry can have the following properties:
+
+          - `name`: Defines the name of the application to be uploaded and deployed. The name is also used as an identifier for routing both inbound services and [Jupiter](https://pages.github.tools.sap/deploy-with-confidence/solar-system/explanations/components#jupiter).
+          - `noEuporieTaskCollection` (optional): Defines whether Euporie tasks should be collected from app. Defaults to false.
+          - `noRouteAssignment` (optional): Defines whether routes should be assigned to app. Defaults to false. Note that Euporie tasks cannot be collected if routes are not assigned.
+          - `allowStaticRoutes` (optional): Defines whether static routes specified in the mta.yaml should be applied. Defaults to false.
+
+          An example apps list with two apps might look like this:
+
+              apps:
+                - name: app1
+                - name: app2
+                  noEuporieTaskCollection: true
+                  noRouteAssignment: true
+        mandatory: false
+        default: "[]map[string]interface{}{}"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dwcApps
+      - name: artifactFilesToUpload
+        type: "[]string"
+        description: "List of glob file patterns. Matched files and folders are uploaded to Themisto. Be aware that for patterns like `folder-x/**` only the subfolders of `folder-x` are uploaded and **not** the folder `folder-x` itself. So if you want to use [landscape-specific deployment variables](https://pages.github.tools.sap/deploy-with-confidence/solar-system/references/deployment_variables/) you have to use `.dwc` instead of `.dwc/**`."
+        default: ["manifest.yml", ".dwc", "helm", "cf"]
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: filesToUpload
+          - name: dwcFilesToUpload
+          - name: dwcArtifactFilesToUpload
+      - name: artifactPattern
+        type: string
+        description: "Regex to identify artifact URL. If multiple artifacts are promoted the artifact pattern can be used to filter promoted artifact URLs. Default artifact pattern depends on the build tool: `**/{ repository }/**/{ *.jar | *.mtar | * }`"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: artifacts
+        type: "[]map[string]interface{}"
+        description: |
+          Defines artifacts uploaded to DwC. An entry can have the following properties (for the description of the properties see the respective parameter description):
+
+          - `appName`
+          - `apps`
+          - `archivePattern`: Needs to be set if `uploadType` is `ui` and `hasArchive` is `true`. Defines the glob pattern used to match the archive downloaded by sapDownloadArtifact, e.g.: `*-ui-*`
+          - `artifactFilesToUpload` (mandatory)
+          - `artifactPattern`
+          - `artifactType`: Needs to be set if `uploadType` is `service`
+          - `extractFromMTA`: Should only be used with uploadType `ui`. Determines whether the ui archive should be extracted from the mtar archive. Defaults to `false`.
+          - `hasArchive`: whether an archive is uploaded during the build
+          - `helmValues`
+          - `overwriteHelmDockerImage`
+          - `promotedDockerImage`
+          - `repository`
+          - `resourceName` (mandatory)
+          - `uiUploadBasePath`
+          - `uploadMetadata`
+          - `uploadType` (mandatory)
+
+          IMPORTANT: artifacts defined in this parameter will be uploaded to DwC independently. They are not considered as a single logical unit.
+        mandatory: false
+        default: "[]map[string]interface{}{}"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dwcArtifacts
+      - name: artifactType
+        type: string
+        description: "Type of the built artifact. Needs to be set in case of service upload."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - java
+          - maven
+          - maven-mta
+          - mta
+          - dockerbuild-releaseMetadata
+          - helm
+      - name: artifactURLs
+        type: "[]string"
+        description: "URLs which points to the artifacts which are promoted to Artifactory."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/promotedArtifactUrls
+      - name: artifactVersion
+        type: string
+        description: "The version assigned by artifactPrepareVersion to the uploaded artifact."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+      - name: cliPath
+        type: "string"
+        description: "Path that points to the DwC CLI binary. If path is specified, the latest version of the CLI will **not** be downloaded from GitHub and the specified binary will be used to execute DwC CLI commands."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: dwcCLIPath
+      - name: deriveAdditionalDownloadURLs
+        type: "[]map[string]interface{}"
+        description: |
+          Defines the patterns to derive additional download URLs for the artifact per key. In the `replaceWith` value capture groups from the `findPattern` can be referenced using `$i` where `i` is a 1-based index.
+
+          An exemplary configuration might look like this:
+
+          ```yaml
+          deriveAdditionalDownloadURLs:
+            - key: "cn20"
+              findPattern: "common\.repositories\.cloud\.sap" #regex pattern
+              replaceWith: "common.repositories.sapcloud.cn"
+          ```
+
+          Or using the capture groups:
+
+          ```yaml
+          deriveAdditionalDownloadURLs:
+            - key: "cn20"
+              findPattern: "(common[.]repositories)[.](cloud)[.]sap" #regex pattern
+              replaceWith: "$1.sap$2.cn"
+          ```
+        mandatory: false
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: dwcDeriveAdditionalDownloadURLs
+      - name: downloadedArchivesPath
+        type: string
+        description: "Path to the artifact archives downloaded by [sapDownloadArtifact](https://go.sap.corp/piper/steps/sapDownloadArtifact/)."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/downloadTargetPath
+      - name: gatewayCertificatePath
+        type: string
+        description: "File path of certificate file containing both certificate chain and key. This certificate will be used to authenticate against the DwC API Gateway. Upload this file to Vault/Jenkins credential store and the step will retrieve the path automatically. You don't have to provide the file path to it manually. Find out more about secret files in Jenkins [here](https://www.jenkins.io/doc/book/using/using-credentials/)."
+        secret: true
+        mandatory: false
+        scope:
+          - PARAMETERS
+        aliases:
+          - name: certificate
+          - name: dwcClientCert
+          - name: dwcGatewayCertificate
+          - name: gatewayCertificate
+        resourceRef:
+          - name: gatewayCertificateCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            name: dwcCertificateCredentialsVaultSecretName
+            default: dwc
+      - name: gatewayURL
+        type: string
+        description: "Defines the URL of the DwC API Gateway used to upload the artifact."
+        default: "https://api.mtls.dwc.tools.sap"
+        mandatory: false
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: apiGatewayURL
+          - name: dwcApiUrl
+          - name: dwcGatewayURL
+          - name: dwcGatewayUrl
+      - name: githubToken
+        type: string
+        description: "GitHub personal access token (PAT) with at least public access (default). If you don't know how to create a PAT take a look at [GitHub's official documentation](https://docs.github.com/en/enterprise-server@3.5/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)."
+        secret: true
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github-tools
+            name: githubVaultSecretName
+        aliases:
+          - name: githubAccessToken
+          - name: githubPAT
+          - name: access_token
+      - name: helmChartDirectory
+        type: string
+        description: "Path to the Helm chart directory."
+        default: "helm"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: dwcHelmChartDirectory
+      - name: helmChartUrl
+        type: string
+        description: "URL of the Helm chart built by [helmExecute](https://go.sap.corp/piper/steps/helmExecute/)."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/helmChartUrl
+      - name: helmValues
+        type: "[]string"
+        description: |-
+          List of helm values as YAML file reference (as per helm parameter description for `-f` / `--values`).
+          The step deep-merges defined YAML files, with later sources taking priority over earlier ones.
+          The resulting YAML file will be saved to `helm/values.yaml`. It will overwrite the file if already exists.
+
+          If no file is specified the step will just consider the default values file: `helm/values.yaml`.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: mtarFilePath
+        type: string
+        description: "Path to the mtar archive"
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: mtarFilePath
+      - name: mtarUIPath
+        type: string
+        description: "Specifies the path to the UI modules in the mtar archive. This parameter is **mandatory** if one of the artifacts sets `extractFromMTA` to `true` and the UI files are in a subdirectory inside the mtar archive."
+        default: "app"
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: dwcMtarUIPath
+      - name: overwriteHelmDockerImage
+        type: bool
+        description: |-
+          Indicates whether the docker image and tag should be templated into the helm chart before uploading.
+          This might be useful if you don't want to use the `latest` tag but the actual version of the promoted docker image.
+          The step retrieves the `artifactVersion` from the `artifactPrepareVersion` step and uses it as the tag if `overwriteHelmDockerImage` is set to `true`.
+
+          The step will overwrite the `image.repository` and `image.tag` values in the final `<helmChartDirectory>/values.yaml` file (see parameter [`helmChartDirectory`](#helmchartdirectory)).
+          The final `<helmChartDirectory>/values.yaml` file is the result of the deep-merge of the value files provided by the `helmValues` parameter.
+          More about the `helmValues` parameter (and its merge behaviour) can be found [here](#helmvalues).
+        default: false
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dwcOverwriteHelmDockerImage
+      - name: projectName
+        type: string
+        description: "Defines the name of the DwC Project where the artifact should be uploaded to."
+        mandatory: false
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: dwcProjectName
+      - name: promotedDockerImage
+        type: string
+        description: |-
+          Name of promoted docker image as result of the promotion stage (e.g. `deploy-releases-hyperspace-docker.common.repositories.cloud.sap/your/image`). Optionally, you can add a tag. If the specified docker image does not contain a tag the `artifactVersion` will be used as tag.
+
+          If `uploadType` is `service`, this parameter is **mandatory** for `artifactType` `dockerbuild-releaseMetadata` and `helm`. If `uploadType` is `orbit` this parameter is **mandatory** as well.
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dockerImage
+          - name: dwcPromotedDockerImage
+      - name: repository
+        type: "string"
+        description: "Repository where the artifact is uploaded to. Needs to be set without `https://`. Does not take affect in case `artifactPattern` is defined."
+        default: "common.repositories.cloud.sap"
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: promotedRegistry
+      - name: requiredSuccessfulStages
+        type: "[]string"
+        description: "List of stages where the artifact deployment needs to be successful to succeed the step. Needs to be specified if `stageWatchPolicy` is set to `subsetSuccess` and will be ignored if `stageWatchPolicy` is unequal `subsetSuccess`. However, the step waits until the **vector** deployment is completed and does not terminate if the artifact deployment is completed earlier."
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dwcRequiredSuccessfulStages
+      - name: resourceName
+        type: "string"
+        description: "Identifier of the service for Themisto. If not stated explicitly, the `resourceName` defaults to `<githubInstance>/<githubRepository>/<branch>`. The `resourceName` is also displayed by Amalthea e.g. in the stage overview."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: dwcResourceName
+      - name: stagesToWatch
+        type: "[]string"
+        description: "List of stages to be watched. If no stage is defined the step will be successful after uploading the artifact to Themisto. The step will not validate if Vector Deployments are successful. If you specify the * selector as a single array element all stages for which a promotion was triggered will be watched."
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: watchDeployments
+          - name: deploymentTargets
+          - name: dwcStagesToWatch
+      - name: stageWatchPolicy
+        type: string
+        description: "Defines the stage watch policy. Just relevant if `stagesToWatch` is set."
+        default: overallSuccess
+        scope:
+          - PARAMETERS
+          - STEPS
+        possibleValues:
+          - overallSuccess
+          - subsetSuccess
+          - atLeastOneSuccessfulDeployment
+          - alwaysPass
+        aliases:
+          - name: dwcStageWatchPolicy
+      - name: themistoInstanceCertificatePath
+        type: string
+        description: "File path of certificate file containing both certificate chain and key. Upload this file to Vault/Jenkins credential store and the step will retrieve the path automatically. You don't have to provide the file path to it manually. Find out more about secret files in Jenkins [here](https://www.jenkins.io/doc/book/using/using-credentials/)."
+        secret: true
+        mandatory: false
+        deprecationMessage: "Upload via Themisto is deprecated. Please use `gatewayCertificatePath` instead."
+        scope:
+          - PARAMETERS
+        aliases:
+          - name: certificate
+          - name: themistoCertificate
+        resourceRef:
+          - name: themistoInstanceCertificateCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            name: themistoInstanceCertificateCredentialsVaultSecretName
+            default: themisto
+      - name: themistoInstanceURL
+        type: string
+        description: "URL of targeted Themisto instance."
+        mandatory: false
+        deprecationMessage: "Upload via Themisto is deprecated. Please use the DwC API Gateway instead. To do so, please use `gatewayURL`."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        aliases:
+          - name: themistoUrl
+      - name: uiUploadBasePath
+        type: string
+        description: "Defines the base path where the specified artifact files are uploaded to. If unset the base path will be set to `webapps/<appName>`."
+        default: ""
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dwcUIUploadBasePath
+      - name: uploadMetadata
+        type: "[]string"
+        description: 'Custom upload metadata that is attached to your uploaded artifact. The format needs to be: `key=value`. If your value is an object, please provide it as string encoded JSON.'
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: dwcUploadMetadata
+          - name: customMetadata
+          - name: metadata
+      - name: uploadType
+        type: string
+        description: "Artifact upload type determines how to proceed with the artifact and how to handle the upload and deployment."
+        scope:
+          - PARAMETERS
+          - STEPS
+        possibleValues:
+          - service
+          - ui
+          - orbit
+        aliases:
+          - name: dwcUploadType
+      - name: useCertLogin
+        type: bool
+        description: "Indicates whether the DwC CLI should use a certificate for authentication (only relevant for GitHub Actions pipelines). If set to `false`, OIDC authentication is used."
+        default: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        aliases:
+          - name: dwcUseCertLogin
+      - name: watchResourceOfInterest
+        type: bool
+        description: |
+          If set to `true`, **only** the logs of the uploaded artifact (resource of interest or ROI) are streamed to console output not the logs from the whole vector deployment and the deployment watching reflects the artifact deployment state of the ROI.
+          If this option is set to `false` the deployment watching reflects the vector deployment state.
+          However, the step waits until the **vector** deployment is completed and does not terminate if the artifact deployment is completed earlier.
+          This means that the deployment watching for the stage returns an error if the vector deployment times out (after 60 minutes), even if the artifact deployment of the ROI is successful.
+          Besides the deployment watching result, the exit code of the step depends on the configuration of `stageWatchPolicy`.
+          Furthermore, the step only waits for the vector deployment to finish, not for any migrations or the activation of the vector.
+        default: true
+        scope:
+          - PARAMETERS
+          - STEPS
+        aliases:
+          - name: useROI
+          - name: watchROI
+          - name: dwcWatchResourceOfInterest
+          - name: dwcWatchROI
+          - name: dwcUseROI
+      - name: vaultBasePath
+        type: string
+        description: 'the vault base path used for cumulus integration'
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+      - name: vaultPipelineName
+        type: string
+        description: 'the vault pipeline name used for cumulus integration'
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+      - name: pipelineID
+        type: string
+        description: 'the cumulus pipeline id used for cumulus integration'
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/cumulusPipelineID
+      - name: cumulusPipelineRunKey
+        type: "string"
+        description: "the key identifying this specific pipeline run"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/cumulusPipelineRunKey
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/dwcUploadedArtifactId
+          - name: custom/dwcUploadedArtifactIds
+            type: '[]string'
+
+  containers:
+    - image: alpine:3
+      env:
+        - name: DWC_CONFIG
+          value: /tmp/.dwc

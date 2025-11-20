@@ -1,0 +1,3721 @@
+{
+    "productVitals": [
+        {
+            "id": 2280,
+            "name": "NW",
+            "token": "410389ae-0269-4719-9cbf-fb5e299c8415",
+            "creationDate": "2015-01-23 10:13:12 +0300",
+            "lastUpdatedDate": "2017-10-04 10:33:28 +0300"
+        },
+        {
+            "id": 5285,
+            "name": "XS UAA",
+            "token": "2892f1db-4361-4e83-a89d-d28a262d65b9",
+            "creationDate": "2016-03-03 15:46:10 +0300",
+            "lastUpdatedDate": "2017-05-17 11:33:31 +0300"
+        },
+        {
+            "id": 23175,
+            "name": "AUTOMATION-CLOUD-FOUNDRY",
+            "token": "2c9e3db9-5052-4c31-bf37-a09c7ae530b5",
+            "creationDate": "2016-08-10 02:13:05 +0300",
+            "lastUpdatedDate": "2017-10-16 12:09:40 +0300"
+        },
+        {
+            "id": 26760,
+            "name": "AUTOMATION-BOM-GENERATOR",
+            "token": "2c9e1574-c2f4-49fb-99c6-56480a6639db",
+            "creationDate": "2016-10-28 04:24:28 +0300",
+            "lastUpdatedDate": "2017-01-24 20:57:15 +0300"
+        },
+        {
+            "id": 26805,
+            "name": "AUTOMATION-HCP-IE",
+            "token": "0e79493c-f6ab-4dd9-9005-059ff8701d52",
+            "creationDate": "2016-11-01 03:00:37 +0300",
+            "lastUpdatedDate": "2017-10-10 23:10:26 +0300"
+        },
+        {
+            "id": 29246,
+            "name": "hubwsTest",
+            "token": "8712c20f-67db-4aa3-bc9e-09a150bcaebd",
+            "creationDate": "2016-12-02 09:12:45 +0300",
+            "lastUpdatedDate": "2017-06-14 20:12:56 +0300"
+        },
+        {
+            "id": 31534,
+            "name": "AD-HOC-SCANS",
+            "token": "7d5f5206-e1af-4f6f-b10e-f13e22b24de8",
+            "creationDate": "2017-01-24 21:29:51 +0300",
+            "lastUpdatedDate": "2017-09-21 00:12:11 +0300"
+        },
+        {
+            "id": 34201,
+            "name": "SHC-WATCHLISTSCREENINGOD1.0",
+            "token": "526b1c74-24ee-4a02-a4bd-e751fd285f46",
+            "creationDate": "2017-03-02 18:06:44 +0300",
+            "lastUpdatedDate": "2017-10-16 12:31:58 +0300"
+        },
+        {
+            "id": 34218,
+            "name": "SHC-SAP_DATA_CLOUD1.0",
+            "token": "083c6f4e-7354-4f9b-ac14-07ebdafc5c39",
+            "creationDate": "2017-03-02 18:48:00 +0300",
+            "lastUpdatedDate": "2017-10-16 12:28:49 +0300"
+        },
+        {
+            "id": 34233,
+            "name": "AUTOMATION-OPEN-STACK",
+            "token": "05f8c1b6-c697-4ef0-8ef7-4cfca4f57802",
+            "creationDate": "2017-03-03 00:09:34 +0300",
+            "lastUpdatedDate": "2017-08-22 02:11:14 +0300"
+        },
+        {
+            "id": 34631,
+            "name": "SHC - SAP CLEA FOUNDATION 1.0",
+            "token": "7d07af19-6aae-482f-8572-123f96b70ce3",
+            "creationDate": "2017-03-09 06:17:24 +0300",
+            "lastUpdatedDate": "2017-10-16 10:25:39 +0300"
+        },
+        {
+            "id": 34681,
+            "name": "SHC - SAP LBN 1.0",
+            "token": "09691daf-a9e0-49c5-8de6-5bb4796594c5",
+            "creationDate": "2017-03-10 11:30:32 +0300",
+            "lastUpdatedDate": "2017-10-16 12:05:36 +0300"
+        },
+        {
+            "id": 34783,
+            "name": "Test-PPMSLight",
+            "token": "720f3bbd-d147-4817-9590-5c46a6a2335d",
+            "creationDate": "2017-03-13 16:57:51 +0300",
+            "lastUpdatedDate": "2017-09-28 14:47:07 +0300"
+        },
+        {
+            "id": 35589,
+            "name": "SHC - CLOUD QTC CORE OD 1.0",
+            "token": "5922d8ce-f98d-4ed9-b708-c74dbf7d0c54",
+            "creationDate": "2017-03-16 11:53:03 +0300",
+            "lastUpdatedDate": "2017-09-06 21:35:14 +0300"
+        },
+        {
+            "id": 35591,
+            "name": "SHC - ICNPI",
+            "token": "6ccadf80-7515-40e3-ad37-61473284bb3c",
+            "creationDate": "2017-03-16 11:53:58 +0300",
+            "lastUpdatedDate": "2017-10-06 11:03:23 +0300"
+        },
+        {
+            "id": 35598,
+            "name": "SHC-customer-promise-and-fulfillment-sourcing",
+            "token": "5be7c2af-a6a5-4618-9510-c5f56f762305",
+            "creationDate": "2017-03-16 13:38:19 +0300",
+            "lastUpdatedDate": "2017-10-16 10:29:56 +0300"
+        },
+        {
+            "id": 35879,
+            "name": "SHC -SAP_HAT>",
+            "token": "881dc8c4-86cf-4321-8bb3-460b881d9a3f",
+            "creationDate": "2017-03-17 06:12:35 +0300",
+            "lastUpdatedDate": "2017-10-06 11:06:39 +0300"
+        },
+        {
+            "id": 35884,
+            "name": "SHC - HCP WORKFLOW CORE 1.0",
+            "token": "525f1877-2d1c-4b86-8fdc-abe037de58e9",
+            "creationDate": "2017-03-17 10:07:24 +0300",
+            "lastUpdatedDate": "2017-10-16 12:19:11 +0300"
+        },
+        {
+            "id": 36027,
+            "name": "SHC - SAP EHS Regulatory Documentation OnDemand Portal",
+            "token": "0bb3de90-915c-4318-b142-36e336858329",
+            "creationDate": "2017-03-18 07:07:22 +0300",
+            "lastUpdatedDate": "2017-10-15 02:57:56 +0300"
+        },
+        {
+            "id": 36099,
+            "name": "SHC - SAP CUSTOMER RETENTION OD 0.9",
+            "token": "6ff49582-4a6b-4ac0-a970-0e855ef18689",
+            "creationDate": "2017-03-20 02:37:35 +0300",
+            "lastUpdatedDate": "2017-10-03 03:44:52 +0300"
+        },
+        {
+            "id": 36133,
+            "name": "SHC - SPORTS-WELCOME_SERVICE 1.0",
+            "token": "1603cdd1-af98-41c3-a37b-e1976234d543",
+            "creationDate": "2017-03-20 11:35:47 +0300",
+            "lastUpdatedDate": "2017-04-25 13:41:35 +0300"
+        },
+        {
+            "id": 36142,
+            "name": "SHC - SAP Twogo Core 4.0",
+            "token": "b91624ad-7784-4727-946a-b26b581aefd5",
+            "creationDate": "2017-03-20 11:57:26 +0300",
+            "lastUpdatedDate": "2017-10-15 23:15:20 +0300"
+        },
+        {
+            "id": 36150,
+            "name": "SHC - TWOGO BEST MATCH 4.0",
+            "token": "9aafb2d7-0ae5-4a6d-a310-692d6d153087",
+            "creationDate": "2017-03-20 12:22:44 +0300",
+            "lastUpdatedDate": "2017-10-15 23:21:17 +0300"
+        },
+        {
+            "id": 36153,
+            "name": "SHC - SCRIPTSTORM 4.11",
+            "token": "5643d218-6335-4f8f-bd3e-8f8bd3877397",
+            "creationDate": "2017-03-20 12:30:50 +0300",
+            "lastUpdatedDate": "2017-10-15 23:25:14 +0300"
+        },
+        {
+            "id": 36233,
+            "name": "SHC - TWOGO CARETEAKER 4.0",
+            "token": "7d4252d8-0847-45c2-825a-96f586e905dd",
+            "creationDate": "2017-03-20 15:34:50 +0300",
+            "lastUpdatedDate": "2017-10-15 23:17:14 +0300"
+        },
+        {
+            "id": 36234,
+            "name": "SHC - EOS Frontend",
+            "token": "9f00f3f0-54ed-44a4-bdea-7c7c47e634c6",
+            "creationDate": "2017-03-20 15:38:41 +0300",
+            "lastUpdatedDate": "2017-03-21 11:25:09 +0300"
+        },
+        {
+            "id": 36237,
+            "name": "SHC - EOS Backend",
+            "token": "7d065e7f-2f7f-4b5a-9cd2-778fd0414232",
+            "creationDate": "2017-03-20 16:10:45 +0300",
+            "lastUpdatedDate": "2017-03-21 18:00:41 +0300"
+        },
+        {
+            "id": 36258,
+            "name": "SHC - EAS Frontend",
+            "token": "aeb6f4e6-2163-456a-a38b-9f538c2f8fca",
+            "creationDate": "2017-03-20 18:37:30 +0300",
+            "lastUpdatedDate": "2017-03-21 11:26:26 +0300"
+        },
+        {
+            "id": 36368,
+            "name": "SHC-SAP_LEGAL_CONTENT_ASSEMBLY1.0",
+            "token": "356e70ff-c995-4542-adbe-a39cf627217c",
+            "creationDate": "2017-03-20 22:52:19 +0300",
+            "lastUpdatedDate": "2017-10-13 14:57:32 +0300"
+        },
+        {
+            "id": 36401,
+            "name": "SHC - SupplierRisk_testing",
+            "token": "149b007d-19b2-4110-b673-44bc54237e83",
+            "creationDate": "2017-03-20 23:41:55 +0300",
+            "lastUpdatedDate": "2017-09-20 21:02:36 +0300"
+        },
+        {
+            "id": 36407,
+            "name": "SHC - HCP WORKFLOW EDITOR 1.0",
+            "token": "a3f93177-9f27-4949-89ab-49efcd167956",
+            "creationDate": "2017-03-21 08:59:28 +0300",
+            "lastUpdatedDate": "2017-10-16 02:40:40 +0300"
+        },
+        {
+            "id": 36470,
+            "name": "SHC - Guided Answers",
+            "token": "641af33d-eb3b-4154-8f52-399268f6cc39",
+            "creationDate": "2017-03-21 14:18:36 +0300",
+            "lastUpdatedDate": "2017-09-17 18:39:13 +0300"
+        },
+        {
+            "id": 36473,
+            "name": "SHC - ANALYSIS DESIGN RIC COM 1.0",
+            "token": "f7813464-d8c4-4ad9-be90-d804abb9dc14",
+            "creationDate": "2017-03-21 15:53:15 +0300",
+            "lastUpdatedDate": "2017-03-29 17:00:23 +0300"
+        },
+        {
+            "id": 36616,
+            "name": "SHC - EC",
+            "token": "5cab54b5-66ce-4f4d-abc6-23819f05d66c",
+            "creationDate": "2017-03-22 10:42:38 +0300",
+            "lastUpdatedDate": "2017-03-22 11:35:24 +0300"
+        },
+        {
+            "id": 36621,
+            "name": "SHC - SLH - social media service for SAP HR ESS",
+            "token": "841cce33-541e-4971-92e1-0a4178e402b6",
+            "creationDate": "2017-03-22 11:18:56 +0300",
+            "lastUpdatedDate": "2017-05-12 06:08:09 +0300"
+        },
+        {
+            "id": 36627,
+            "name": "SHC - SAP AppCenter",
+            "token": "69e1fa38-a42d-4387-a2da-69d26a3944a6",
+            "creationDate": "2017-03-22 12:50:50 +0300",
+            "lastUpdatedDate": "2017-06-27 10:35:14 +0300"
+        },
+        {
+            "id": 36715,
+            "name": "SHC - SAP ENTAPP Modeler Edit OD",
+            "token": "2cfd3c49-54c9-4831-bda6-8d134a6ea118",
+            "creationDate": "2017-03-23 06:27:56 +0300",
+            "lastUpdatedDate": "2017-10-09 06:18:12 +0300"
+        },
+        {
+            "id": 36723,
+            "name": "SHC - DevX - SAP Web IDE & DI Cloud",
+            "token": "cf5b7a84-545e-4d8f-9764-c0e342a55a1b",
+            "creationDate": "2017-03-23 14:01:17 +0300",
+            "lastUpdatedDate": "2017-10-16 12:31:18 +0300"
+        },
+        {
+            "id": 36831,
+            "name": "SHC - OD MAINTENANCE PLANNER",
+            "token": "819ad30c-d21a-42ad-a322-0c432da59854",
+            "creationDate": "2017-03-23 22:02:57 +0300",
+            "lastUpdatedDate": "2017-08-07 07:56:44 +0300"
+        },
+        {
+            "id": 36910,
+            "name": "SHC - SAP DOC CENTER SERVER OD 1.0",
+            "token": "200fb79a-b1d8-42da-b2d6-c58e04116084",
+            "creationDate": "2017-03-24 12:20:46 +0300",
+            "lastUpdatedDate": "2017-10-16 04:36:27 +0300"
+        },
+        {
+            "id": 36964,
+            "name": "SHC - MOB-SEC-WSDEMO_SCV",
+            "token": "82c00fe3-7938-467f-b439-68e963aaf23a",
+            "creationDate": "2017-03-24 19:46:56 +0300",
+            "lastUpdatedDate": "2017-04-03 20:51:38 +0300"
+        },
+        {
+            "id": 36975,
+            "name": "SHC - SAP Cloud Identity Access Governance 1.0",
+            "token": "18e83e1e-6721-42b9-a04c-39d950150550",
+            "creationDate": "2017-03-24 22:32:18 +0300",
+            "lastUpdatedDate": "2017-09-07 00:03:22 +0300"
+        },
+        {
+            "id": 37070,
+            "name": "SHC - CLEA IMAGE CLASSIFIC OD 1.0",
+            "token": "956ece51-4d86-4244-94c3-998730dedf7c",
+            "creationDate": "2017-03-27 10:50:21 +0300",
+            "lastUpdatedDate": "2017-06-26 17:11:34 +0300"
+        },
+        {
+            "id": 37085,
+            "name": "SHC - SAP EAS APP 1.0",
+            "token": "65d131ef-d5f4-4a95-a03a-b84ed290f06b",
+            "creationDate": "2017-03-27 11:24:02 +0300",
+            "lastUpdatedDate": "2017-04-25 15:13:50 +0300"
+        },
+        {
+            "id": 37108,
+            "name": "SHC - CLEA TIME SERIES CHANGE OD 1.0",
+            "token": "898193c7-abc7-490f-a6ca-c217291e2189",
+            "creationDate": "2017-03-27 13:44:13 +0300",
+            "lastUpdatedDate": "2017-10-10 17:03:56 +0300"
+        },
+        {
+            "id": 37115,
+            "name": "SHC - SAP AED LANDING PAGE 1",
+            "token": "ad3d4265-a28b-4e0a-996c-8ab2c9cc45ef",
+            "creationDate": "2017-03-27 14:46:14 +0300",
+            "lastUpdatedDate": "2017-03-27 14:46:23 +0300"
+        },
+        {
+            "id": 37193,
+            "name": "SHC - VI_PUBLISHING_SERVICE 1.0",
+            "token": "4054280e-1f58-418a-ba51-1fdc5ac0bd61",
+            "creationDate": "2017-03-27 22:22:04 +0300",
+            "lastUpdatedDate": "2017-06-30 03:34:19 +0300"
+        },
+        {
+            "id": 37217,
+            "name": "SHC - S/4Hana Cloud for Customer Payments",
+            "token": "355704ef-4dee-449e-ba9d-83e86ada3445",
+            "creationDate": "2017-03-28 04:06:26 +0300",
+            "lastUpdatedDate": "2017-07-11 12:53:42 +0300"
+        },
+        {
+            "id": 37218,
+            "name": "SHC - SAP TT OD 1611",
+            "token": "873237a8-2ed5-42ad-b4d3-76bff1ffa46b",
+            "creationDate": "2017-03-28 04:55:33 +0300",
+            "lastUpdatedDate": "2017-10-16 11:27:35 +0300"
+        },
+        {
+            "id": 37219,
+            "name": "SHC - SAP TTA OD 1611",
+            "token": "d196cdcb-46ac-4593-8008-6656839bb919",
+            "creationDate": "2017-03-28 05:05:55 +0300",
+            "lastUpdatedDate": "2017-10-13 08:00:07 +0300"
+        },
+        {
+            "id": 37224,
+            "name": "SHC - SAP S/4Hana Finance Cloud for Customer Payments",
+            "token": "b9b3c39d-40fa-4c90-9ba3-08ccea5d6955",
+            "creationDate": "2017-03-28 09:30:58 +0300",
+            "lastUpdatedDate": "2017-10-16 09:22:44 +0300"
+        },
+        {
+            "id": 37286,
+            "name": "SHC - CLEA TRANSLATION HUB 1.0",
+            "token": "66d5e570-341f-4642-9580-f8142bd61fa8",
+            "creationDate": "2017-03-28 16:57:20 +0300",
+            "lastUpdatedDate": "2017-10-16 12:24:39 +0300"
+        },
+        {
+            "id": 37306,
+            "name": "SHC - MARMOLATA_OD",
+            "token": "e465f995-9113-4f85-b574-438c632bcc1e",
+            "creationDate": "2017-03-28 17:23:51 +0300",
+            "lastUpdatedDate": "2017-07-14 12:25:06 +0300"
+        },
+        {
+            "id": 37377,
+            "name": "SHC - integration-portal",
+            "token": "38bc3221-c9d1-44cc-98c7-877e1b3d05c8",
+            "creationDate": "2017-03-29 12:24:38 +0300",
+            "lastUpdatedDate": "2017-10-16 12:08:21 +0300"
+        },
+        {
+            "id": 37427,
+            "name": "SHC - JAVA CONT CAI OD 100",
+            "token": "6b363d7b-6a83-4904-b1d5-e46977b2f1b6",
+            "creationDate": "2017-03-29 17:25:50 +0300",
+            "lastUpdatedDate": "2017-10-16 06:53:17 +0300"
+        },
+        {
+            "id": 37436,
+            "name": "SHC - HCP WORKFLOW TENANT MANAGEMENT 1.0",
+            "token": "2a33420d-695c-4454-af47-665702bda1f0",
+            "creationDate": "2017-03-29 19:24:46 +0300",
+            "lastUpdatedDate": "2017-10-13 17:33:11 +0300"
+        },
+        {
+            "id": 37437,
+            "name": "SHC - HCP WORKFLOW MONITORING APP 1.0",
+            "token": "33f2dfe9-8dff-4413-9706-c8d52fd85481",
+            "creationDate": "2017-03-29 19:31:09 +0300",
+            "lastUpdatedDate": "2017-10-13 16:11:22 +0300"
+        },
+        {
+            "id": 37445,
+            "name": "SHC - MOB-SEC_SCV",
+            "token": "bd2e52ca-7e4f-4d39-959d-3dcf3d8c9b61",
+            "creationDate": "2017-03-29 22:19:32 +0300",
+            "lastUpdatedDate": "2017-04-04 20:26:10 +0300"
+        },
+        {
+            "id": 37511,
+            "name": "SHC - SAP Connected Goods",
+            "token": "b3ea7927-5a96-42bf-8e25-153b5afb6d35",
+            "creationDate": "2017-03-30 07:02:56 +0300",
+            "lastUpdatedDate": "2017-03-30 07:21:38 +0300"
+        },
+        {
+            "id": 37521,
+            "name": "SHC - SAP APPLICATION REUSE 2.1",
+            "token": "6fedc95e-4af5-4894-be5e-4be73fe32da7",
+            "creationDate": "2017-03-30 09:32:15 +0300",
+            "lastUpdatedDate": "2017-03-30 09:32:20 +0300"
+        },
+        {
+            "id": 37547,
+            "name": "SHC - SAP CLOUD PF BLOCKCHAIN 0.9",
+            "token": "2a20f2ab-26d2-4a3b-afee-e2974cce72ef",
+            "creationDate": "2017-03-30 11:24:33 +0300",
+            "lastUpdatedDate": "2017-09-20 16:52:30 +0300"
+        },
+        {
+            "id": 37562,
+            "name": "SHC - CLEA TIME SER FORECAST OD 1.0",
+            "token": "24c75b09-3cdf-4c7f-ae84-246839204165",
+            "creationDate": "2017-03-30 14:36:34 +0300",
+            "lastUpdatedDate": "2017-04-26 09:34:36 +0300"
+        },
+        {
+            "id": 37563,
+            "name": "SHC - CLEA IMAGE FEAT EXTRACT OD 1.0",
+            "token": "706d4606-9a26-420b-936b-0083d97459ad",
+            "creationDate": "2017-03-30 14:28:05 +0300",
+            "lastUpdatedDate": "2017-10-10 17:45:52 +0300"
+        },
+        {
+            "id": 37566,
+            "name": "SHC - CLEA TOPIC DETECTION OD 1.0",
+            "token": "51c6d92c-c258-4e9a-ab20-5374a641ba1f",
+            "creationDate": "2017-03-30 14:42:40 +0300",
+            "lastUpdatedDate": "2017-10-10 17:02:52 +0300"
+        },
+        {
+            "id": 37570,
+            "name": "SHC - Digital Payments OD",
+            "token": "968afdf6-7eff-4af1-8376-cb916cbcc662",
+            "creationDate": "2017-03-30 15:51:33 +0300",
+            "lastUpdatedDate": "2017-10-15 11:50:31 +0300"
+        },
+        {
+            "id": 37576,
+            "name": "SHC-BuBo_ads_1.0",
+            "token": "b14a0ddd-19fc-44d0-82f2-da1494825995",
+            "creationDate": "2017-03-30 15:51:41 +0300",
+            "lastUpdatedDate": "2017-10-14 18:59:20 +0300"
+        },
+        {
+            "id": 37612,
+            "name": "SHC - SAP HANA RUNTIME TOOLS 2.0",
+            "token": "4eb2b967-d1be-4824-9533-d16e74ffc6e3",
+            "creationDate": "2017-03-30 20:46:26 +0300",
+            "lastUpdatedDate": "2017-10-16 01:23:54 +0300"
+        },
+        {
+            "id": 37639,
+            "name": "SHC - SAP ROAMBI CLOUD 71",
+            "token": "a314887d-6df6-47a7-9bf5-f04804211db2",
+            "creationDate": "2017-03-30 20:58:59 +0300",
+            "lastUpdatedDate": "2017-10-14 04:17:22 +0300"
+        },
+        {
+            "id": 37811,
+            "name": "SHC - SAP Connected Goods 2.0",
+            "token": "7cd4dd98-aee3-4054-920b-6783ad45e044",
+            "creationDate": "2017-03-31 09:03:46 +0300",
+            "lastUpdatedDate": "2017-10-16 03:00:50 +0300"
+        },
+        {
+            "id": 37815,
+            "name": "SHC - SAP HYBRIS CUST JOURNEY 1.0",
+            "token": "e55f0e1a-bb94-4fc3-a64a-bf1bccdd8439",
+            "creationDate": "2017-03-31 11:17:19 +0300",
+            "lastUpdatedDate": "2017-08-21 08:51:38 +0300"
+        },
+        {
+            "id": 37818,
+            "name": "SHC - HCO_IO_FARMING_UI 1.0",
+            "token": "c72276c5-99a2-44fa-9486-ec6a8a65c4c1",
+            "creationDate": "2017-03-31 14:36:16 +0300",
+            "lastUpdatedDate": "2017-09-28 11:39:29 +0300"
+        },
+        {
+            "id": 37819,
+            "name": "SHC - SAP APPLICATION REUSE UI 2.0",
+            "token": "fb17f129-1005-46a7-aad3-3b1af7a9c892",
+            "creationDate": "2017-03-31 15:10:33 +0300",
+            "lastUpdatedDate": "2017-03-31 15:10:39 +0300"
+        },
+        {
+            "id": 37854,
+            "name": "SHC - SAP ROAMBI PUB SDK 1.0",
+            "token": "cc7a028f-f842-40c2-88f0-993b881c03d4",
+            "creationDate": "2017-04-01 01:58:34 +0300",
+            "lastUpdatedDate": "2017-04-01 01:59:03 +0300"
+        },
+        {
+            "id": 38011,
+            "name": "SHC - TAX SERVICE",
+            "token": "efd7898e-82f7-49f6-a34a-ffc3505de49d",
+            "creationDate": "2017-04-03 11:48:58 +0300",
+            "lastUpdatedDate": "2017-09-14 14:13:21 +0300"
+        },
+        {
+            "id": 38013,
+            "name": "SHC - Realistic-data-generator>",
+            "token": "3f60da34-9ab0-46b2-a2a0-f5d8d015ea01",
+            "creationDate": "2017-04-03 12:44:46 +0300",
+            "lastUpdatedDate": "2017-04-03 12:44:58 +0300"
+        },
+        {
+            "id": 38152,
+            "name": "SHC - SAP PREDICTIVE MAINT OD 1.0",
+            "token": "7a296610-52ac-4e68-98f2-14b32b72f8ad",
+            "creationDate": "2017-04-04 14:23:17 +0300",
+            "lastUpdatedDate": "2017-10-10 08:18:33 +0300"
+        },
+        {
+            "id": 38285,
+            "name": "SHC - ASSET INTELL. NETWORK 1705",
+            "token": "6a80e61d-a8a2-4ea4-b0e6-93e4a8d4bed2",
+            "creationDate": "2017-04-05 07:33:50 +0300",
+            "lastUpdatedDate": "2017-06-19 16:52:25 +0300"
+        },
+        {
+            "id": 38303,
+            "name": "SHC - SAP CP PREDICTIVE SERVICES 1",
+            "token": "caa77b68-f06d-4870-964a-2580b1f747be",
+            "creationDate": "2017-04-05 10:52:41 +0300",
+            "lastUpdatedDate": "2017-10-16 02:05:53 +0300"
+        },
+        {
+            "id": 38308,
+            "name": "SHC - HANA SQL ANALYZER 2.0",
+            "token": "bcea42d0-bbd9-4753-b16f-e0e49ae255e0",
+            "creationDate": "2017-04-05 11:53:23 +0300",
+            "lastUpdatedDate": "2017-10-16 01:27:27 +0300"
+        },
+        {
+            "id": 38341,
+            "name": "SHC - SAP ROAMBI PUB CLT TAL 2.0",
+            "token": "1855d73d-5740-40c4-9ef5-6bc34756a99f",
+            "creationDate": "2017-04-05 17:32:18 +0300",
+            "lastUpdatedDate": "2017-04-05 17:47:28 +0300"
+        },
+        {
+            "id": 38342,
+            "name": "SHC - SAP ROAMBI PUB CLT COGNOS 2.0",
+            "token": "70406ca3-4d59-45c2-92ce-040e8e4edbb7",
+            "creationDate": "2017-04-05 17:51:11 +0300",
+            "lastUpdatedDate": "2017-04-05 17:51:24 +0300"
+        },
+        {
+            "id": 38398,
+            "name": "SHC - VIRTUAL_MACHINE_CP_CF 0.9",
+            "token": "0a4b302b-1fc8-485d-9cbf-82fba54b0792",
+            "creationDate": "2017-04-06 08:00:34 +0300",
+            "lastUpdatedDate": "2017-10-12 11:24:57 +0300"
+        },
+        {
+            "id": 38408,
+            "name": "SHC - CURRENCY SERVICES IMP OD 1.0",
+            "token": "625b5215-b79d-45cb-8995-ec99aa31114c",
+            "creationDate": "2017-04-06 10:00:03 +0300",
+            "lastUpdatedDate": "2017-06-02 12:41:46 +0300"
+        },
+        {
+            "id": 38409,
+            "name": "SHC - CURRENCY SERVICES OD 1.0",
+            "token": "4c4ec521-7d6f-4c23-b7d7-4f11301dbd64",
+            "creationDate": "2017-04-06 10:14:00 +0300",
+            "lastUpdatedDate": "2017-10-16 09:32:11 +0300"
+        },
+        {
+            "id": 38421,
+            "name": "SHC - SAP IOC 1.0",
+            "token": "38736f9f-2895-4120-a223-5d79730c95ba",
+            "creationDate": "2017-04-06 12:11:40 +0300",
+            "lastUpdatedDate": "2017-04-11 06:51:37 +0300"
+        },
+        {
+            "id": 38503,
+            "name": "SHC - SAP CDM OD 1.0",
+            "token": "2ab0fbd0-2d67-446b-9bc6-d779e452363e",
+            "creationDate": "2017-04-07 07:50:07 +0300",
+            "lastUpdatedDate": "2017-04-07 07:50:13 +0300"
+        },
+        {
+            "id": 38508,
+            "name": "SHC - CDT-BPMNIO",
+            "token": "236faeb1-ba7e-4a13-a568-89ebaaf69677",
+            "creationDate": "2017-04-07 09:43:44 +0300",
+            "lastUpdatedDate": "2017-04-07 09:43:49 +0300"
+        },
+        {
+            "id": 38516,
+            "name": "SHC - JAVA CONT CRE OD 100",
+            "token": "58e5043c-a436-424b-b602-aa7210721b91",
+            "creationDate": "2017-04-07 12:20:02 +0300",
+            "lastUpdatedDate": "2017-10-13 13:06:18 +0300"
+        },
+        {
+            "id": 38518,
+            "name": "SHC - SAP AGENTRY CLOUD PROMO OD 1.0",
+            "token": "2468c39e-f9e0-4c5d-88c9-6c518a96102c",
+            "creationDate": "2017-04-07 15:26:48 +0300",
+            "lastUpdatedDate": "2017-09-26 09:48:16 +0300"
+        },
+        {
+            "id": 38642,
+            "name": "SHC - SAP AGENTRY CLOUD PROMO OD 1.0>",
+            "token": "10881518-5232-4ecb-a438-77c191317ccc",
+            "creationDate": "2017-04-10 05:40:52 +0300",
+            "lastUpdatedDate": "2017-04-10 05:41:07 +0300"
+        },
+        {
+            "id": 38672,
+            "name": "SHC - TRANSLATION HUB JAVA 1.0 (OD)",
+            "token": "d725f99d-2c11-4acf-a3d1-61b221637910",
+            "creationDate": "2017-04-10 17:10:15 +0300",
+            "lastUpdatedDate": "2017-10-16 12:24:29 +0300"
+        },
+        {
+            "id": 38673,
+            "name": "SHC - WDE PLUGIN FLPEXT OD 1.0",
+            "token": "6eb4fd2b-18ad-4712-b36d-028585f588e6",
+            "creationDate": "2017-04-10 17:51:06 +0300",
+            "lastUpdatedDate": "2017-04-10 17:51:20 +0300"
+        },
+        {
+            "id": 38810,
+            "name": "SHC-SAP_Clea_for_Job_Standardization",
+            "token": "254a8b9b-9598-4425-84a7-ac423d4b81f4",
+            "creationDate": "2017-04-11 04:27:36 +0300",
+            "lastUpdatedDate": "2017-09-20 11:46:36 +0300"
+        },
+        {
+            "id": 38811,
+            "name": "SHC - VI STORAGE SERVICE 1.0",
+            "token": "b1e5d087-0b66-48e1-8e8c-1463d8f5370d",
+            "creationDate": "2017-04-11 05:32:32 +0300",
+            "lastUpdatedDate": "2017-09-04 06:41:56 +0300"
+        },
+        {
+            "id": 38821,
+            "name": "SHC - ARIBA INTEGRATION SERVICE V1",
+            "token": "c63b15eb-9e31-4321-a2e2-ec534ab080dc",
+            "creationDate": "2017-04-11 11:11:00 +0300",
+            "lastUpdatedDate": "2017-04-11 11:36:23 +0300"
+        },
+        {
+            "id": 38832,
+            "name": "SHC - SAP HYBRIS MKT LOYALTY 1.0",
+            "token": "753adc70-f71d-45c5-857b-81f510587e22",
+            "creationDate": "2017-04-11 13:47:22 +0300",
+            "lastUpdatedDate": "2017-08-04 14:32:24 +0300"
+        },
+        {
+            "id": 38867,
+            "name": "SHC - SAP Agentry Cloud Edition 1703",
+            "token": "faab29bf-9da5-4b42-8b82-24d5f6e54f18",
+            "creationDate": "2017-04-11 17:47:38 +0300",
+            "lastUpdatedDate": "2017-04-11 18:32:29 +0300"
+        },
+        {
+            "id": 38871,
+            "name": "SHC - com.sap.hap.ptm.ptm-reactor",
+            "token": "dd6096fc-77b8-4be6-a127-d5dc2b652ff6",
+            "creationDate": "2017-04-11 17:54:45 +0300",
+            "lastUpdatedDate": "2017-10-11 15:10:43 +0300"
+        },
+        {
+            "id": 38893,
+            "name": "SHC - SAP AGENTRY CLOUD EDITION 1705",
+            "token": "e13e6b72-8be4-411b-8005-ec5ca4a1c3f9",
+            "creationDate": "2017-04-11 19:02:25 +0300",
+            "lastUpdatedDate": "2017-04-12 00:35:44 +0300"
+        },
+        {
+            "id": 38912,
+            "name": "SHC - SAP API MANAGEMENT OD 1.0",
+            "token": "dfba2b9c-c283-47db-9ceb-c535f39bfe5d",
+            "creationDate": "2017-04-12 09:35:51 +0300",
+            "lastUpdatedDate": "2017-10-12 11:17:45 +0300"
+        },
+        {
+            "id": 38914,
+            "name": "SHC - ARIBA BUS. PROCESS MONITOR",
+            "token": "e95e0b9e-3270-4683-aa0d-3c41174e42ce",
+            "creationDate": "2017-04-12 10:11:25 +0300",
+            "lastUpdatedDate": "2017-08-01 07:30:24 +0300"
+        },
+        {
+            "id": 38916,
+            "name": "SHC - HEALTHCARE PE OD 1.0",
+            "token": "d72b853d-96bb-4166-bc27-23675774910a",
+            "creationDate": "2017-04-12 12:15:36 +0300",
+            "lastUpdatedDate": "2017-09-27 12:19:03 +0300"
+        },
+        {
+            "id": 39058,
+            "name": "SHC - UICS_DPS 1.0",
+            "token": "cb40310e-33fa-428c-a594-3747ff106d14",
+            "creationDate": "2017-04-12 16:12:08 +0300",
+            "lastUpdatedDate": "2017-07-21 16:58:08 +0300"
+        },
+        {
+            "id": 39063,
+            "name": "SHC - SAP AGENTRY CLOUD EDITION 1704",
+            "token": "ef6d6427-6198-4cd9-b541-7bb555ac1848",
+            "creationDate": "2017-04-12 16:00:32 +0300",
+            "lastUpdatedDate": "2017-10-16 09:48:54 +0300"
+        },
+        {
+            "id": 39167,
+            "name": "SHC - com.sap.byd.tr.tr-reactor",
+            "token": "6be20ae4-f6bb-4593-bf47-c78b7be6d24f",
+            "creationDate": "2017-04-12 16:26:32 +0300",
+            "lastUpdatedDate": "2017-10-13 13:15:38 +0300"
+        },
+        {
+            "id": 39170,
+            "name": "SHC - com.sap.hap.pta.pta-reactor",
+            "token": "93ad26de-3afa-490a-995f-7673d231bed8",
+            "creationDate": "2017-04-12 16:43:10 +0300",
+            "lastUpdatedDate": "2017-09-25 16:36:52 +0300"
+        },
+        {
+            "id": 39171,
+            "name": "SHC - com.sap.hap.proreuse.proreuse-reactor",
+            "token": "551c35ad-3ec1-4515-8531-60ce0bd9453c",
+            "creationDate": "2017-04-12 16:42:28 +0300",
+            "lastUpdatedDate": "2017-10-11 15:13:04 +0300"
+        },
+        {
+            "id": 39174,
+            "name": "SHC - com.sap.byd.reuse.ui.ui-reactor",
+            "token": "05d322c5-2d21-45a1-b925-c7f9d8d09c79",
+            "creationDate": "2017-04-12 16:35:02 +0300",
+            "lastUpdatedDate": "2017-10-12 16:33:09 +0300"
+        },
+        {
+            "id": 39178,
+            "name": "SHC - com.sap.byd.ma.ma-reactor",
+            "token": "88d68a58-22ff-436e-ae15-f3938b5c121e",
+            "creationDate": "2017-04-12 16:56:19 +0300",
+            "lastUpdatedDate": "2017-10-13 11:40:09 +0300"
+        },
+        {
+            "id": 39394,
+            "name": "SHC - CLOUD FOR ENERGY 1.0",
+            "token": "8b198133-5ece-4eb0-8166-6437ac41244e",
+            "creationDate": "2017-04-13 12:23:15 +0300",
+            "lastUpdatedDate": "2017-10-16 10:47:53 +0300"
+        },
+        {
+            "id": 39409,
+            "name": "SHC - SAP BANKING APIS OD 1.0",
+            "token": "c7ca6a74-ecf5-48a0-8b15-7ddaa0bb1c70",
+            "creationDate": "2017-04-13 16:41:39 +0300",
+            "lastUpdatedDate": "2017-09-01 11:18:57 +0300"
+        },
+        {
+            "id": 39641,
+            "name": "SHC - SAP HANA MOBILE 1.0 OD",
+            "token": "bee47c56-b9f1-42b6-ab7e-ad879950663e",
+            "creationDate": "2017-04-13 23:54:42 +0300",
+            "lastUpdatedDate": "2017-10-15 06:10:16 +0300"
+        },
+        {
+            "id": 39844,
+            "name": "SHC - SAP API Management OD",
+            "token": "ed906e4c-bfea-4344-8a06-9c227569291e",
+            "creationDate": "2017-04-17 10:08:19 +0300",
+            "lastUpdatedDate": "2017-04-17 10:08:45 +0300"
+        },
+        {
+            "id": 39847,
+            "name": "SHC - BPM Editor Framework 1.0",
+            "token": "dd071f0c-7c13-4211-b8d8-c4aaa936f5bd",
+            "creationDate": "2017-04-17 11:13:04 +0300",
+            "lastUpdatedDate": "2017-10-16 02:29:10 +0300"
+        },
+        {
+            "id": 39850,
+            "name": "SHC - SAP DIM 1.0",
+            "token": "960d15c0-ba14-43e2-8d28-f8c703d1d065",
+            "creationDate": "2017-04-17 12:06:38 +0300",
+            "lastUpdatedDate": "2017-09-28 06:40:29 +0300"
+        },
+        {
+            "id": 40016,
+            "name": "SHC - CONTENT INFRA CORE 1.0",
+            "token": "7fbd3a84-bd9e-44e1-8974-9a83f62896ef",
+            "creationDate": "2017-04-18 08:25:43 +0300",
+            "lastUpdatedDate": "2017-10-16 03:13:04 +0300"
+        },
+        {
+            "id": 40049,
+            "name": "SHC - CLEA PROD IMG CLASSIFIC OD 1.0",
+            "token": "98da77fd-3433-471e-8644-eac1e86fa2b3",
+            "creationDate": "2017-04-18 11:24:51 +0300",
+            "lastUpdatedDate": "2017-06-26 17:47:11 +0300"
+        },
+        {
+            "id": 40227,
+            "name": "SHC-SAP_DMI_1.0",
+            "token": "43df6adb-152d-450f-b462-af12dfd911bd",
+            "creationDate": "2017-04-18 22:38:57 +0300",
+            "lastUpdatedDate": "2017-06-08 14:32:26 +0300"
+        },
+        {
+            "id": 40327,
+            "name": "SHC - SAP PREDICTIVE INTEGRATOR 1",
+            "token": "57013e24-7374-4012-95ea-d37e512186b6",
+            "creationDate": "2017-04-19 11:15:19 +0300",
+            "lastUpdatedDate": "2017-06-29 19:24:33 +0300"
+        },
+        {
+            "id": 40339,
+            "name": "SHC - UI CRE LOCAT OD 1.0",
+            "token": "a01a9e57-bb68-4e95-813d-953c1665d910",
+            "creationDate": "2017-04-19 13:03:21 +0300",
+            "lastUpdatedDate": "2017-10-13 13:16:51 +0300"
+        },
+        {
+            "id": 40341,
+            "name": "SHC - SAP CLEA DOCUMENT FEATURE EXTRACTION 1.0",
+            "token": "a45e6237-5abc-4001-ab49-4444e5179829",
+            "creationDate": "2017-04-19 13:36:01 +0300",
+            "lastUpdatedDate": "2017-05-02 14:38:51 +0300"
+        },
+        {
+            "id": 40346,
+            "name": "SHC - SAP HYBRIS C4C AS SERVICE 1.0",
+            "token": "0cd9ca71-ddec-4019-b28c-8d8b19c61a15",
+            "creationDate": "2017-04-19 14:41:03 +0300",
+            "lastUpdatedDate": "2017-06-29 09:09:29 +0300"
+        },
+        {
+            "id": 40491,
+            "name": "SHC-SAP_Network Logistics Hub1.0",
+            "token": "e597495b-5ffc-490a-bb49-8120922649e1",
+            "creationDate": "2017-04-20 23:17:21 +0300",
+            "lastUpdatedDate": "2017-05-04 15:59:54 +0300"
+        },
+        {
+            "id": 40502,
+            "name": "SHC-SAP_Network_Logistics Hub1.0",
+            "token": "8065c233-faa6-4a20-bb1a-f35a0f2ee7b2",
+            "creationDate": "2017-04-21 10:38:28 +0300",
+            "lastUpdatedDate": "2017-06-13 12:17:14 +0300"
+        },
+        {
+            "id": 40514,
+            "name": "SHC-SAP_DATA_CLOUD1.0-USAGE_OData",
+            "token": "20e5d751-0755-4880-8d35-c1c74a4cb36c",
+            "creationDate": "2017-04-21 22:32:41 +0300",
+            "lastUpdatedDate": "2017-06-06 13:31:41 +0300"
+        },
+        {
+            "id": 40607,
+            "name": "SHC - SAP APPLICATION REUSE UI 2.1",
+            "token": "6c85f92a-b2a2-46a3-ad8f-f45cc4070bcf",
+            "creationDate": "2017-04-24 09:11:29 +0300",
+            "lastUpdatedDate": "2017-08-29 12:02:55 +0300"
+        },
+        {
+            "id": 40612,
+            "name": "SHC - SAP ANALYTICS HUB APP 1.0",
+            "token": "7bf8a8cf-a339-47f2-b337-0e27a3aed82c",
+            "creationDate": "2017-04-24 10:38:51 +0300",
+            "lastUpdatedDate": "2017-10-06 12:14:30 +0300"
+        },
+        {
+            "id": 40643,
+            "name": "SHC - SAP BUSINESSOBJECTS CLOUD 1.0",
+            "token": "32b89164-0858-4463-afce-c27a99bbaedc",
+            "creationDate": "2017-04-24 20:05:24 +0300",
+            "lastUpdatedDate": "2017-10-13 11:15:48 +0300"
+        },
+        {
+            "id": 40648,
+            "name": "TEST_SHC - SAP Ariba Open API",
+            "token": "da5af90b-297b-4696-8790-f0c734540ea6",
+            "creationDate": "2017-04-24 21:11:09 +0300",
+            "lastUpdatedDate": "2017-09-19 04:44:40 +0300"
+        },
+        {
+            "id": 40672,
+            "name": "SHC - ARIBA FORMS SERVICE",
+            "token": "1045af7f-c5ce-4054-9c62-94b6f9e35ec3",
+            "creationDate": "2017-04-25 08:08:21 +0300",
+            "lastUpdatedDate": "2017-09-24 09:07:08 +0300"
+        },
+        {
+            "id": 40677,
+            "name": "SHC-SAP_Clea_for_date_extractor_service_1_0_0",
+            "token": "e644b98f-195a-4c8d-803a-4ab75f7ff637",
+            "creationDate": "2017-04-25 09:35:03 +0300",
+            "lastUpdatedDate": "2017-09-04 13:34:59 +0300"
+        },
+        {
+            "id": 40679,
+            "name": "SHC-SAP_Clea_for_file_parsing_service_1_0_0",
+            "token": "7715f286-a72e-4cac-a8d6-25a0589fa5f3",
+            "creationDate": "2017-04-25 09:47:56 +0300",
+            "lastUpdatedDate": "2017-09-04 13:34:09 +0300"
+        },
+        {
+            "id": 40729,
+            "name": "SHC - XSJ TOOLS PLUGIN OD 1.0",
+            "token": "f59bbd55-4d60-48a0-b570-e1aee4fe9913",
+            "creationDate": "2017-04-25 17:01:00 +0300",
+            "lastUpdatedDate": "2017-10-16 02:34:53 +0300"
+        },
+        {
+            "id": 40792,
+            "name": "SHC - XS Services 1",
+            "token": "bbcdd6b8-fbda-4bc2-8752-59c430f9cb68",
+            "creationDate": "2017-04-26 12:45:08 +0300",
+            "lastUpdatedDate": "2017-10-11 08:00:15 +0300"
+        },
+        {
+            "id": 40850,
+            "name": "SHC - HYBRIS CECENTER OD 100",
+            "token": "45ef9642-44b2-4dfd-83c2-010d7cef94fa",
+            "creationDate": "2017-04-27 07:39:34 +0300",
+            "lastUpdatedDate": "2017-09-14 05:34:15 +0300"
+        },
+        {
+            "id": 40883,
+            "name": "SHC - BYDESIGN OBERON5 HTML5UI",
+            "token": "21508c0d-f6d3-417f-b0a2-34b90709415d",
+            "creationDate": "2017-04-27 19:08:07 +0300",
+            "lastUpdatedDate": "2017-09-25 13:37:34 +0300"
+        },
+        {
+            "id": 41099,
+            "name": "SHC - ATLAS BY SAP OD 1.0",
+            "token": "9de5b2a4-5885-4c3a-be28-48caf83b82ec",
+            "creationDate": "2017-05-01 19:05:14 +0300",
+            "lastUpdatedDate": "2017-07-25 10:59:44 +0300"
+        },
+        {
+            "id": 41100,
+            "name": "SHC - RUUM BY SAP OD 0.9",
+            "token": "2a25953b-e22d-476d-bfbe-d75ddd3a1d3a",
+            "creationDate": "2017-05-01 19:17:09 +0300",
+            "lastUpdatedDate": "2017-05-01 19:18:11 +0300"
+        },
+        {
+            "id": 41159,
+            "name": "SHC - SAP NF-E AS A SERVICE 1.0",
+            "token": "39b0d57f-c139-433d-9631-990dc64c8bae",
+            "creationDate": "2017-05-02 18:10:16 +0300",
+            "lastUpdatedDate": "2017-10-14 00:03:49 +0300"
+        },
+        {
+            "id": 41371,
+            "name": "SHC - AUDIT LOG SERVICE 2.0",
+            "token": "f7c5502a-020b-429d-947f-4a88f9f325e6",
+            "creationDate": "2017-05-03 08:46:00 +0300",
+            "lastUpdatedDate": "2017-08-25 17:39:05 +0300"
+        },
+        {
+            "id": 41404,
+            "name": "SHC - IOT SERVICES ON HCP CF 4.0",
+            "token": "179b1c1d-96fc-4469-b851-e30e2a81a4d5",
+            "creationDate": "2017-05-03 17:08:00 +0300",
+            "lastUpdatedDate": "2017-10-16 11:44:20 +0300"
+        },
+        {
+            "id": 41447,
+            "name": "SHC - SAP HANA CLOUD INTEGR.(PI) 1.0",
+            "token": "5563e6ed-361c-451c-ab76-438b384e82e1",
+            "creationDate": "2017-05-03 18:54:10 +0300",
+            "lastUpdatedDate": "2017-10-15 03:00:32 +0300"
+        },
+        {
+            "id": 41494,
+            "name": "SHC - SAP HYBRIS MKT WEBTRACK 1.0",
+            "token": "98ec2cda-befb-4f30-8f58-5f60322a6ad6",
+            "creationDate": "2017-05-03 21:18:54 +0300",
+            "lastUpdatedDate": "2017-09-19 12:26:07 +0300"
+        },
+        {
+            "id": 41569,
+            "name": "SHC - telemetry-all",
+            "token": "49c1ba76-c9c2-499e-aeaa-862c52ad035a",
+            "creationDate": "2017-05-04 00:13:44 +0300",
+            "lastUpdatedDate": "2017-09-16 01:10:59 +0300"
+        },
+        {
+            "id": 41852,
+            "name": "SHC - Cash Application",
+            "token": "f2597063-1c28-4648-a80e-d4c6fd44590e",
+            "creationDate": "2017-05-04 09:41:34 +0300",
+            "lastUpdatedDate": "2017-09-20 08:59:26 +0300"
+        },
+        {
+            "id": 41925,
+            "name": "SHC-PROJECT_DESIGN_NETWORK_OD_1.0",
+            "token": "4cc1718c-02c9-4dbb-98a4-635e16cee7e6",
+            "creationDate": "2017-05-04 11:34:26 +0300",
+            "lastUpdatedDate": "2017-10-16 11:54:52 +0300"
+        },
+        {
+            "id": 41926,
+            "name": "SHC - WDE PLUGIN IOTAPPL 1.0",
+            "token": "084cdc73-99a4-4702-80f2-bf2b2a784e3c",
+            "creationDate": "2017-05-04 11:49:20 +0300",
+            "lastUpdatedDate": "2017-09-08 13:51:44 +0300"
+        },
+        {
+            "id": 41929,
+            "name": "SHC - SAP EA DESIGNER CE 1.0",
+            "token": "a8912b91-af9c-4cda-8a83-63fb50510409",
+            "creationDate": "2017-05-04 12:44:18 +0300",
+            "lastUpdatedDate": "2017-10-03 11:12:25 +0300"
+        },
+        {
+            "id": 42251,
+            "name": "SHC - HCP BUSINESS RULES EDITOR 1.0",
+            "token": "f1fda6c3-dbdc-47c9-b8d2-62494946e84d",
+            "creationDate": "2017-05-05 06:28:51 +0300",
+            "lastUpdatedDate": "2017-10-05 01:50:21 +0300"
+        },
+        {
+            "id": 42257,
+            "name": "SHC - SAP Contact Center",
+            "token": "42fdebe3-b779-4dd6-bb82-2ee5fd18e8b7",
+            "creationDate": "2017-05-05 09:46:31 +0300",
+            "lastUpdatedDate": "2017-10-16 12:02:18 +0300"
+        },
+        {
+            "id": 42316,
+            "name": "SHC - CLEA SIMILARITY SCORING OD 1.0",
+            "token": "57456763-aa23-490c-9d13-e66b4b9030f5",
+            "creationDate": "2017-05-05 17:35:23 +0300",
+            "lastUpdatedDate": "2017-10-13 22:20:12 +0300"
+        },
+        {
+            "id": 42317,
+            "name": "SHC - CLEA PROD TXT CLASSIFIC OD 1.0",
+            "token": "dca7a929-7081-4d6d-936f-03b96b908a18",
+            "creationDate": "2017-05-05 17:42:38 +0300",
+            "lastUpdatedDate": "2017-08-14 12:30:52 +0300"
+        },
+        {
+            "id": 42419,
+            "name": "SHC - SAP EVENT TICKETING",
+            "token": "93e82506-9291-49f7-b47e-32d3dd6c36f3",
+            "creationDate": "2017-05-08 09:59:06 +0300",
+            "lastUpdatedDate": "2017-10-16 01:22:08 +0300"
+        },
+        {
+            "id": 42610,
+            "name": "SHC-IOT-AS-JCO-BP-OD-1.0",
+            "token": "6a61059c-4110-4987-a1a0-fb66ba954bc9",
+            "creationDate": "2017-05-09 10:22:39 +0300",
+            "lastUpdatedDate": "2017-05-09 10:23:06 +0300"
+        },
+        {
+            "id": 42616,
+            "name": "SHC-IOT AS JCO BP OD 1.0",
+            "token": "735abc01-03c6-4332-b757-33cf823b74af",
+            "creationDate": "2017-05-09 12:27:34 +0300",
+            "lastUpdatedDate": "2017-10-16 11:45:28 +0300"
+        },
+        {
+            "id": 42617,
+            "name": "SHC-IOT AS JCO AUTH OD 1.0",
+            "token": "3585b0c4-2cee-49bc-83bb-3ac191d2f55a",
+            "creationDate": "2017-05-09 12:41:56 +0300",
+            "lastUpdatedDate": "2017-10-16 11:46:09 +0300"
+        },
+        {
+            "id": 42618,
+            "name": "SHC - IOT AS JCO SAPUILIB OD 1.0",
+            "token": "00329649-84ed-40a0-8a0b-adb284b3f36e",
+            "creationDate": "2017-05-09 12:42:00 +0300",
+            "lastUpdatedDate": "2017-10-16 11:25:46 +0300"
+        },
+        {
+            "id": 42619,
+            "name": "SHC-IOT AS JCO TENANT OD 1.0",
+            "token": "4b590065-ac83-441f-8251-c11fc6cedd8a",
+            "creationDate": "2017-05-09 12:52:34 +0300",
+            "lastUpdatedDate": "2017-10-16 11:45:35 +0300"
+        },
+        {
+            "id": 42622,
+            "name": "SHC - IoT Application Enablement Services Metadata",
+            "token": "7a6bbc32-fd08-4795-8bc0-28280a497fd8",
+            "creationDate": "2017-05-09 13:23:00 +0300",
+            "lastUpdatedDate": "2017-10-13 13:32:51 +0300"
+        },
+        {
+            "id": 42634,
+            "name": "SHC - PRODUCT CONFIGURATION OD 1.0",
+            "token": "ef7f499d-8cc6-42fe-b331-c1eb4fea0e26",
+            "creationDate": "2017-05-09 15:22:18 +0300",
+            "lastUpdatedDate": "2017-10-16 11:23:15 +0300"
+        },
+        {
+            "id": 42635,
+            "name": "SHC - PRICING OD 1.0",
+            "token": "8bb44713-d1ba-4b2f-a087-c4b35744d53d",
+            "creationDate": "2017-05-09 15:23:11 +0300",
+            "lastUpdatedDate": "2017-10-16 03:35:04 +0300"
+        },
+        {
+            "id": 42693,
+            "name": "SHC - CSO - core",
+            "token": "a28588c0-3e77-4fe6-b530-ed47cbee106b",
+            "creationDate": "2017-05-09 16:48:26 +0300",
+            "lastUpdatedDate": "2017-10-11 20:15:23 +0300"
+        },
+        {
+            "id": 42694,
+            "name": "SHC - SAP XM DDS OD 1.0",
+            "token": "27ff9153-dcea-4d13-b6f4-7cb148a1bd84",
+            "creationDate": "2017-05-09 16:50:14 +0300",
+            "lastUpdatedDate": "2017-10-16 10:14:42 +0300"
+        },
+        {
+            "id": 42783,
+            "name": "SHC - MAC BM CORE JCO OD 100",
+            "token": "6652aa7f-cf09-4c34-a55f-4393b5443858",
+            "creationDate": "2017-05-09 19:06:47 +0300",
+            "lastUpdatedDate": "2017-10-16 12:18:11 +0300"
+        },
+        {
+            "id": 43222,
+            "name": "SHC - IoT Application Enablement Services Configuration",
+            "token": "c6e13ed0-4642-40bb-8d79-cd7d29ceff1f",
+            "creationDate": "2017-05-10 08:44:07 +0300",
+            "lastUpdatedDate": "2017-10-12 15:57:48 +0300"
+        },
+        {
+            "id": 43225,
+            "name": "SHC - IoT Application Enablement Services Commons",
+            "token": "ba9649c4-11fe-4b0f-9876-1bbb26ff346b",
+            "creationDate": "2017-05-10 09:39:33 +0300",
+            "lastUpdatedDate": "2017-10-12 15:44:30 +0300"
+        },
+        {
+            "id": 43226,
+            "name": "SHC - Metadata Service",
+            "token": "33187660-9ea3-444e-bf61-ad8b3e5339b9",
+            "creationDate": "2017-05-10 09:39:39 +0300",
+            "lastUpdatedDate": "2017-05-12 03:05:57 +0300"
+        },
+        {
+            "id": 43227,
+            "name": "SHC - IoT Application Enablement Services Composites",
+            "token": "69d59ca8-066b-40fb-bda5-b9c2ffae5d3c",
+            "creationDate": "2017-05-10 09:46:15 +0300",
+            "lastUpdatedDate": "2017-10-12 16:20:34 +0300"
+        },
+        {
+            "id": 43232,
+            "name": "SHC - IoT Application Enablement Services Cold Store",
+            "token": "fb615fc4-34c5-4eb2-aabe-e9d2893f3689",
+            "creationDate": "2017-05-10 10:28:11 +0300",
+            "lastUpdatedDate": "2017-10-13 13:28:57 +0300"
+        },
+        {
+            "id": 43247,
+            "name": "SHC - IoT Application Enablement Services CoreServices",
+            "token": "463e9a81-77da-42a6-952d-53c2494adb11",
+            "creationDate": "2017-05-10 12:04:53 +0300",
+            "lastUpdatedDate": "2017-05-10 12:05:18 +0300"
+        },
+        {
+            "id": 43259,
+            "name": "SHC - IoT Application Enablement Services Hierarchy",
+            "token": "3a75ca07-c3a6-4eda-b179-44e162cc5733",
+            "creationDate": "2017-05-10 14:40:48 +0300",
+            "lastUpdatedDate": "2017-09-21 12:07:40 +0300"
+        },
+        {
+            "id": 43260,
+            "name": "SHC - IoT Application Enablement Services Thing-Hierarchy",
+            "token": "31b34c22-b18d-444f-a1ed-d45e1337b8e1",
+            "creationDate": "2017-05-10 14:46:15 +0300",
+            "lastUpdatedDate": "2017-09-21 12:16:41 +0300"
+        },
+        {
+            "id": 43264,
+            "name": "SHC-IOT_AS_JCO_IOT_OD_1.0",
+            "token": "eaf0eefa-b553-44ac-9f54-55fc1ba1d425",
+            "creationDate": "2017-05-10 16:01:23 +0300",
+            "lastUpdatedDate": "2017-05-19 10:13:30 +0300"
+        },
+        {
+            "id": 43269,
+            "name": "SHC - Contract Checker Tool",
+            "token": "c28f157c-0e48-4c6a-a13c-2db12976d5a2",
+            "creationDate": "2017-05-10 17:00:58 +0300",
+            "lastUpdatedDate": "2017-05-12 16:56:58 +0300"
+        },
+        {
+            "id": 43362,
+            "name": "SHC - IGWDTOD 1.0",
+            "token": "4318eeff-2817-48dc-83a5-000b9d907d36",
+            "creationDate": "2017-05-11 08:33:41 +0300",
+            "lastUpdatedDate": "2017-05-18 08:15:19 +0300"
+        },
+        {
+            "id": 43412,
+            "name": "SHC-EMBEDDED_SYSTEMS_OD_1.0",
+            "token": "12a4ca45-6527-4d3d-866f-0ef555d2fc50",
+            "creationDate": "2017-05-11 13:45:40 +0300",
+            "lastUpdatedDate": "2017-10-13 06:33:41 +0300"
+        },
+        {
+            "id": 43514,
+            "name": "SHC - EDGE ANALYTICS SERVICE 3.0",
+            "token": "e649c64a-370e-4eaf-8192-508a4e7e1223",
+            "creationDate": "2017-05-11 22:44:23 +0300",
+            "lastUpdatedDate": "2017-05-31 21:50:58 +0300"
+        },
+        {
+            "id": 43515,
+            "name": "SHC - EDGE BUSESSENTIAL SERVICE 3.0",
+            "token": "83756ee0-d088-42b4-afbc-8f90490ed913",
+            "creationDate": "2017-05-11 23:28:33 +0300",
+            "lastUpdatedDate": "2017-05-31 21:43:25 +0300"
+        },
+        {
+            "id": 43827,
+            "name": "SHC - PROJ INFO NET OD 0.9 - common-cf-service",
+            "token": "d70f6506-ebda-480d-ade1-dae08651826a",
+            "creationDate": "2017-05-12 12:59:24 +0300",
+            "lastUpdatedDate": "2017-05-18 12:45:08 +0300"
+        },
+        {
+            "id": 43831,
+            "name": "SHC - IOT AS JCO UI5 THG OD 1.0",
+            "token": "fc88c4f7-8ff3-4c45-b8c8-daa38d56197e",
+            "creationDate": "2017-05-12 13:45:34 +0300",
+            "lastUpdatedDate": "2017-07-18 15:25:54 +0300"
+        },
+        {
+            "id": 43832,
+            "name": "SHC - Consent Management OD 1.0",
+            "token": "515971dc-dbe2-4a32-92b3-eae07220fb39",
+            "creationDate": "2017-05-12 13:47:21 +0300",
+            "lastUpdatedDate": "2017-10-12 09:34:32 +0300"
+        },
+        {
+            "id": 43833,
+            "name": "SHC - IOT AS JCO TM COMP OD 1.0",
+            "token": "ebb4a61f-8edc-4e45-b67b-de344bdc1e08",
+            "creationDate": "2017-05-12 14:04:56 +0300",
+            "lastUpdatedDate": "2017-07-18 15:45:28 +0300"
+        },
+        {
+            "id": 43834,
+            "name": "SHC - IOT AS JCO DATA INGS OD 1.0",
+            "token": "4a58b997-4829-47f1-855b-a7c1a9dec91e",
+            "creationDate": "2017-05-12 14:08:05 +0300",
+            "lastUpdatedDate": "2017-07-18 15:20:11 +0300"
+        },
+        {
+            "id": 43835,
+            "name": "SHC - IOT AS JCO COMP CRDT OD 1.0",
+            "token": "8cc54489-8268-4129-beb1-d9c7f223da68",
+            "creationDate": "2017-05-12 14:10:35 +0300",
+            "lastUpdatedDate": "2017-07-18 15:18:43 +0300"
+        },
+        {
+            "id": 43836,
+            "name": "SHC - IOT AS JCO PKGMANAGER OD 1.0",
+            "token": "fb098050-3ca7-4b0b-9016-a0f9ffb05dd0",
+            "creationDate": "2017-05-12 14:13:00 +0300",
+            "lastUpdatedDate": "2017-07-18 14:37:54 +0300"
+        },
+        {
+            "id": 43837,
+            "name": "SHC - IOT AS JCO THG PROPCAT OD 1.0",
+            "token": "287e2751-e619-4e3f-b968-2b21f049339c",
+            "creationDate": "2017-05-12 14:27:06 +0300",
+            "lastUpdatedDate": "2017-07-18 15:28:31 +0300"
+        },
+        {
+            "id": 44185,
+            "name": "SF - Recruiting Posting - Career Page",
+            "token": "b54dd528-02b6-4aa6-b5a2-de7b20d00990",
+            "creationDate": "2017-05-16 12:04:08 +0300",
+            "lastUpdatedDate": "2017-05-16 12:04:17 +0300"
+        },
+        {
+            "id": 44188,
+            "name": "SHC - XSAC FILEPROCESSOR 1.0",
+            "token": "85aa981b-0aaa-4f40-a364-661330103764",
+            "creationDate": "2017-05-16 12:49:50 +0300",
+            "lastUpdatedDate": "2017-07-13 13:26:04 +0300"
+        },
+        {
+            "id": 44203,
+            "name": "SHC - HCP Business Rules Repo 1.0",
+            "token": "064d344a-1c73-49ff-9f85-80b9a0f3e210",
+            "creationDate": "2017-05-16 14:57:42 +0300",
+            "lastUpdatedDate": "2017-05-16 14:57:51 +0300"
+        },
+        {
+            "id": 44216,
+            "name": "SFSF POSTING",
+            "token": "a7e82c49-feeb-4d1b-8a93-b8a57b292290",
+            "creationDate": "2017-05-16 15:27:12 +0300",
+            "lastUpdatedDate": "2017-05-16 15:27:12 +0300"
+        },
+        {
+            "id": 44332,
+            "name": "SHC - HCP Business Rules Runtime 1.0",
+            "token": "4631b391-66b7-4faf-882b-ec89618885bb",
+            "creationDate": "2017-05-17 07:18:15 +0300",
+            "lastUpdatedDate": "2017-10-06 02:15:22 +0300"
+        },
+        {
+            "id": 44333,
+            "name": "SHC - HCP Business Rules Compiler 1.0",
+            "token": "459b3557-6df7-47a4-ac22-0245f2652b8e",
+            "creationDate": "2017-05-17 07:27:05 +0300",
+            "lastUpdatedDate": "2017-10-05 03:14:31 +0300"
+        },
+        {
+            "id": 44361,
+            "name": "SHC - SAP DATA PLATFORM FOR FS 1.0",
+            "token": "2367e785-45ed-4651-b449-f90d80a78526",
+            "creationDate": "2017-05-17 11:25:44 +0300",
+            "lastUpdatedDate": "2017-10-05 12:00:54 +0300"
+        },
+        {
+            "id": 44395,
+            "name": "TEST_SHC - SFSF POSTING",
+            "token": "303f67a1-665a-4a83-baa4-40570efe4d40",
+            "creationDate": "2017-05-17 14:52:55 +0300",
+            "lastUpdatedDate": "2017-10-16 10:47:18 +0300"
+        },
+        {
+            "id": 44446,
+            "name": "SHC - SAP Financial Health Assessment",
+            "token": "2ce3672e-c693-4451-90bc-4bdebaa43f14",
+            "creationDate": "2017-05-18 01:57:49 +0300",
+            "lastUpdatedDate": "2017-05-18 21:30:03 +0300"
+        },
+        {
+            "id": 44578,
+            "name": "SHC - EDGE INTERCEPTOR 3.0",
+            "token": "0dff8fa1-ae48-421e-8036-7ee95d540b76",
+            "creationDate": "2017-05-19 03:36:46 +0300",
+            "lastUpdatedDate": "2017-05-31 20:46:24 +0300"
+        },
+        {
+            "id": 44579,
+            "name": "SHC - EDGE PERSISTENCE SERVICE 3.0",
+            "token": "4653686e-847f-457d-9f41-240c5c282941",
+            "creationDate": "2017-05-19 03:41:21 +0300",
+            "lastUpdatedDate": "2017-05-31 21:44:22 +0300"
+        },
+        {
+            "id": 44580,
+            "name": "SHC - EDGE SQLANY 3.0",
+            "token": "17651ce8-d83b-4716-9616-a2eb872ec7ab",
+            "creationDate": "2017-05-19 03:55:20 +0300",
+            "lastUpdatedDate": "2017-05-31 21:00:41 +0300"
+        },
+        {
+            "id": 44581,
+            "name": "SHC - EDGE POLICY SERVER 3.0",
+            "token": "74ab0d96-9e7d-4fec-afb2-316cde9eabe2",
+            "creationDate": "2017-05-19 04:15:45 +0300",
+            "lastUpdatedDate": "2017-05-31 21:51:57 +0300"
+        },
+        {
+            "id": 44602,
+            "name": "SHC - IOT AS JCO IOT OD 1.0",
+            "token": "b8be8d19-5c41-4d54-8c4b-aac67d18ee8b",
+            "creationDate": "2017-05-19 15:51:08 +0300",
+            "lastUpdatedDate": "2017-10-16 12:03:22 +0300"
+        },
+        {
+            "id": 44607,
+            "name": "SFSF WORKCONNECT",
+            "token": "93fe52d3-b91f-492e-b1fc-54a6a4ff9a73",
+            "creationDate": "2017-05-19 17:21:31 +0300",
+            "lastUpdatedDate": "2017-09-04 12:45:43 +0300"
+        },
+        {
+            "id": 44610,
+            "name": "SHC - EDGE STREAMLITE 3.0",
+            "token": "99dfbd7d-c05e-4041-803c-9ade0011da85",
+            "creationDate": "2017-05-19 17:27:24 +0300",
+            "lastUpdatedDate": "2017-05-31 21:01:08 +0300"
+        },
+        {
+            "id": 44611,
+            "name": "TEST_SHC - CLEA TRANSLATION HUB 1.0",
+            "token": "d9a6c8a7-8250-4ce1-93b7-b9675b9333a5",
+            "creationDate": "2017-05-19 17:45:52 +0300",
+            "lastUpdatedDate": "2017-09-14 16:21:23 +0300"
+        },
+        {
+            "id": 44629,
+            "name": "SHC - EDGE BUSESSENTIAL SQL 3.0",
+            "token": "3b95d312-d7bb-4c12-8d51-342ee8e7badc",
+            "creationDate": "2017-05-19 22:44:36 +0300",
+            "lastUpdatedDate": "2017-05-19 22:44:58 +0300"
+        },
+        {
+            "id": 44630,
+            "name": "SHC - EDGE BUSESSENTIAL SYNC 3.0",
+            "token": "60eb1eb0-a52f-4df0-81e5-1a3e04912eca",
+            "creationDate": "2017-05-19 23:12:28 +0300",
+            "lastUpdatedDate": "2017-08-22 19:42:45 +0300"
+        },
+        {
+            "id": 44642,
+            "name": "SHC - SAP CONN PARKING OD 1.0",
+            "token": "42f2a66f-ea66-46e3-b036-31c599927bd4",
+            "creationDate": "2017-05-21 14:22:19 +0300",
+            "lastUpdatedDate": "2017-09-17 11:09:53 +0300"
+        },
+        {
+            "id": 44720,
+            "name": "SHC-IOT AS JCO EXUP OD 1.0",
+            "token": "7b8be203-5d7e-4555-9a17-6f24db661694",
+            "creationDate": "2017-05-22 14:49:33 +0300",
+            "lastUpdatedDate": "2017-10-16 11:46:13 +0300"
+        },
+        {
+            "id": 44721,
+            "name": "SHC-IOT AS JCO LOC OD 1.0",
+            "token": "f87cf17c-2956-4f56-99ea-33f3ce46b111",
+            "creationDate": "2017-05-22 14:58:16 +0300",
+            "lastUpdatedDate": "2017-10-16 11:45:41 +0300"
+        },
+        {
+            "id": 44722,
+            "name": "SHC - SFSF POSTING",
+            "token": "fbcd6665-ad97-4447-84ee-8ded46349ea6",
+            "creationDate": "2017-05-22 15:02:47 +0300",
+            "lastUpdatedDate": "2017-10-16 12:26:19 +0300"
+        },
+        {
+            "id": 44723,
+            "name": "SHC - UI THEME DESIGNER V1 FOR CLOUD",
+            "token": "5cec3a03-89dd-43eb-bf60-d45ffea46b2d",
+            "creationDate": "2017-05-22 15:27:43 +0300",
+            "lastUpdatedDate": "2017-09-07 12:38:16 +0300"
+        },
+        {
+            "id": 44824,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - common-cf-service",
+            "token": "fedd256d-0899-4cf0-8d90-1830b0a1c13f",
+            "creationDate": "2017-05-23 11:37:21 +0300",
+            "lastUpdatedDate": "2017-10-16 01:08:49 +0300"
+        },
+        {
+            "id": 44935,
+            "name": "SHC - SFSF WORKCONNECT",
+            "token": "192a2421-1091-47b1-8fd3-5fb38caf6743",
+            "creationDate": "2017-05-23 19:49:59 +0300",
+            "lastUpdatedDate": "2017-10-16 12:29:04 +0300"
+        },
+        {
+            "id": 45036,
+            "name": "SHC - HYBRIS LIVE DASHBOARD 100",
+            "token": "f9b4928e-31fb-4d58-81a9-f44b211c4e3f",
+            "creationDate": "2017-05-24 15:54:51 +0300",
+            "lastUpdatedDate": "2017-10-13 21:51:18 +0300"
+        },
+        {
+            "id": 45042,
+            "name": "SHC - SAP Fieldglass VMS 2017.20",
+            "token": "4f94a30b-1c53-4013-85a1-6d039adfb41a",
+            "creationDate": "2017-05-24 17:02:52 +0300",
+            "lastUpdatedDate": "2017-08-01 22:03:18 +0300"
+        },
+        {
+            "id": 45047,
+            "name": "SHC - SAP WEB IDE HANA MODELERS OD 1",
+            "token": "57457e31-2b89-4b79-8abe-1c65a4099f76",
+            "creationDate": "2017-05-24 17:55:27 +0300",
+            "lastUpdatedDate": "2017-09-20 08:01:42 +0300"
+        },
+        {
+            "id": 45082,
+            "name": "SHC - CXSdk 1.0",
+            "token": "d086cdd1-8e88-4f32-b151-fd5c496e47f4",
+            "creationDate": "2017-05-25 06:39:37 +0300",
+            "lastUpdatedDate": "2017-05-25 06:40:04 +0300"
+        },
+        {
+            "id": 45083,
+            "name": "SHC - SMART BUSINESS SERVICE OD 1.0",
+            "token": "17c1e7c3-818a-4243-a5ba-339219c8e0fd",
+            "creationDate": "2017-05-25 07:24:25 +0300",
+            "lastUpdatedDate": "2017-06-23 07:09:20 +0300"
+        },
+        {
+            "id": 45336,
+            "name": "SHC - ARIBA SUPPLIER MOBILE MICROSERVICE",
+            "token": "cb2264fe-794a-449c-9d95-6ff0e770a05b",
+            "creationDate": "2017-05-26 11:06:08 +0300",
+            "lastUpdatedDate": "2017-06-26 21:07:35 +0300"
+        },
+        {
+            "id": 45367,
+            "name": "SHC - TRUEREC CLIENT OD 0.9",
+            "token": "0648f70e-1376-4600-b1f7-2962371eb2d7",
+            "creationDate": "2017-05-26 19:28:46 +0300",
+            "lastUpdatedDate": "2017-10-11 21:06:24 +0300"
+        },
+        {
+            "id": 45370,
+            "name": "SHC - TRUEREC PLATFORM OD 0.9",
+            "token": "7615aa1a-6a59-40de-b0ad-f8ea0dd6cdfb",
+            "creationDate": "2017-05-26 20:16:00 +0300",
+            "lastUpdatedDate": "2017-10-12 23:22:27 +0300"
+        },
+        {
+            "id": 45439,
+            "name": "SHC - HCP Business Rules Repository 1.0",
+            "token": "77fba051-17f0-4093-bb39-efaa037a8585",
+            "creationDate": "2017-05-27 02:25:36 +0300",
+            "lastUpdatedDate": "2017-10-14 02:26:25 +0300"
+        },
+        {
+            "id": 45619,
+            "name": "SHC - EXTENSIBILITY FRAMEWORK",
+            "token": "7024d0be-9dc0-4b07-8897-c227bc618334",
+            "creationDate": "2017-05-29 18:41:05 +0300",
+            "lastUpdatedDate": "2017-05-29 18:41:34 +0300"
+        },
+        {
+            "id": 45625,
+            "name": "SHC - PHYSICAL PRODUCT",
+            "token": "8ecb3b60-5524-488b-9c99-c7a2b0e39bcf",
+            "creationDate": "2017-05-29 20:50:40 +0300",
+            "lastUpdatedDate": "2017-05-29 20:51:10 +0300"
+        },
+        {
+            "id": 45629,
+            "name": "SHC - PRODUCT PHYSICAL ASPECT",
+            "token": "145f135e-7b69-43e3-8d10-badfdc2c0843",
+            "creationDate": "2017-05-29 22:58:14 +0300",
+            "lastUpdatedDate": "2017-06-13 22:47:03 +0300"
+        },
+        {
+            "id": 45671,
+            "name": "SHC - HCP Java Parent",
+            "token": "ad8062e1-4ea7-4859-9b50-f38daa90899e",
+            "creationDate": "2017-05-30 01:11:10 +0300",
+            "lastUpdatedDate": "2017-08-23 11:26:20 +0300"
+        },
+        {
+            "id": 45773,
+            "name": "SHC - IoT Application Enablement Services offloader",
+            "token": "df54cf29-879e-44d5-8329-99e1fc48b901",
+            "creationDate": "2017-05-30 15:11:29 +0300",
+            "lastUpdatedDate": "2017-10-14 20:14:00 +0300"
+        },
+        {
+            "id": 45774,
+            "name": "SHC - IoT Application Enablement Services timeseries offloader",
+            "token": "7c23635e-7db3-42ca-8d45-a3467e16ab37",
+            "creationDate": "2017-05-30 15:16:07 +0300",
+            "lastUpdatedDate": "2017-05-30 15:16:36 +0300"
+        },
+        {
+            "id": 45811,
+            "name": "SHC - SAP LEONARDO BRIDGE 1.0",
+            "token": "d0f32e3b-b529-4b2e-bf1d-70e9c031d8ec",
+            "creationDate": "2017-05-31 00:26:02 +0300",
+            "lastUpdatedDate": "2017-08-08 09:52:30 +0300"
+        },
+        {
+            "id": 45842,
+            "name": "SHC - ARIBA NETWORK OD - SCC",
+            "token": "eb516380-4fc4-4e8c-9613-bb9fe872476f",
+            "creationDate": "2017-05-31 06:46:45 +0300",
+            "lastUpdatedDate": "2017-08-24 22:10:33 +0300"
+        },
+        {
+            "id": 45845,
+            "name": "SHC - PLINSIGHT CORE JCO OD 100",
+            "token": "e66b56c4-fc8f-47eb-b9ab-81c3ade892b1",
+            "creationDate": "2017-05-31 09:59:44 +0300",
+            "lastUpdatedDate": "2017-10-16 12:13:34 +0300"
+        },
+        {
+            "id": 45846,
+            "name": "SHC - UOM LIBRARY OD 1.0",
+            "token": "b98d5ae3-450e-4050-b88c-4788d265fb2f",
+            "creationDate": "2017-05-31 11:21:05 +0300",
+            "lastUpdatedDate": "2017-09-18 05:31:16 +0300"
+        },
+        {
+            "id": 45872,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-project-service",
+            "token": "86f74e2c-c449-4e19-ad5e-a6a7781851a0",
+            "creationDate": "2017-05-31 16:23:41 +0300",
+            "lastUpdatedDate": "2017-10-12 16:31:35 +0300"
+        },
+        {
+            "id": 45925,
+            "name": "SHC - CLOUD QTC CORE OD 2.0",
+            "token": "44fb6e41-0c2c-4229-a83f-b045342cd938",
+            "creationDate": "2017-05-31 22:21:57 +0300",
+            "lastUpdatedDate": "2017-10-16 11:57:56 +0300"
+        },
+        {
+            "id": 46005,
+            "name": "SHC - VISAM - CORE",
+            "token": "f8c69464-6cd9-4171-bec1-87cd102cfcce",
+            "creationDate": "2017-06-01 12:22:24 +0300",
+            "lastUpdatedDate": "2017-10-15 22:05:40 +0300"
+        },
+        {
+            "id": 46008,
+            "name": "SHC - VISAM - CONFIGAPP - UI",
+            "token": "e1c57d9d-6476-4d62-9227-6b711d607dce",
+            "creationDate": "2017-06-01 12:28:29 +0300",
+            "lastUpdatedDate": "2017-10-15 22:15:33 +0300"
+        },
+        {
+            "id": 46016,
+            "name": "SHC - BUSINESS LOGGING OD 1.0",
+            "token": "b7ebd07b-5663-44d0-9d92-10cd65ed8b3e",
+            "creationDate": "2017-06-01 12:56:46 +0300",
+            "lastUpdatedDate": "2017-10-16 11:57:13 +0300"
+        },
+        {
+            "id": 46151,
+            "name": "SHC - CLEA DOC FEAT EXTRACT OD 1.0",
+            "token": "8a9999a0-c98d-439d-9d1a-20944743cb03",
+            "creationDate": "2017-06-02 11:00:01 +0300",
+            "lastUpdatedDate": "2017-07-18 12:38:54 +0300"
+        },
+        {
+            "id": 46152,
+            "name": "SHC - CURRENCY SERVICES CORE OD 1.0",
+            "token": "734e6d67-eda2-4016-ac01-86e5d7dd3e37",
+            "creationDate": "2017-06-02 11:36:34 +0300",
+            "lastUpdatedDate": "2017-06-02 11:37:02 +0300"
+        },
+        {
+            "id": 46156,
+            "name": "SHC - Smart Templates Web IDE",
+            "token": "e7efb85a-7252-40b8-9fb6-4f0e09fa306b",
+            "creationDate": "2017-06-02 12:05:03 +0300",
+            "lastUpdatedDate": "2017-10-12 11:38:08 +0300"
+        },
+        {
+            "id": 46157,
+            "name": "SHC - CURRENCY SERVICES YAAS OD 1.0",
+            "token": "0c9313fd-07b1-4ed7-aa16-96937400b873",
+            "creationDate": "2017-06-02 12:18:39 +0300",
+            "lastUpdatedDate": "2017-06-21 11:41:06 +0300"
+        },
+        {
+            "id": 46503,
+            "name": "SHC - ADSLICENSINGBILLING",
+            "token": "3154997d-7b76-4f02-b2d0-e16772216ea3",
+            "creationDate": "2017-06-06 18:26:15 +0300",
+            "lastUpdatedDate": "2017-06-08 09:45:20 +0300"
+        },
+        {
+            "id": 46508,
+            "name": "SHC - ADSRESTAPI",
+            "token": "b0aa965a-b157-4b94-8f69-4e5fe5d795d4",
+            "creationDate": "2017-06-06 18:34:29 +0300",
+            "lastUpdatedDate": "2017-09-20 14:35:05 +0300"
+        },
+        {
+            "id": 46555,
+            "name": "SHC-CF_AUTOSCALE_0.9",
+            "token": "661f507a-2a6e-44eb-a6f8-15ed993a79c6",
+            "creationDate": "2017-06-07 10:05:55 +0300",
+            "lastUpdatedDate": "2017-09-12 17:55:05 +0300"
+        },
+        {
+            "id": 46567,
+            "name": "SHC - SAP DMI 1.0",
+            "token": "e2c2b435-bb51-4b65-8e4f-ea756f4ca2b6",
+            "creationDate": "2017-06-07 12:17:56 +0300",
+            "lastUpdatedDate": "2017-06-07 12:20:47 +0300"
+        },
+        {
+            "id": 46568,
+            "name": "SHC - Remittance Advice - Converter Service",
+            "token": "dd28bad6-9346-48c1-b4a0-afda6a95305f",
+            "creationDate": "2017-06-07 12:35:35 +0300",
+            "lastUpdatedDate": "2017-09-07 20:26:18 +0300"
+        },
+        {
+            "id": 46594,
+            "name": "SHC - CONFIG PRICING ADMIN OD 1.0",
+            "token": "f93dc94e-62a1-42c0-a832-17889d384085",
+            "creationDate": "2017-06-07 15:15:16 +0300",
+            "lastUpdatedDate": "2017-10-16 10:27:46 +0300"
+        },
+        {
+            "id": 46595,
+            "name": "SHC - CONFIG PRICING REPLI OD 1.0",
+            "token": "406f8320-7c86-4a59-94b9-f63b28f7cf45",
+            "creationDate": "2017-06-07 15:17:10 +0300",
+            "lastUpdatedDate": "2017-10-16 12:18:39 +0300"
+        },
+        {
+            "id": 46660,
+            "name": "SHC - SAP COPILOT OD 1.0",
+            "token": "66fe9aa9-e940-4156-ac79-c223d17813e2",
+            "creationDate": "2017-06-07 20:36:53 +0300",
+            "lastUpdatedDate": "2017-10-15 02:12:14 +0300"
+        },
+        {
+            "id": 46678,
+            "name": "SHC - Metadata Service Basex",
+            "token": "82d30342-89dd-4dba-9c6f-82d6c7371404",
+            "creationDate": "2017-06-07 21:38:49 +0300",
+            "lastUpdatedDate": "2017-06-07 21:39:01 +0300"
+        },
+        {
+            "id": 46749,
+            "name": "SHC-TAX SERVICE",
+            "token": "6c1a84fa-0910-4a34-82b1-56483d15a771",
+            "creationDate": "2017-06-08 13:40:33 +0300",
+            "lastUpdatedDate": "2017-09-14 14:16:30 +0300"
+        },
+        {
+            "id": 46758,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - poc-sampleapp-ui-pipeline",
+            "token": "e092920e-84dd-413b-a57b-cf9499b817dc",
+            "creationDate": "2017-06-08 14:02:23 +0300",
+            "lastUpdatedDate": "2017-09-12 20:29:07 +0300"
+        },
+        {
+            "id": 46790,
+            "name": "SHC - FEATURE FLAGS SERVICE CF 1.0",
+            "token": "9b582e2c-5a7f-4ffa-83e1-46ba1365daac",
+            "creationDate": "2017-06-08 16:27:15 +0300",
+            "lastUpdatedDate": "2017-10-16 10:59:56 +0300"
+        },
+        {
+            "id": 47123,
+            "name": "SHC - SAP HYBRIS CLOUD FOR CUSTOMER",
+            "token": "f2bbbcde-6b81-4220-8114-91bebbb5c9f1",
+            "creationDate": "2017-06-12 14:08:27 +0300",
+            "lastUpdatedDate": "2017-06-12 14:08:45 +0300"
+        },
+        {
+            "id": 47204,
+            "name": "SHC - SAP Web IDE Annotation Modeler",
+            "token": "9a9edf98-fcb7-4700-b2e2-180e317adf1a",
+            "creationDate": "2017-06-13 09:27:24 +0300",
+            "lastUpdatedDate": "2017-10-12 13:49:23 +0300"
+        },
+        {
+            "id": 47225,
+            "name": "SHC-SAP_DKE_Data_Hub_1.0",
+            "token": "7f53ddef-18a8-4dab-8b6c-a40e276cb9d4",
+            "creationDate": "2017-06-13 11:29:01 +0300",
+            "lastUpdatedDate": "2017-10-02 14:50:35 +0300"
+        },
+        {
+            "id": 47237,
+            "name": "SHC - SAP HYBRIS CLOUD FOR CUSTOMER DWB Services",
+            "token": "377f63ca-931b-4ac3-9efb-2aa601dd34e5",
+            "creationDate": "2017-06-13 13:02:31 +0300",
+            "lastUpdatedDate": "2017-06-13 13:03:11 +0300"
+        },
+        {
+            "id": 47238,
+            "name": "SHC - SAP HYBRIS CLOUD FOR CUSTOMER DWB UI",
+            "token": "43d40ab4-3e35-49e0-b9f7-45f9d8fd2036",
+            "creationDate": "2017-06-13 13:07:44 +0300",
+            "lastUpdatedDate": "2017-06-13 13:08:18 +0300"
+        },
+        {
+            "id": 47255,
+            "name": "SHC - HYBRIS AS A SERVICE 1.0",
+            "token": "d826c175-55c5-48fc-82de-eda490360372",
+            "creationDate": "2017-06-13 14:49:41 +0300",
+            "lastUpdatedDate": "2017-10-16 11:44:38 +0300"
+        },
+        {
+            "id": 47293,
+            "name": "SHC - HYBRIS PROFILE 1.0",
+            "token": "79c26154-71af-46dd-8ae0-c1266b44fb13",
+            "creationDate": "2017-06-13 17:54:32 +0300",
+            "lastUpdatedDate": "2017-08-03 19:26:54 +0300"
+        },
+        {
+            "id": 47450,
+            "name": "SHC-PROD_INFORMATION_NETW_OD_1.0",
+            "token": "627d33d3-4a34-4203-9462-b2c0910d97a1",
+            "creationDate": "2017-06-14 10:30:49 +0300",
+            "lastUpdatedDate": "2017-10-13 17:11:48 +0300"
+        },
+        {
+            "id": 47459,
+            "name": "SHC - Project Assistant Cloud Services>",
+            "token": "1681fd17-6d3e-4e5e-b49c-c4d00b6076d4",
+            "creationDate": "2017-06-14 11:37:10 +0300",
+            "lastUpdatedDate": "2017-09-27 16:55:27 +0300"
+        },
+        {
+            "id": 47461,
+            "name": "SHC - easy2",
+            "token": "29cf646f-ba29-49b2-9ef2-e075f81eda70",
+            "creationDate": "2017-06-14 12:50:55 +0300",
+            "lastUpdatedDate": "2017-07-28 19:11:42 +0300"
+        },
+        {
+            "id": 47479,
+            "name": "SHC - Remittance Advice - Text Classifier Service",
+            "token": "25f22df3-faeb-4184-a355-73ec19d2389e",
+            "creationDate": "2017-06-14 14:06:08 +0300",
+            "lastUpdatedDate": "2017-09-20 16:58:49 +0300"
+        },
+        {
+            "id": 47480,
+            "name": "SHC - Remittance Advice - ROI Detector Service",
+            "token": "a10e12ae-7752-44e0-9fc5-1e20a95dc85f",
+            "creationDate": "2017-06-14 14:09:21 +0300",
+            "lastUpdatedDate": "2017-10-06 16:46:51 +0300"
+        },
+        {
+            "id": 47482,
+            "name": "SHC - Remittance Advice - OCR Service",
+            "token": "a5032e2c-dd2e-43c7-b80c-810281969a7f",
+            "creationDate": "2017-06-14 14:31:11 +0300",
+            "lastUpdatedDate": "2017-09-05 14:32:04 +0300"
+        },
+        {
+            "id": 47484,
+            "name": "SHC - SAP_Digital_Manufacturing_1.0",
+            "token": "de017fe8-4552-4cc2-ba2d-3b49f601b63a",
+            "creationDate": "2017-06-14 16:02:38 +0300",
+            "lastUpdatedDate": "2017-10-16 09:17:36 +0300"
+        },
+        {
+            "id": 47561,
+            "name": "SHC - VI_CONVERSION_SERVICE 1.0",
+            "token": "e7fd7142-b483-462c-bb68-7fe2653cf9ec",
+            "creationDate": "2017-06-15 06:04:00 +0300",
+            "lastUpdatedDate": "2017-09-04 06:07:42 +0300"
+        },
+        {
+            "id": 47568,
+            "name": "SHC - Popularity-ptions",
+            "token": "43315734-0086-4949-9052-e50c34efadc3",
+            "creationDate": "2017-06-15 08:56:01 +0300",
+            "lastUpdatedDate": "2017-06-16 13:50:33 +0300"
+        },
+        {
+            "id": 47604,
+            "name": "SHC - IoT Application Enablement Services Core-Services",
+            "token": "2f190a53-ad13-4da0-86b3-42529970ef36",
+            "creationDate": "2017-06-15 11:55:49 +0300",
+            "lastUpdatedDate": "2017-10-12 17:25:35 +0300"
+        },
+        {
+            "id": 47691,
+            "name": "SHC - AN Mobile",
+            "token": "76111fab-5412-4e3b-bf40-17bdc46f0f91",
+            "creationDate": "2017-06-15 23:26:50 +0300",
+            "lastUpdatedDate": "2017-07-21 01:31:43 +0300"
+        },
+        {
+            "id": 47741,
+            "name": "SHC - Remittance Advice - ROI Classifier Service",
+            "token": "1bdcb2f5-f361-4e33-ba0b-70cf651c4446",
+            "creationDate": "2017-06-16 10:04:59 +0300",
+            "lastUpdatedDate": "2017-07-11 14:32:56 +0300"
+        },
+        {
+            "id": 47743,
+            "name": "SHC - Remittance Advice - Text Extractor Service",
+            "token": "85f9f259-a90b-4072-98d1-dd96a7b69470",
+            "creationDate": "2017-06-16 10:52:14 +0300",
+            "lastUpdatedDate": "2017-09-07 20:26:22 +0300"
+        },
+        {
+            "id": 47745,
+            "name": "SHC - Remittance Advice - Internal persistence",
+            "token": "9f0187f2-4845-456f-8bfa-e9926954253a",
+            "creationDate": "2017-06-16 11:58:27 +0300",
+            "lastUpdatedDate": "2017-10-11 12:30:28 +0300"
+        },
+        {
+            "id": 47753,
+            "name": "SHC - Remittance Advice Service",
+            "token": "c3997b3a-e75f-441a-9991-20f221d48ad9",
+            "creationDate": "2017-06-16 13:48:49 +0300",
+            "lastUpdatedDate": "2017-10-09 15:36:26 +0300"
+        },
+        {
+            "id": 47872,
+            "name": "SHC - IOT CONNECTOR HCP 1.0",
+            "token": "ea3f9044-fd11-4b2f-927e-452757b95d3d",
+            "creationDate": "2017-06-16 16:34:06 +0300",
+            "lastUpdatedDate": "2017-06-16 16:34:22 +0300"
+        },
+        {
+            "id": 48131,
+            "name": "SHC - Popularity-options",
+            "token": "71bca0b3-7cfd-412b-bd9d-28b9684a9d2f",
+            "creationDate": "2017-06-16 17:26:55 +0300",
+            "lastUpdatedDate": "2017-10-16 00:05:32 +0300"
+        },
+        {
+            "id": 48336,
+            "name": "SHC - ARIBA-COBALT-secretmanager",
+            "token": "167a649f-c8dd-4787-a30d-52ef83c558df",
+            "creationDate": "2017-06-17 00:41:05 +0300",
+            "lastUpdatedDate": "2017-06-17 00:41:31 +0300"
+        },
+        {
+            "id": 48488,
+            "name": "SHC - SAP JAM COMMUNITIES",
+            "token": "9901068f-2eae-4506-ae80-1c7ab60d50eb",
+            "creationDate": "2017-06-19 11:03:02 +0300",
+            "lastUpdatedDate": "2017-10-16 04:55:47 +0300"
+        },
+        {
+            "id": 48503,
+            "name": "SHC - ASSET INTELL. NETWORK 1708",
+            "token": "8dc6a87b-aea1-468c-b084-5f989a571028",
+            "creationDate": "2017-06-19 12:46:44 +0300",
+            "lastUpdatedDate": "2017-09-05 16:34:24 +0300"
+        },
+        {
+            "id": 48763,
+            "name": "SHC-MT-LIB",
+            "token": "995b6a62-3546-4cae-9956-72d24107c0e6",
+            "creationDate": "2017-06-20 12:56:12 +0300",
+            "lastUpdatedDate": "2017-10-16 11:49:57 +0300"
+        },
+        {
+            "id": 48817,
+            "name": "SHC - SAP HYBRIS CONVERSION SUITE 1.0",
+            "token": "00986919-ce88-4841-a93c-c2b34ed3881d",
+            "creationDate": "2017-06-20 19:25:05 +0300",
+            "lastUpdatedDate": "2017-06-20 19:25:19 +0300"
+        },
+        {
+            "id": 49033,
+            "name": "SHC - Remittance Advice - Internal Queue",
+            "token": "3d494780-4790-4208-9416-d74288414fa8",
+            "creationDate": "2017-06-21 16:12:09 +0300",
+            "lastUpdatedDate": "2017-09-07 18:28:57 +0300"
+        },
+        {
+            "id": 49320,
+            "name": "SHC - com.sap.mobile.ui",
+            "token": "20b8f64a-f5b7-4bb8-b149-c287cd0d0182",
+            "creationDate": "2017-06-23 00:21:21 +0300",
+            "lastUpdatedDate": "2017-10-15 05:33:18 +0300"
+        },
+        {
+            "id": 49620,
+            "name": "SHC ? C4C_HCP_PLANOCHECK",
+            "token": "8effa6b8-cc85-4a9f-bd62-77c1d9c1f33f",
+            "creationDate": "2017-06-24 00:15:29 +0300",
+            "lastUpdatedDate": "2017-09-06 02:18:02 +0300"
+        },
+        {
+            "id": 49809,
+            "name": "SHC - PACKAGE COLLECT. DATA OD 1.0",
+            "token": "c7fee4d8-c050-4c33-8acd-fad5a82c972d",
+            "creationDate": "2017-06-26 12:51:37 +0300",
+            "lastUpdatedDate": "2017-09-15 14:58:32 +0300"
+        },
+        {
+            "id": 49823,
+            "name": "SHC - SAP VEHICLES NETWORK OD 1.0",
+            "token": "e992d631-63e8-4c63-92e6-9f64ba14d3d8",
+            "creationDate": "2017-06-26 14:48:36 +0300",
+            "lastUpdatedDate": "2017-10-16 06:13:06 +0300"
+        },
+        {
+            "id": 49873,
+            "name": "SHC - TAXSERVICE - CORE",
+            "token": "c9d08b37-f063-4dba-ae0a-872c38e535b7",
+            "creationDate": "2017-06-27 09:36:01 +0300",
+            "lastUpdatedDate": "2017-10-15 22:05:38 +0300"
+        },
+        {
+            "id": 49881,
+            "name": "SHC - IoT Application Enablement Services DataIngestion",
+            "token": "6adf24b5-5cdf-4624-a545-e2458f9c845f",
+            "creationDate": "2017-06-27 11:41:18 +0300",
+            "lastUpdatedDate": "2017-10-13 13:44:03 +0300"
+        },
+        {
+            "id": 49885,
+            "name": "SHC - SLHTAX 100",
+            "token": "c4a5472f-21d5-4072-9fea-f148043759a8",
+            "creationDate": "2017-06-27 11:51:46 +0300",
+            "lastUpdatedDate": "2017-06-27 11:52:23 +0300"
+        },
+        {
+            "id": 49888,
+            "name": "SHC - TAXCONFIGURATION - CORE",
+            "token": "53ae94ea-8b90-48de-8b76-4b0b9d9b83d8",
+            "creationDate": "2017-06-27 12:02:07 +0300",
+            "lastUpdatedDate": "2017-10-15 22:05:36 +0300"
+        },
+        {
+            "id": 49895,
+            "name": "SHC - CSO - SCIP_LinearProgramming",
+            "token": "38f215b3-7523-4b99-af90-cc3ebbf3c765",
+            "creationDate": "2017-06-27 12:17:18 +0300",
+            "lastUpdatedDate": "2017-07-25 20:15:04 +0300"
+        },
+        {
+            "id": 49901,
+            "name": "SHC-\"IOT AS JCO MDCONSUMER OD 1.0\"",
+            "token": "ecb0c116-de75-4100-b890-e2fa0e93aab5",
+            "creationDate": "2017-06-27 13:27:16 +0300",
+            "lastUpdatedDate": "2017-10-14 19:48:04 +0300"
+        },
+        {
+            "id": 49902,
+            "name": "SHC-IOT AS JCO DATAMAP OD 1.0",
+            "token": "2efd09b9-abac-4bce-9449-080f8a17ab00",
+            "creationDate": "2017-06-27 13:35:50 +0300",
+            "lastUpdatedDate": "2017-09-27 12:57:09 +0300"
+        },
+        {
+            "id": 49924,
+            "name": "SHC-IOT AS JCO DIERRREADER OD 1.0",
+            "token": "64ef31c2-ea8c-4b4d-9080-a4112200c98e",
+            "creationDate": "2017-06-27 16:59:23 +0300",
+            "lastUpdatedDate": "2017-09-27 13:45:12 +0300"
+        },
+        {
+            "id": 50037,
+            "name": "SHC - POLICY MANAGEMENT OD 1.0",
+            "token": "f77c4f28-a820-451a-b9f8-2c8c23cf1bbf",
+            "creationDate": "2017-06-28 05:25:42 +0300",
+            "lastUpdatedDate": "2017-10-16 12:17:19 +0300"
+        },
+        {
+            "id": 50086,
+            "name": "SHC - IoT Application Enablement Services Files",
+            "token": "5974a989-c67a-4472-a23b-43efb9bb11f5",
+            "creationDate": "2017-06-28 15:11:41 +0300",
+            "lastUpdatedDate": "2017-10-12 17:51:20 +0300"
+        },
+        {
+            "id": 50187,
+            "name": "SHC - SAP JAM COLLABORATION",
+            "token": "7424535c-bcd2-4b87-9c88-db41b9a27e2d",
+            "creationDate": "2017-06-28 23:55:10 +0300",
+            "lastUpdatedDate": "2017-07-25 02:21:55 +0300"
+        },
+        {
+            "id": 50912,
+            "name": "SHC - SAP HANA COCKPIT MTA 2.0",
+            "token": "22a3a49e-b997-4045-af43-b04127b2bc5e",
+            "creationDate": "2017-06-29 13:57:40 +0300",
+            "lastUpdatedDate": "2017-10-16 01:12:36 +0300"
+        },
+        {
+            "id": 50961,
+            "name": "SHC - IOT Search and Discovery - 1708",
+            "token": "bb509f76-0744-4ea5-ac9e-b3f1ca10256b",
+            "creationDate": "2017-06-29 23:08:23 +0300",
+            "lastUpdatedDate": "2017-06-29 23:08:39 +0300"
+        },
+        {
+            "id": 50974,
+            "name": "SHC - CoDDataConnector",
+            "token": "22e6e37c-e0cf-49c8-a88f-6489aba19941",
+            "creationDate": "2017-06-30 08:07:45 +0300",
+            "lastUpdatedDate": "2017-10-13 03:10:33 +0300"
+        },
+        {
+            "id": 50988,
+            "name": "SHC - CoDPredictionEngine",
+            "token": "7f361aef-5742-434c-add4-70758a3555f3",
+            "creationDate": "2017-06-30 21:38:26 +0300",
+            "lastUpdatedDate": "2017-10-16 03:15:48 +0300"
+        },
+        {
+            "id": 51160,
+            "name": "test_SHC - MARMOLATA_OD",
+            "token": "935c5f00-a478-469d-87ad-ce89e30c7adb",
+            "creationDate": "2017-07-03 14:15:25 +0300",
+            "lastUpdatedDate": "2017-07-14 16:32:33 +0300"
+        },
+        {
+            "id": 51293,
+            "name": "SHC - ARIBA HANA NATIVE INTEGRATION",
+            "token": "eae8592a-ce52-4341-b2f2-df5603d75131",
+            "creationDate": "2017-07-04 17:15:57 +0300",
+            "lastUpdatedDate": "2017-07-04 17:16:31 +0300"
+        },
+        {
+            "id": 51445,
+            "name": "SHC - VISAM - CONFIGAPPQUOTA - UI",
+            "token": "a6036a0c-88d8-4ceb-9e34-ebdee04a037a",
+            "creationDate": "2017-07-05 10:49:05 +0300",
+            "lastUpdatedDate": "2017-08-07 22:30:12 +0300"
+        },
+        {
+            "id": 51667,
+            "name": "SHC-javaproxy",
+            "token": "af2a25ea-0728-49b7-869e-ac72a96b6b07",
+            "creationDate": "2017-07-06 11:54:30 +0300",
+            "lastUpdatedDate": "2017-07-06 11:54:43 +0300"
+        },
+        {
+            "id": 51668,
+            "name": "SHC-ServiceCenter",
+            "token": "0fcbc28c-46c3-4dd3-a618-1f58bd13d846",
+            "creationDate": "2017-07-06 12:00:03 +0300",
+            "lastUpdatedDate": "2017-07-06 12:00:34 +0300"
+        },
+        {
+            "id": 51692,
+            "name": "SHC - HYBRIS PROFILE 2.0",
+            "token": "209c5ab5-e79e-425e-b693-fb6455ec05b3",
+            "creationDate": "2017-07-06 14:20:07 +0300",
+            "lastUpdatedDate": "2017-10-16 10:17:15 +0300"
+        },
+        {
+            "id": 51886,
+            "name": "SHC - SAP BUILD ON DEMAND 1.0",
+            "token": "b9bca4fd-424e-4337-8f82-b996eea3da49",
+            "creationDate": "2017-07-07 14:04:05 +0300",
+            "lastUpdatedDate": "2017-10-16 12:34:25 +0300"
+        },
+        {
+            "id": 51934,
+            "name": "SHC - WDE PLUGIN TT OD 1611",
+            "token": "9a98a604-fa9b-4649-92df-d66925762674",
+            "creationDate": "2017-07-08 11:55:47 +0300",
+            "lastUpdatedDate": "2017-10-16 06:33:19 +0300"
+        },
+        {
+            "id": 52349,
+            "name": "SHC - SAP S/4Hana Cloud for Customer Payments",
+            "token": "4ab14d0f-86ac-4e51-9b8f-454b73088c55",
+            "creationDate": "2017-07-11 13:15:29 +0300",
+            "lastUpdatedDate": "2017-07-11 13:15:58 +0300"
+        },
+        {
+            "id": 52492,
+            "name": "SHC - QUICK CREATE",
+            "token": "7a8d76be-277f-407d-b216-d1b991378811",
+            "creationDate": "2017-07-12 04:46:04 +0300",
+            "lastUpdatedDate": "2017-07-27 12:22:37 +0300"
+        },
+        {
+            "id": 52567,
+            "name": "SHC - IoT Application Enablement Services common",
+            "token": "73b1f08e-f825-4ca7-8ec2-79625ac4c3f0",
+            "creationDate": "2017-07-12 16:31:10 +0300",
+            "lastUpdatedDate": "2017-07-12 16:31:38 +0300"
+        },
+        {
+            "id": 52695,
+            "name": "SHC - Hybris Conversion Services 1.0",
+            "token": "6d24c52f-5726-4bc0-a536-d7c7212140dc",
+            "creationDate": "2017-07-13 12:39:42 +0300",
+            "lastUpdatedDate": "2017-10-13 20:23:42 +0300"
+        },
+        {
+            "id": 52702,
+            "name": "SHC - SAP Web Fact Sheet Editor",
+            "token": "2aca6694-610d-470e-ab02-3545939da685",
+            "creationDate": "2017-07-13 14:19:52 +0300",
+            "lastUpdatedDate": "2017-08-31 10:03:40 +0300"
+        },
+        {
+            "id": 52791,
+            "name": "SHC - SAP SF BizX Core",
+            "token": "9f388885-83fb-4907-994d-4a29a24442ed",
+            "creationDate": "2017-07-14 04:28:29 +0300",
+            "lastUpdatedDate": "2017-08-16 08:09:36 +0300"
+        },
+        {
+            "id": 52798,
+            "name": "SHC - VISAM - visaprocesser - ui",
+            "token": "10f42c36-17f0-4994-93aa-2852f78f5fb8",
+            "creationDate": "2017-07-14 08:47:05 +0300",
+            "lastUpdatedDate": "2017-10-15 22:30:33 +0300"
+        },
+        {
+            "id": 52854,
+            "name": "SHC - PERSONAL DATA MANAGER OD 1.0",
+            "token": "007bbf69-c0f1-44dc-8fc3-90fe256d4999",
+            "creationDate": "2017-07-15 13:25:38 +0300",
+            "lastUpdatedDate": "2017-10-16 00:37:43 +0300"
+        },
+        {
+            "id": 53198,
+            "name": "SHC - MOBILE SERVICES CF 1.0 OD",
+            "token": "e51cca57-8cd8-4fd8-addc-ff393a998e8c",
+            "creationDate": "2017-07-18 12:09:47 +0300",
+            "lastUpdatedDate": "2017-10-06 14:39:05 +0300"
+        },
+        {
+            "id": 53244,
+            "name": "ImportAPI - SFSF POSTING",
+            "token": "35bc4a55-c1c1-497f-b067-da1341c3c2d2",
+            "creationDate": "2017-07-18 16:58:41 +0300",
+            "lastUpdatedDate": "2017-07-19 11:10:34 +0300"
+        },
+        {
+            "id": 53460,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-project-ui",
+            "token": "4bed74ee-202d-4a22-be4d-e3f1e8f95018",
+            "creationDate": "2017-07-19 18:18:21 +0300",
+            "lastUpdatedDate": "2017-10-16 09:34:13 +0300"
+        },
+        {
+            "id": 53601,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-uilib",
+            "token": "db1e66fa-4f58-4c38-b928-cde6668225f8",
+            "creationDate": "2017-07-20 19:18:49 +0300",
+            "lastUpdatedDate": "2017-09-11 20:26:13 +0300"
+        },
+        {
+            "id": 53655,
+            "name": "TEST_SHC - SUCCESSFACTORS RECRUITING",
+            "token": "5c06f99b-ce61-4e1f-932a-00d358e4df4c",
+            "creationDate": "2017-07-20 23:43:57 +0300",
+            "lastUpdatedDate": "2017-10-01 03:50:14 +0300"
+        },
+        {
+            "id": 53683,
+            "name": "SHC - SAP IOT MOVING ASSETS CLOUD 1",
+            "token": "d5b958a1-2d3e-46f2-8651-5f7817b06fff",
+            "creationDate": "2017-07-21 14:22:14 +0300",
+            "lastUpdatedDate": "2017-10-16 12:32:56 +0300"
+        },
+        {
+            "id": 53687,
+            "name": "SHC - XSJ TOOLS NODEJS",
+            "token": "1710aa43-96bd-4af1-9899-ce24555e129f",
+            "creationDate": "2017-07-21 16:26:23 +0300",
+            "lastUpdatedDate": "2017-07-21 16:29:47 +0300"
+        },
+        {
+            "id": 53688,
+            "name": "SHC - XSJ TOOLS CDS",
+            "token": "d7a7e584-2188-4931-ae18-57927ae681c2",
+            "creationDate": "2017-07-21 17:18:52 +0300",
+            "lastUpdatedDate": "2017-07-21 17:19:15 +0300"
+        },
+        {
+            "id": 53811,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - bpns-mock-service",
+            "token": "88abf9d7-e84d-44ce-ace9-864ae479d785",
+            "creationDate": "2017-07-24 11:26:31 +0300",
+            "lastUpdatedDate": "2017-07-28 07:08:37 +0300"
+        },
+        {
+            "id": 53815,
+            "name": "SHC - JAVA TOOLS OD 1.0",
+            "token": "be3ba639-70e8-49f1-bd2d-4ec3701a00be",
+            "creationDate": "2017-07-24 11:58:41 +0300",
+            "lastUpdatedDate": "2017-07-24 11:59:35 +0300"
+        },
+        {
+            "id": 53853,
+            "name": "SHC - Remittance Advice Internal Test Service",
+            "token": "56e9fdaf-8306-4476-9fb4-37b0b42bc76c",
+            "creationDate": "2017-07-24 15:27:38 +0300",
+            "lastUpdatedDate": "2017-09-07 20:28:34 +0300"
+        },
+        {
+            "id": 53887,
+            "name": "TEST_SHC - SAP JAM COMMUNITIES",
+            "token": "f48b2334-34d8-4b0e-9b1e-51137475fa16",
+            "creationDate": "2017-07-24 23:10:23 +0300",
+            "lastUpdatedDate": "2017-08-08 11:21:26 +0300"
+        },
+        {
+            "id": 53907,
+            "name": "SHC - ARIBA GUIDEDBUY",
+            "token": "e476835c-361e-4a2d-af7a-d1fe6291ca12",
+            "creationDate": "2017-07-25 10:07:04 +0300",
+            "lastUpdatedDate": "2017-07-25 10:07:04 +0300"
+        },
+        {
+            "id": 53925,
+            "name": "SHC - CF Destination Service 1.0",
+            "token": "417d1e44-df04-4180-a5b4-5d2bf4e23b51",
+            "creationDate": "2017-07-25 11:54:58 +0300",
+            "lastUpdatedDate": "2017-07-25 12:03:14 +0300"
+        },
+        {
+            "id": 53979,
+            "name": "SHC - EXCHANGE MEDIA ENGINES OD 100",
+            "token": "47bd51a9-d43a-4fb3-b37f-7688d619cc41",
+            "creationDate": "2017-07-25 19:27:17 +0300",
+            "lastUpdatedDate": "2017-10-16 03:28:28 +0300"
+        },
+        {
+            "id": 53996,
+            "name": "TEST_SHC - SAP JAM COLLABORATION",
+            "token": "515236e7-0aa1-4ddc-9686-388ee7f3292e",
+            "creationDate": "2017-07-25 20:40:46 +0300",
+            "lastUpdatedDate": "2017-10-13 01:34:12 +0300"
+        },
+        {
+            "id": 54088,
+            "name": "SHC - EXCHANGE MEDIA SERVER OD 100",
+            "token": "124969bc-6876-42b0-a912-82826fd9aed8",
+            "creationDate": "2017-07-26 16:29:22 +0300",
+            "lastUpdatedDate": "2017-07-26 16:30:49 +0300"
+        },
+        {
+            "id": 54252,
+            "name": "SHC - QUICK CREATE - Frontend",
+            "token": "b676ed8d-7df9-413d-bad8-bb47cdbf8321",
+            "creationDate": "2017-07-27 11:52:26 +0300",
+            "lastUpdatedDate": "2017-08-02 05:05:27 +0300"
+        },
+        {
+            "id": 54254,
+            "name": "SHC - Service Ticket Intelligence - Training",
+            "token": "bc1226cd-fbbf-4e58-befa-ad2a4318dbf1",
+            "creationDate": "2017-07-27 12:16:52 +0300",
+            "lastUpdatedDate": "2017-10-12 11:28:07 +0300"
+        },
+        {
+            "id": 54257,
+            "name": "SHC - QUICK CREATE - Backend",
+            "token": "acbc5fdb-a45c-4ef9-9ac3-dbf5e8b5864a",
+            "creationDate": "2017-07-27 12:31:41 +0300",
+            "lastUpdatedDate": "2017-07-28 05:16:04 +0300"
+        },
+        {
+            "id": 54324,
+            "name": "SHC - SAP HANA COCKPIT 2.0",
+            "token": "bfe484bd-bce6-4830-9fff-192da05c641a",
+            "creationDate": "2017-07-27 19:37:31 +0300",
+            "lastUpdatedDate": "2017-07-28 18:20:52 +0300"
+        },
+        {
+            "id": 54497,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-bpns-mock",
+            "token": "7b9e7683-4bf4-4913-8da0-fdf0a2f32fd9",
+            "creationDate": "2017-07-31 10:25:56 +0300",
+            "lastUpdatedDate": "2017-10-16 04:07:43 +0300"
+        },
+        {
+            "id": 54532,
+            "name": "SHC - Remittance Advice - Internal Message Producer",
+            "token": "21ead175-ebe6-4e2d-8982-8e1ef800aaa0",
+            "creationDate": "2017-07-31 16:03:59 +0300",
+            "lastUpdatedDate": "2017-10-13 11:50:55 +0300"
+        },
+        {
+            "id": 54645,
+            "name": "SHC - ARIBA_BUS_PROCESS_MON ARIBA_BUS_PROC_MON_2",
+            "token": "8625ed91-ce73-470e-b747-ea086afa318f",
+            "creationDate": "2017-08-01 08:00:15 +0300",
+            "lastUpdatedDate": "2017-08-02 09:09:34 +0300"
+        },
+        {
+            "id": 54646,
+            "name": "SHC - Service Ticket Intelligence - Solution Recommendation",
+            "token": "4bb45429-2c83-4447-a443-c070d7b2998d",
+            "creationDate": "2017-08-01 08:08:12 +0300",
+            "lastUpdatedDate": "2017-10-12 13:07:51 +0300"
+        },
+        {
+            "id": 54668,
+            "name": "SHC - SAP EVENT TICKETING WAITINGROOM",
+            "token": "ca60bdff-978a-497e-974e-fcd3c42679bd",
+            "creationDate": "2017-08-01 12:41:11 +0300",
+            "lastUpdatedDate": "2017-10-16 01:22:18 +0300"
+        },
+        {
+            "id": 54669,
+            "name": "SHC - SAP EVENT TICKETING HELPER",
+            "token": "986cfe09-bcf3-4348-ab68-d8e74e409ad6",
+            "creationDate": "2017-08-01 12:42:17 +0300",
+            "lastUpdatedDate": "2017-10-16 01:22:59 +0300"
+        },
+        {
+            "id": 54715,
+            "name": "SHC - com.sap.dsx",
+            "token": "7bff4f52-a403-435f-8d46-3ecc1e4271c7",
+            "creationDate": "2017-08-01 14:06:51 +0300",
+            "lastUpdatedDate": "2017-10-12 09:58:51 +0300"
+        },
+        {
+            "id": 54717,
+            "name": "SHC - SAP EVENT TICKETING ANALYTICS",
+            "token": "c13dc693-9296-4f09-9268-72cdf548549f",
+            "creationDate": "2017-08-01 14:40:34 +0300",
+            "lastUpdatedDate": "2017-08-01 14:40:34 +0300"
+        },
+        {
+            "id": 54763,
+            "name": "SHC - SAP Fieldglass",
+            "token": "86256b6c-e331-49ff-86af-b265f049456f",
+            "creationDate": "2017-08-01 22:03:45 +0300",
+            "lastUpdatedDate": "2017-08-01 22:03:54 +0300"
+        },
+        {
+            "id": 54772,
+            "name": "SHC - SAP Fieldglass VMS",
+            "token": "d100f444-c9bd-452f-87e5-336b3072d1ca",
+            "creationDate": "2017-08-01 22:19:36 +0300",
+            "lastUpdatedDate": "2017-10-03 23:04:57 +0300"
+        },
+        {
+            "id": 54843,
+            "name": "SHC-PV-HCP BUSINESS RULES SERVICE 1.0",
+            "token": "77509daf-8575-4dd6-8849-c4dedf8acf2a",
+            "creationDate": "2017-08-02 14:31:32 +0300",
+            "lastUpdatedDate": "2017-08-02 14:31:43 +0300"
+        },
+        {
+            "id": 55048,
+            "name": "STAMPGen - SFSF POSTING",
+            "token": "8a559f4a-43f6-4493-9845-80d0c42b39ef",
+            "creationDate": "2017-08-04 14:15:13 +0300",
+            "lastUpdatedDate": "2017-09-22 16:34:17 +0300"
+        },
+        {
+            "id": 55286,
+            "name": "SHC - XSAC HANA ANALYTICS ADAPTER 1",
+            "token": "e08ec967-8437-4cbb-8fd6-ed8e18ddbc3b",
+            "creationDate": "2017-08-08 15:08:06 +0300",
+            "lastUpdatedDate": "2017-10-13 17:36:34 +0300"
+        },
+        {
+            "id": 55391,
+            "name": "SHC - SAP EVENT TICKETING GUARD",
+            "token": "501c0a68-c851-4f52-ab51-1a793527dde6",
+            "creationDate": "2017-08-09 10:42:26 +0300",
+            "lastUpdatedDate": "2017-10-16 01:23:38 +0300"
+        },
+        {
+            "id": 55392,
+            "name": "SHC - SAP EVENT TICKETING FORWARDER",
+            "token": "f531d60c-007a-4dc5-996a-1d7833b15cf6",
+            "creationDate": "2017-08-09 10:43:04 +0300",
+            "lastUpdatedDate": "2017-10-16 01:24:48 +0300"
+        },
+        {
+            "id": 55393,
+            "name": "SHC - SAP EVENT TICKETING FORMS",
+            "token": "71c10dfe-dd2b-42cd-96e5-c64406774b09",
+            "creationDate": "2017-08-09 10:43:41 +0300",
+            "lastUpdatedDate": "2017-10-16 01:25:57 +0300"
+        },
+        {
+            "id": 55394,
+            "name": "SHC - SAP EVENT TICKETING TICKETS",
+            "token": "a5b861b3-7c6d-4167-b547-17e51f0e0a86",
+            "creationDate": "2017-08-09 10:44:35 +0300",
+            "lastUpdatedDate": "2017-10-16 01:26:42 +0300"
+        },
+        {
+            "id": 55395,
+            "name": "SHC - SAP EVENT TICKETING PRINTLIB",
+            "token": "db72e057-989d-4473-870a-fb1e178d5f0b",
+            "creationDate": "2017-08-09 10:45:28 +0300",
+            "lastUpdatedDate": "2017-10-16 01:27:20 +0300"
+        },
+        {
+            "id": 55417,
+            "name": "SHC-SAP_CLEA_FOUNDATION_1.0",
+            "token": "50adff26-24ec-4350-a2e9-a5061a192e2e",
+            "creationDate": "2017-08-09 14:06:00 +0300",
+            "lastUpdatedDate": "2017-08-09 14:06:01 +0300"
+        },
+        {
+            "id": 55425,
+            "name": "SHC-Worldwide S4HANA Cloud Innovation Repository_OD_1.0",
+            "token": "72895f26-ac8d-4eb9-9d06-88f16dcc9e03",
+            "creationDate": "2017-08-09 14:36:22 +0300",
+            "lastUpdatedDate": "2017-10-15 18:08:33 +0300"
+        },
+        {
+            "id": 55561,
+            "name": "SHC - SAP Trading Platform Integration for Treasury",
+            "token": "b69c7a54-530f-4357-9811-f538e121dc0d",
+            "creationDate": "2017-08-10 12:01:51 +0300",
+            "lastUpdatedDate": "2017-08-10 12:36:26 +0300"
+        },
+        {
+            "id": 55590,
+            "name": "SHC - UICS_WHATSNEW 1.0",
+            "token": "41ff789f-0c6f-4316-b88e-e225d926fa72",
+            "creationDate": "2017-08-10 13:53:21 +0300",
+            "lastUpdatedDate": "2017-09-13 16:49:13 +0300"
+        },
+        {
+            "id": 55763,
+            "name": "SHC - HEALTH WAITING ROOMS OD 1711",
+            "token": "21a0618b-da14-4186-8cd6-50be1a50699f",
+            "creationDate": "2017-08-11 14:23:57 +0300",
+            "lastUpdatedDate": "2017-10-15 01:45:38 +0300"
+        },
+        {
+            "id": 55806,
+            "name": "SHC - Workspace management",
+            "token": "803fbaaa-cd7d-4966-833d-40237855063a",
+            "creationDate": "2017-08-11 18:32:16 +0300",
+            "lastUpdatedDate": "2017-09-07 07:24:51 +0300"
+        },
+        {
+            "id": 56123,
+            "name": "SHC - COMMERCE AS A SERVICE 2.0",
+            "token": "09b33c55-a1ed-4d44-9ca3-b7dac9c2163f",
+            "creationDate": "2017-08-15 14:00:46 +0300",
+            "lastUpdatedDate": "2017-10-16 12:27:31 +0300"
+        },
+        {
+            "id": 56158,
+            "name": "SHC - KWS OD 1.0",
+            "token": "23ff1622-e754-42f7-8f74-fc545060201a",
+            "creationDate": "2017-08-15 17:28:50 +0300",
+            "lastUpdatedDate": "2017-09-21 16:02:35 +0300"
+        },
+        {
+            "id": 56386,
+            "name": "SHC - SLHCPS 100",
+            "token": "5e918c5c-bbf2-4728-8881-8d3881954119",
+            "creationDate": "2017-08-17 11:15:17 +0300",
+            "lastUpdatedDate": "2017-08-17 11:15:18 +0300"
+        },
+        {
+            "id": 56392,
+            "name": "SHC - IOT SERVICES ON HCP 1.0",
+            "token": "13ff2eb0-5258-4366-a84b-7c710997d260",
+            "creationDate": "2017-08-17 12:42:57 +0300",
+            "lastUpdatedDate": "2017-10-16 07:52:50 +0300"
+        },
+        {
+            "id": 56394,
+            "name": "SHC - R MANAGER 1",
+            "token": "a8d8252b-daba-4d60-a22a-b19cd3a4dd7b",
+            "creationDate": "2017-08-17 13:39:35 +0300",
+            "lastUpdatedDate": "2017-10-13 12:18:33 +0300"
+        },
+        {
+            "id": 56409,
+            "name": "SHC - ANONYMIZATION_CF 1.0",
+            "token": "0cb9d523-ccc7-4bd6-8d85-976208f92edf",
+            "creationDate": "2017-08-17 16:02:34 +0300",
+            "lastUpdatedDate": "2017-10-04 16:31:06 +0300"
+        },
+        {
+            "id": 56417,
+            "name": "SHC - IOT AE DSS 1.0>",
+            "token": "15020d1c-2ec4-4be9-b2d6-a88b527ad9ca",
+            "creationDate": "2017-08-17 17:02:28 +0300",
+            "lastUpdatedDate": "2017-08-17 17:03:00 +0300"
+        },
+        {
+            "id": 56467,
+            "name": "SHC - IOT AE DSS 1.0",
+            "token": "a37cad89-0e08-4973-85e6-ccf31089c568",
+            "creationDate": "2017-08-18 11:30:03 +0300",
+            "lastUpdatedDate": "2017-08-18 11:57:13 +0300"
+        },
+        {
+            "id": 56479,
+            "name": "SHC - EXCHANGE MEDIA OD 1.0",
+            "token": "f6957c93-058e-4ddb-b0df-8edeb3c39cfb",
+            "creationDate": "2017-08-18 16:22:28 +0300",
+            "lastUpdatedDate": "2017-08-18 16:29:41 +0300"
+        },
+        {
+            "id": 56480,
+            "name": "SHC - SAP XM DMP OD 1.0",
+            "token": "f644b7a7-3e6c-4b15-9171-cfbdc5bfa63b",
+            "creationDate": "2017-08-18 16:34:24 +0300",
+            "lastUpdatedDate": "2017-10-16 09:52:29 +0300"
+        },
+        {
+            "id": 56499,
+            "name": "SHC - Data Hub Monitoring 1.0",
+            "token": "9cbfcec3-078b-4adc-8274-3fa3991c3dc9",
+            "creationDate": "2017-08-18 19:33:20 +0300",
+            "lastUpdatedDate": "2017-08-18 19:59:43 +0300"
+        },
+        {
+            "id": 56551,
+            "name": "hub.parent",
+            "token": "01ac0613-f05e-4778-9271-04c0d8a9705f",
+            "creationDate": "2017-08-21 11:59:21 +0300",
+            "lastUpdatedDate": "2017-08-21 11:59:40 +0300"
+        },
+        {
+            "id": 56554,
+            "name": "SHC - Service Ticket Intelligence - Classification",
+            "token": "19d2d1d6-fd74-4a1f-84d2-4c2c6497c8e5",
+            "creationDate": "2017-08-21 12:04:35 +0300",
+            "lastUpdatedDate": "2017-10-12 08:50:23 +0300"
+        },
+        {
+            "id": 56557,
+            "name": "SHC - MESSAGINGBACKEND 1.0",
+            "token": "5be5c746-d1f9-4335-b938-5c93d8a1dcf4",
+            "creationDate": "2017-08-21 12:11:11 +0300",
+            "lastUpdatedDate": "2017-08-31 08:35:05 +0300"
+        },
+        {
+            "id": 56566,
+            "name": "SHC-SAP_CWS_test_1.0",
+            "token": "75d33927-180f-46f0-85ec-7180770f4f6c",
+            "creationDate": "2017-08-21 13:13:00 +0300",
+            "lastUpdatedDate": "2017-09-28 06:49:29 +0300"
+        },
+        {
+            "id": 56567,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-workflow-ui",
+            "token": "38eb949a-c654-4980-a7f7-1d0301be20ec",
+            "creationDate": "2017-08-21 13:31:37 +0300",
+            "lastUpdatedDate": "2017-09-06 16:29:08 +0300"
+        },
+        {
+            "id": 56572,
+            "name": "SHC - SERVICE BROKER 1.0",
+            "token": "97d61647-710c-4662-986a-16f7648d0e5d",
+            "creationDate": "2017-08-21 14:59:44 +0300",
+            "lastUpdatedDate": "2017-08-24 18:13:03 +0300"
+        },
+        {
+            "id": 56573,
+            "name": "SHC - MESSAGING ADMIN UI 1.0",
+            "token": "cc2e0e46-6fd9-43f9-9825-6ec9303333b3",
+            "creationDate": "2017-08-21 15:23:51 +0300",
+            "lastUpdatedDate": "2017-08-23 20:52:24 +0300"
+        },
+        {
+            "id": 56578,
+            "name": "SHC - CPREFERENCEAPPS 1",
+            "token": "8472ee6d-8102-4d34-9af1-4f7d77577c50",
+            "creationDate": "2017-08-21 18:41:36 +0300",
+            "lastUpdatedDate": "2017-09-28 16:11:18 +0300"
+        },
+        {
+            "id": 56633,
+            "name": "SHC - EVENT HUB UI 1.0",
+            "token": "7a36ac8e-4b8d-48c5-a59f-832db9faa4ea",
+            "creationDate": "2017-08-22 10:07:39 +0300",
+            "lastUpdatedDate": "2017-08-30 13:03:10 +0300"
+        },
+        {
+            "id": 56635,
+            "name": "SHC - SAP HYBRIS DIGIT. MKTPLACE",
+            "token": "88570949-e6a4-4ac5-a5f4-68e45a3440ee",
+            "creationDate": "2017-08-22 10:40:37 +0300",
+            "lastUpdatedDate": "2017-10-14 00:04:10 +0300"
+        },
+        {
+            "id": 56639,
+            "name": "SHC - Smart Templates Worklist Web IDE",
+            "token": "67595a83-cca5-48b3-8cf6-593c8fc44f17",
+            "creationDate": "2017-08-22 11:43:34 +0300",
+            "lastUpdatedDate": "2017-09-11 12:13:19 +0300"
+        },
+        {
+            "id": 56746,
+            "name": "SHC - EDGE POLICY SERVER 3.1708",
+            "token": "c46ecd10-f98c-4d32-8175-f82e93520716",
+            "creationDate": "2017-08-22 18:29:21 +0300",
+            "lastUpdatedDate": "2017-08-24 16:24:11 +0300"
+        },
+        {
+            "id": 56747,
+            "name": "SHC - EDGE SQLANY 3.1708",
+            "token": "bd22ae16-cd69-4805-bb9d-f94babee6abe",
+            "creationDate": "2017-08-22 18:30:10 +0300",
+            "lastUpdatedDate": "2017-08-22 18:30:11 +0300"
+        },
+        {
+            "id": 56748,
+            "name": "SHC - EDGE PERSISTENCE SERVICE 3.1708",
+            "token": "750695ef-f797-4e99-aecb-f3ff77b5cff7",
+            "creationDate": "2017-08-22 18:30:15 +0300",
+            "lastUpdatedDate": "2017-08-23 21:12:40 +0300"
+        },
+        {
+            "id": 56749,
+            "name": "SHC - EDGE STREAMLITE 3.1708",
+            "token": "167aa706-5995-4c71-bb7f-c33b1278d3f6",
+            "creationDate": "2017-08-22 18:30:16 +0300",
+            "lastUpdatedDate": "2017-08-22 18:30:16 +0300"
+        },
+        {
+            "id": 56750,
+            "name": "SHC - EDGE INTERCEPTOR 3.1708",
+            "token": "f8ab8abe-fa8b-4e8d-ab33-ebaec4b5447f",
+            "creationDate": "2017-08-22 18:30:16 +0300",
+            "lastUpdatedDate": "2017-08-22 18:30:17 +0300"
+        },
+        {
+            "id": 56751,
+            "name": "SHC - EDGE BUSESSENTIAL SERVICE 3.1708",
+            "token": "14a43ec2-ce32-4f3d-a6f7-7096d6ea470a",
+            "creationDate": "2017-08-22 18:30:18 +0300",
+            "lastUpdatedDate": "2017-08-22 18:30:19 +0300"
+        },
+        {
+            "id": 56753,
+            "name": "SHC - EDGE ANALYTICS SERVICE 3.1708",
+            "token": "58abadb3-f740-4646-a7cb-87d987c067fb",
+            "creationDate": "2017-08-22 18:31:50 +0300",
+            "lastUpdatedDate": "2017-08-23 21:13:32 +0300"
+        },
+        {
+            "id": 56754,
+            "name": "GTLC_DOCKER",
+            "token": "8ab88b4e-9b43-4537-8217-5f456ebdeab2",
+            "creationDate": "2017-08-22 19:38:52 +0300",
+            "lastUpdatedDate": "2017-08-23 01:20:38 +0300"
+        },
+        {
+            "id": 56756,
+            "name": "SHC - EDGE BUSESSENTIAL SYNC 3.1708",
+            "token": "1f25f4cc-912e-4a69-bc3e-007c848020d6",
+            "creationDate": "2017-08-22 19:46:21 +0300",
+            "lastUpdatedDate": "2017-08-22 19:46:21 +0300"
+        },
+        {
+            "id": 56758,
+            "name": "SHC - EDGE BUSESSENTIAL SQL 3.1708",
+            "token": "7a8572de-33f2-40d7-aa37-23e257b55a9f",
+            "creationDate": "2017-08-22 19:55:21 +0300",
+            "lastUpdatedDate": "2017-08-22 19:55:21 +0300"
+        },
+        {
+            "id": 56798,
+            "name": "AUTOMATION-APACHE-HADOOP",
+            "token": "8e7f7761-b6ae-46c3-9dbf-862b27f7f0a3",
+            "creationDate": "2017-08-23 00:48:52 +0300",
+            "lastUpdatedDate": "2017-09-22 00:52:03 +0300"
+        },
+        {
+            "id": 56877,
+            "name": "SHC-IOT AS JCO INTLIB OD 1.0",
+            "token": "7baf099c-d2b0-4e00-98c1-ee9756901401",
+            "creationDate": "2017-08-23 10:30:32 +0300",
+            "lastUpdatedDate": "2017-10-11 16:01:44 +0300"
+        },
+        {
+            "id": 56879,
+            "name": "SHC - PDMS OD DS MNGT SERVICE 1.0",
+            "token": "33b1cb59-08b5-42c7-9d0b-48c8cbf9dcfa",
+            "creationDate": "2017-08-23 11:20:21 +0300",
+            "lastUpdatedDate": "2017-08-23 11:20:32 +0300"
+        },
+        {
+            "id": 56881,
+            "name": "TEST_SHC - GO language - BaaS/baas-mc-manager",
+            "token": "1f2c7a45-4b4c-44cd-9646-712138cead8a",
+            "creationDate": "2017-08-23 11:27:17 +0300",
+            "lastUpdatedDate": "2017-09-19 10:49:06 +0300"
+        },
+        {
+            "id": 56882,
+            "name": "SHC - PDMS OD DS MGNT SERVICE 1.0",
+            "token": "41fbf9b4-de47-47a9-b4eb-776d1408fb7b",
+            "creationDate": "2017-08-23 11:31:44 +0300",
+            "lastUpdatedDate": "2017-09-19 16:10:55 +0300"
+        },
+        {
+            "id": 56883,
+            "name": "SHC - API MGMT OD CF 1.0",
+            "token": "93489d18-2e19-47de-b034-4599f2dc2707",
+            "creationDate": "2017-08-23 11:36:45 +0300",
+            "lastUpdatedDate": "2017-09-20 14:06:10 +0300"
+        },
+        {
+            "id": 57105,
+            "name": "SHC - Messaging Service CF 1.0",
+            "token": "bc68a70f-d3e3-495d-b815-cdb7ac23bb15",
+            "creationDate": "2017-08-24 14:33:33 +0300",
+            "lastUpdatedDate": "2017-09-04 18:46:44 +0300"
+        },
+        {
+            "id": 57207,
+            "name": "SHC - SAP ROAMBI PUB CLT RXJDBC 7.0",
+            "token": "11488941-7f6c-45c7-b78f-13943db30a6d",
+            "creationDate": "2017-08-24 23:01:54 +0300",
+            "lastUpdatedDate": "2017-10-13 01:07:18 +0300"
+        },
+        {
+            "id": 57223,
+            "name": "SHC - PDMS OD DS PROCESSING 1.0",
+            "token": "5a7006ea-d440-4b5f-bd6f-1707c9d80579",
+            "creationDate": "2017-08-25 11:22:48 +0300",
+            "lastUpdatedDate": "2017-08-25 11:39:59 +0300"
+        },
+        {
+            "id": 57226,
+            "name": "SHC - d053555-demo-yeoman",
+            "token": "747a13d8-f0ad-4a86-9545-cd2ebb5ea409",
+            "creationDate": "2017-08-25 12:36:06 +0300",
+            "lastUpdatedDate": "2017-08-28 18:20:48 +0300"
+        },
+        {
+            "id": 57351,
+            "name": "SHC-CV_AnalyzerService",
+            "token": "a9a490eb-bbc5-49cd-b352-cf3bf6be5080",
+            "creationDate": "2017-08-28 12:17:24 +0300",
+            "lastUpdatedDate": "2017-09-15 11:13:59 +0300"
+        },
+        {
+            "id": 57514,
+            "name": "SHC - VI AUTHORING SERVICE 1.0",
+            "token": "35389042-7482-4710-b4a5-069df037baa3",
+            "creationDate": "2017-08-29 01:52:11 +0300",
+            "lastUpdatedDate": "2017-09-04 06:10:29 +0300"
+        },
+        {
+            "id": 57570,
+            "name": "SHC - ONEPDMS_2D_VIZ",
+            "token": "560e87a2-5a3e-481b-af9e-ef30c860132e",
+            "creationDate": "2017-08-29 18:16:13 +0300",
+            "lastUpdatedDate": "2017-09-28 12:19:09 +0300"
+        },
+        {
+            "id": 57636,
+            "name": "SHC - XS LM SERVICES 1",
+            "token": "ad9489f1-216a-425d-bdd8-95c19b39d1c0",
+            "creationDate": "2017-08-30 14:53:53 +0300",
+            "lastUpdatedDate": "2017-09-12 11:12:58 +0300"
+        },
+        {
+            "id": 57651,
+            "name": "SHC - SAP Information Collaboration Hub for Life Science",
+            "token": "f76a37a0-7421-46d5-aa22-9f275e3bda31",
+            "creationDate": "2017-08-30 17:20:10 +0300",
+            "lastUpdatedDate": "2017-10-13 19:01:33 +0300"
+        },
+        {
+            "id": 57652,
+            "name": "SHC - PHARMA NETWORK cmo_app_layer",
+            "token": "65829459-6d1e-4812-a69c-4b2b06e8ae19",
+            "creationDate": "2017-08-30 17:29:46 +0300",
+            "lastUpdatedDate": "2017-08-30 17:29:47 +0300"
+        },
+        {
+            "id": 57678,
+            "name": "SHC - SAP HANA COCKPIT MTA",
+            "token": "ef859f6c-6960-4d58-ac4c-b1e7e8575bd2",
+            "creationDate": "2017-08-30 20:23:40 +0300",
+            "lastUpdatedDate": "2017-08-30 20:23:40 +0300"
+        },
+        {
+            "id": 57725,
+            "name": "SHC - SAPCPEM HUB 1.0",
+            "token": "60c8264d-b4ba-4689-aeed-de55e2e57dce",
+            "creationDate": "2017-08-31 12:11:08 +0300",
+            "lastUpdatedDate": "2017-10-13 17:31:40 +0300"
+        },
+        {
+            "id": 57846,
+            "name": "SHC - SAP CLOUD PF BLOCKCHAIN 1.0",
+            "token": "6ac3ee79-f8c4-4090-96fb-33b029b98e1f",
+            "creationDate": "2017-09-01 17:19:22 +0300",
+            "lastUpdatedDate": "2017-10-13 09:42:56 +0300"
+        },
+        {
+            "id": 57909,
+            "name": "SHC - 3D VISUALIZATN ASST MGT 1.0",
+            "token": "9f88c2e8-b38a-40f1-8b4a-8b81cadcd7c3",
+            "creationDate": "2017-09-04 06:13:42 +0300",
+            "lastUpdatedDate": "2017-09-04 06:13:44 +0300"
+        },
+        {
+            "id": 57910,
+            "name": "SHC - 3D VISUALIZATN DEL SVR OD 1.0",
+            "token": "e3f3736d-b44b-45e8-9bcb-62571b4333f5",
+            "creationDate": "2017-09-04 06:37:01 +0300",
+            "lastUpdatedDate": "2017-09-04 06:37:02 +0300"
+        },
+        {
+            "id": 57911,
+            "name": "SHC - 3D VISUALIZATN STOR SVR OD 1.0",
+            "token": "78ac622b-08d8-4101-97ac-c0124b4db24c",
+            "creationDate": "2017-09-04 06:43:54 +0300",
+            "lastUpdatedDate": "2017-09-28 00:56:24 +0300"
+        },
+        {
+            "id": 57912,
+            "name": "SHC-CV_RecommenderApp",
+            "token": "ef5e99cb-a3be-4bf3-9f83-1aceca3c1743",
+            "creationDate": "2017-09-04 08:05:28 +0300",
+            "lastUpdatedDate": "2017-09-18 08:50:01 +0300"
+        },
+        {
+            "id": 57914,
+            "name": "SHC - SAPCPEM HUB UI 1.0",
+            "token": "ca9064a0-11c3-44e0-a22d-44b1430b2ea6",
+            "creationDate": "2017-09-04 09:23:13 +0300",
+            "lastUpdatedDate": "2017-09-28 14:48:04 +0300"
+        },
+        {
+            "id": 57928,
+            "name": "SHC-CV_Common",
+            "token": "163fcfcf39054a18afbc51273ecd3e31649b8d9125374757a7077abe2532d28d",
+            "creationDate": "2017-09-04 12:26:01 +0300",
+            "lastUpdatedDate": "2017-09-15 08:58:13 +0300"
+        },
+        {
+            "id": 57933,
+            "name": "SHC - SAP API BUSINESS HUB PLUGIN OD 1.0",
+            "token": "4cabadea7191462aa4fa378fd4b23d7cf442b396fb3446b5bad140444e7e662c",
+            "creationDate": "2017-09-04 13:38:19 +0300",
+            "lastUpdatedDate": "2017-09-05 11:05:17 +0300"
+        },
+        {
+            "id": 57938,
+            "name": "SHC ? CLOUD QTC CORE OD 2.0",
+            "token": "ef970515ee0d4ab88eb25db8d0dde288d953c9a465cb4743ab4caac9f3806216",
+            "creationDate": "2017-09-04 14:52:52 +0300",
+            "lastUpdatedDate": "2017-10-13 17:17:16 +0300"
+        },
+        {
+            "id": 57987,
+            "name": "SHC - ASSET INTELL. NETWORK 1711",
+            "token": "438b48bc66474db2a3e76295ac28387ff5575c2de92e4faeba5c9643845e57f5",
+            "creationDate": "2017-09-05 10:27:26 +0300",
+            "lastUpdatedDate": "2017-10-16 11:29:01 +0300"
+        },
+        {
+            "id": 57995,
+            "name": "SHC - TEST_SAP_HDBEXT",
+            "token": "14767d6a77d4426ca8a82590d0956629e894730ebf804195b3a08858e4c14caa",
+            "creationDate": "2017-09-05 11:45:07 +0300",
+            "lastUpdatedDate": "2017-10-13 10:30:19 +0300"
+        },
+        {
+            "id": 58181,
+            "name": "SHC - IoT Application Enablement Services BigData Monitor",
+            "token": "3633e59abc75473582c9003da2df936828f7513b72d34f89b65ea31d0da5fef8",
+            "creationDate": "2017-09-06 14:02:20 +0300",
+            "lastUpdatedDate": "2017-09-06 14:02:22 +0300"
+        },
+        {
+            "id": 58194,
+            "name": "SHC - SAPCPEM SERVICE BROKER 1.0",
+            "token": "01e1a16a3d5d4457a7e4bdb77d430b27d36260bfce0941c7b2a603b87f877d2a",
+            "creationDate": "2017-09-06 15:40:42 +0300",
+            "lastUpdatedDate": "2017-10-13 15:45:42 +0300"
+        },
+        {
+            "id": 58195,
+            "name": "SAP SE INTERNAL - ONLY  IOT MOVING ASSETS",
+            "token": "aad132145aae41928c5a5305194a278d5a4a426468544f5ba786a399415bd73c",
+            "creationDate": "2017-09-06 15:49:34 +0300",
+            "lastUpdatedDate": "2017-10-13 09:26:54 +0300"
+        },
+        {
+            "id": 58252,
+            "name": "SHC-CV_RecommenderService",
+            "token": "b33232877d4f4505b125724bea17628407e9161aac18411c89b4d346876f0bba",
+            "creationDate": "2017-09-06 22:07:42 +0300",
+            "lastUpdatedDate": "2017-09-15 11:23:36 +0300"
+        },
+        {
+            "id": 58311,
+            "name": "SHC - Remittance Advice - Internal Logging",
+            "token": "76ad5aef95ac47abae7e6ea6a9bfa55f2f14b67a9ec646289be625f565ac9007",
+            "creationDate": "2017-09-07 15:09:57 +0300",
+            "lastUpdatedDate": "2017-09-07 15:55:55 +0300"
+        },
+        {
+            "id": 58328,
+            "name": "SHC - SAP NEWTON TEST PROXIES",
+            "token": "05325b623a144a10ba9cebf6213d8ff75414445df81f4ff580710e9363a8e35a",
+            "creationDate": "2017-09-07 16:24:54 +0300",
+            "lastUpdatedDate": "2017-10-12 10:55:18 +0300"
+        },
+        {
+            "id": 58379,
+            "name": "SHC-CV-log-service",
+            "token": "08df5f0eab90491c8810680e18a903950758f6bb37fa4713b6f56f3d1abc4203",
+            "creationDate": "2017-09-07 19:56:25 +0300",
+            "lastUpdatedDate": "2017-09-18 08:49:34 +0300"
+        },
+        {
+            "id": 58457,
+            "name": "SHC - SAP NEWTON TEST DTS",
+            "token": "8fc93818628b4c95bd4df39427b0e7d7d23ea1b911ec4fe2bb0a7f536f83efd4",
+            "creationDate": "2017-09-08 10:23:27 +0300",
+            "lastUpdatedDate": "2017-09-08 10:23:38 +0300"
+        },
+        {
+            "id": 58460,
+            "name": "SHC - SAP NEWTON TEST WINDPARK BACKEND",
+            "token": "3b6f1ee70b0342cf88ab61b7273846175718e8a5d9fd4ef186b5f4d7b6396e77",
+            "creationDate": "2017-09-08 11:29:23 +0300",
+            "lastUpdatedDate": "2017-09-08 11:30:33 +0300"
+        },
+        {
+            "id": 58479,
+            "name": "SHC-IOT AS JCO AUTHFACADE OD 1.0",
+            "token": "6ef11b2bf0644fdfb9ef5b0d50202ac11a8927c1f5644351bd47f808bdea6ede",
+            "creationDate": "2017-09-08 15:26:48 +0300",
+            "lastUpdatedDate": "2017-10-07 16:28:22 +0300"
+        },
+        {
+            "id": 58659,
+            "name": "SHC - SAP NEWTON TEST WINDPARK",
+            "token": "656353f8046b4582a610efbb96613ceb9d3a7c10d7724de9be9879992c09051c",
+            "creationDate": "2017-09-11 10:29:27 +0300",
+            "lastUpdatedDate": "2017-10-16 10:57:20 +0300"
+        },
+        {
+            "id": 58675,
+            "name": "SHC - SAP NEWTON TEST DATA LOADER",
+            "token": "9d76699ae3b84b01bfdd02c1a573c253ba3e1b4875294b328fef97427150f930",
+            "creationDate": "2017-09-11 12:10:06 +0300",
+            "lastUpdatedDate": "2017-10-13 17:56:13 +0300"
+        },
+        {
+            "id": 58677,
+            "name": "SHC - SLH - PRINT FORM SERVICE 1711",
+            "token": "8819093173d4416abb53133f89b822b9b11f5cd307664003a9e042006d084d00",
+            "creationDate": "2017-09-11 12:45:30 +0300",
+            "lastUpdatedDate": "2017-09-11 13:14:05 +0300"
+        },
+        {
+            "id": 58680,
+            "name": "SHC - SLH PRINT FORM SERVICE 1711",
+            "token": "1f8f3ef9737c44108d7f6c6a87604251368d8b38597b49008ab757b35d174d4f",
+            "creationDate": "2017-09-11 13:24:25 +0300",
+            "lastUpdatedDate": "2017-09-11 13:34:29 +0300"
+        },
+        {
+            "id": 58684,
+            "name": "SHC - CF REPORTING AGENTS 1.0",
+            "token": "06f2ea35943b46fcaa283b8eedd6d8a8f6f24ee8a91c48868b5a43471bd7ac06",
+            "creationDate": "2017-09-11 14:48:11 +0300",
+            "lastUpdatedDate": "2017-10-10 17:38:59 +0300"
+        },
+        {
+            "id": 58685,
+            "name": "SHC-SAP_for_microservice_core_1_5_0",
+            "token": "9c2ef985b2f54dacb5547b9d447679db65c442aa1efd42d9b077d4347dbe55e9",
+            "creationDate": "2017-09-11 15:03:33 +0300",
+            "lastUpdatedDate": "2017-09-11 15:03:33 +0300"
+        },
+        {
+            "id": 58688,
+            "name": "SHC - SAPCPEM GATEWAY 1.0",
+            "token": "e8616d3253b048b8acad8885d4bfc6bb64e461fdd0074df7a7e57fbb1f4a778f",
+            "creationDate": "2017-09-11 15:27:44 +0300",
+            "lastUpdatedDate": "2017-10-13 17:11:54 +0300"
+        },
+        {
+            "id": 58689,
+            "name": "SHC - SAP NEWTON TEST CEETRON",
+            "token": "7078a22038814e9aaaae7b6cb3a4aa3a80da82040c5541149ba0fd2ed5b81e54",
+            "creationDate": "2017-09-11 15:41:04 +0300",
+            "lastUpdatedDate": "2017-10-11 11:12:30 +0300"
+        },
+        {
+            "id": 58767,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-digital-twin-ui",
+            "token": "a3bb93c000884904bcdb61888834a73641dfcad4d4b94d7eb1bd37ad41b4e457",
+            "creationDate": "2017-09-11 18:25:23 +0300",
+            "lastUpdatedDate": "2017-10-13 17:46:58 +0300"
+        },
+        {
+            "id": 58783,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-issue-mgmt-ui",
+            "token": "789c042b077e4316993d039d23b33cd4dadf9cb97ece45478799de250150d9da",
+            "creationDate": "2017-09-11 20:35:32 +0300",
+            "lastUpdatedDate": "2017-10-16 11:21:06 +0300"
+        },
+        {
+            "id": 58816,
+            "name": "SHC - SLH - PRINT FORMS SERVICE 1711",
+            "token": "99e9cb50b8854f288d5a780ece5641f8a45673e6690445b4b4d878a2ca302470",
+            "creationDate": "2017-09-12 08:22:42 +0300",
+            "lastUpdatedDate": "2017-09-21 10:06:38 +0300"
+        },
+        {
+            "id": 58827,
+            "name": "SHC - CF DEPLOY SERVICE",
+            "token": "9635d789acdd4ff4918f66739fdc9acae47226caed6d4a1fbd0297ec8576db4e",
+            "creationDate": "2017-09-12 11:01:41 +0300",
+            "lastUpdatedDate": "2017-09-12 11:09:55 +0300"
+        },
+        {
+            "id": 58840,
+            "name": "SHC-MTA_BDT_CORE",
+            "token": "4b1e50aa5dd242b3a91478b190f577784c388d9fc0a64a5c8adb8c0185f6e92a",
+            "creationDate": "2017-09-12 13:33:39 +0300",
+            "lastUpdatedDate": "2017-09-12 13:34:05 +0300"
+        },
+        {
+            "id": 58889,
+            "name": "SHC - SAP NEWTON TEST AUTOMATION",
+            "token": "81262fa7ae4d438bb60c67eed694c3f09c5d23ce35544eba84704b0ed3773e14",
+            "creationDate": "2017-09-12 15:50:55 +0300",
+            "lastUpdatedDate": "2017-10-11 15:44:56 +0300"
+        },
+        {
+            "id": 58891,
+            "name": "SHC-MTA_BDT_CORE_OD",
+            "token": "cd8899b17ffb406c9466b04ed537ac99223851804e644423b18dd3ce07b3db42",
+            "creationDate": "2017-09-12 16:07:41 +0300",
+            "lastUpdatedDate": "2017-09-12 16:07:57 +0300"
+        },
+        {
+            "id": 58923,
+            "name": "SHC-CF_AUTOSCALE_1.0",
+            "token": "dbd4975d48874c9ba66f727059d0f54a6db322cba8514559ae67e9aceadfb5c8",
+            "creationDate": "2017-09-12 17:55:41 +0300",
+            "lastUpdatedDate": "2017-09-12 17:58:21 +0300"
+        },
+        {
+            "id": 59054,
+            "name": "SHC - SAPCPEM DASHBOARD UI 1.0",
+            "token": "e6f815f8af68430880c26f6c664c167fb595db745a8c42e59a95b6bbb3771978",
+            "creationDate": "2017-09-13 14:08:13 +0300",
+            "lastUpdatedDate": "2017-10-13 16:18:54 +0300"
+        },
+        {
+            "id": 59065,
+            "name": "SHC - APM SERVICE 1.0",
+            "token": "9ad2eb60c2b246fbb136287fbdbdf49a1a3a588ba41040849b61c13a0dbe7c40",
+            "creationDate": "2017-09-13 14:58:50 +0300",
+            "lastUpdatedDate": "2017-09-15 13:10:06 +0300"
+        },
+        {
+            "id": 59074,
+            "name": "SHC - CPREFERENCEAPPS 1 SRC",
+            "token": "a67542170c99425d8aaabc72049ea2b4b81ec35980f345d990fc6389dfd70960",
+            "creationDate": "2017-09-13 15:57:26 +0300",
+            "lastUpdatedDate": "2017-10-12 17:12:31 +0300"
+        },
+        {
+            "id": 59279,
+            "name": "TEST_SHC - Workforce Analytics",
+            "token": "b4553d677dfb4aaf97c7b51a77e1c12b6f0aae9997724b2f975f294b3700839a",
+            "creationDate": "2017-09-14 09:41:11 +0300",
+            "lastUpdatedDate": "2017-09-19 02:23:37 +0300"
+        },
+        {
+            "id": 59311,
+            "name": "SHC - SHP CORE OD 1.0",
+            "token": "8d14beffab754761b7f5abd99a835a1d2539da4c91d846c3aa35df87b11224ab",
+            "creationDate": "2017-09-14 17:08:14 +0300",
+            "lastUpdatedDate": "2017-10-12 02:52:50 +0300"
+        },
+        {
+            "id": 59354,
+            "name": "SHC - FIT_AT_SAP",
+            "token": "ef96be5263ad4245b793bc6a23b2e381abb4efd53c94494eaf4c0a999703e509",
+            "creationDate": "2017-09-15 11:09:37 +0300",
+            "lastUpdatedDate": "2017-09-15 11:09:55 +0300"
+        },
+        {
+            "id": 59358,
+            "name": "SHC - SAP NEWTON TEST LAMBDA",
+            "token": "5093293c5da74b32bdf3e06ac890ac3b57a5b7c067b84ec1905d2681bfbea11d",
+            "creationDate": "2017-09-15 12:47:39 +0300",
+            "lastUpdatedDate": "2017-10-11 15:27:21 +0300"
+        },
+        {
+            "id": 59359,
+            "name": "TEST_SHC - SUCCESSFACTORS ONBOARDING 1711",
+            "token": "a8db8fddbd0e40b9a73446bd48d2805553baaa0ab8194a9ba1342d2490cec1a1",
+            "creationDate": "2017-09-15 13:38:37 +0300",
+            "lastUpdatedDate": "2017-10-16 09:50:54 +0300"
+        },
+        {
+            "id": 59360,
+            "name": "SHC - PACKAGE COLLECT. ODATA FWK 1.0",
+            "token": "6b070bcdbe324cb59888ff01f980dd5855a25a0612e74e32ba96fd9e3bb7d7a6",
+            "creationDate": "2017-09-15 14:56:47 +0300",
+            "lastUpdatedDate": "2017-09-15 14:56:47 +0300"
+        },
+        {
+            "id": 59361,
+            "name": "SHC - PACKAGE COLLECT. HTML5 1.0",
+            "token": "85fa8a8f53fd4e26839592d2e0a0d04befc05ca9922642b889c2c56fe25a094e",
+            "creationDate": "2017-09-15 14:59:12 +0300",
+            "lastUpdatedDate": "2017-09-15 14:59:14 +0300"
+        },
+        {
+            "id": 59477,
+            "name": "SHC - Service catalog",
+            "token": "2841ecd2033d4ac9bfd8231c38d070d56f51c08b160c483c818306ab13fa4cb9",
+            "creationDate": "2017-09-18 14:44:20 +0300",
+            "lastUpdatedDate": "2017-09-19 10:12:41 +0300"
+        },
+        {
+            "id": 59530,
+            "name": "SHC - com.sap.slh.tax.simulationUi",
+            "token": "b9ff91f3963a4c5ab6c463d06a78fdef40be08cbe64f4a4f81d7dbd611ad593c",
+            "creationDate": "2017-09-18 23:32:04 +0300",
+            "lastUpdatedDate": "2017-10-09 15:45:09 +0300"
+        },
+        {
+            "id": 59546,
+            "name": "SHC - SAP HYBRIS CLOUD FOR CUSTOMER 1711 ODC",
+            "token": "7ed58d3327bc40078e3021535a0c3797053782bb86ad4b1abbb6d19f8b54fb08",
+            "creationDate": "2017-09-19 08:32:47 +0300",
+            "lastUpdatedDate": "2017-09-19 08:32:48 +0300"
+        },
+        {
+            "id": 59549,
+            "name": "SHC - SAP HYBRIS CLOUD FOR CUSTOMER 1711 DWB Services",
+            "token": "b6bce7f307b649b385626209fd1c1ddaddbc5d3b14f84a8f91593fd98eb1a95b",
+            "creationDate": "2017-09-19 08:55:34 +0300",
+            "lastUpdatedDate": "2017-09-19 08:55:35 +0300"
+        },
+        {
+            "id": 59550,
+            "name": "SHC - SAP HYBRIS CLOUD FOR CUSTOMER 1711 DWB UI",
+            "token": "385cd8b0fffb4cff8574d0bd6f575f44fccb3f6439ef4d3980b7341fb468b0be",
+            "creationDate": "2017-09-19 08:58:50 +0300",
+            "lastUpdatedDate": "2017-09-19 08:58:51 +0300"
+        },
+        {
+            "id": 59594,
+            "name": "SHC - ONEPDMS_SERVICE_CATALOG",
+            "token": "7685c571332044db98e4d9c0890369733f916dc9c2c745258adb7b26f7436611",
+            "creationDate": "2017-09-19 17:55:44 +0300",
+            "lastUpdatedDate": "2017-09-28 18:25:01 +0300"
+        },
+        {
+            "id": 59606,
+            "name": "SHC - ONEPDMS_EQUIPMENT_SCORES",
+            "token": "fed967dd13d248b9b38ded7749122742cccfc15e0a504f90a027a07e3ee03d99",
+            "creationDate": "2017-09-19 18:49:15 +0300",
+            "lastUpdatedDate": "2017-10-10 18:18:46 +0300"
+        },
+        {
+            "id": 59609,
+            "name": "SHC - ONEPDMS_DERIVED_SIGNALS",
+            "token": "488bee164818454abb55f8f73c9fb1d714a29d5388b5422989be2ab8fcd5b570",
+            "creationDate": "2017-09-19 19:35:26 +0300",
+            "lastUpdatedDate": "2017-10-12 21:28:52 +0300"
+        },
+        {
+            "id": 59614,
+            "name": "SHC - ONEPDMS_WORKSPACE_MANAGEMENT",
+            "token": "a391bb4a5339479f8a8d941eafa677649340dfc37ab04a9282723bbc5930e497",
+            "creationDate": "2017-09-19 19:51:01 +0300",
+            "lastUpdatedDate": "2017-10-05 19:57:38 +0300"
+        },
+        {
+            "id": 59639,
+            "name": "SHC - Piper",
+            "token": "e30132d8e8f04a4c8be6332c75a0ff0580ab326fa7534540ad326e97a74d945b",
+            "creationDate": "2017-09-20 09:22:46 +0300",
+            "lastUpdatedDate": "2017-10-12 01:03:05 +0300"
+        },
+        {
+            "id": 59660,
+            "name": "SHC - ONEPDMS_WORK_ACTIVITY_IPRO",
+            "token": "89692625e9324d4690867f6d728eb27110f22c33eae44845bb9fe070ad2d6ced",
+            "creationDate": "2017-09-20 13:43:55 +0300",
+            "lastUpdatedDate": "2017-09-28 13:59:47 +0300"
+        },
+        {
+            "id": 59809,
+            "name": "AN_DEV",
+            "token": "158b55fdc3ac4308b76399ca93087e4b0ee8e6f2cd534229b36afdbe4ab0c693",
+            "creationDate": "2017-09-21 16:23:15 +0300",
+            "lastUpdatedDate": "2017-09-21 16:23:15 +0300"
+        },
+        {
+            "id": 59936,
+            "name": "SHC - CDS Reuse Models",
+            "token": "638c7669c6804947910c84a750e2b57d25065be7e5e5485baf9eb37999be3182",
+            "creationDate": "2017-09-22 11:23:11 +0300",
+            "lastUpdatedDate": "2017-10-09 12:00:14 +0300"
+        },
+        {
+            "id": 59938,
+            "name": "SHC - ONEPDMS_PDMS_UI_LIBS",
+            "token": "1d00423cbf1c484cb4d9597b06f5297c240235a765bd44bca3217a581f010fa9",
+            "creationDate": "2017-09-22 13:33:44 +0300",
+            "lastUpdatedDate": "2017-09-28 09:54:09 +0300"
+        },
+        {
+            "id": 59947,
+            "name": "SHC - BANKING APIS OD",
+            "token": "6deb0912ec594d19a1463b34d375ed83af50729d95c94c199e5ec00c0a68f22c",
+            "creationDate": "2017-09-22 16:17:09 +0300",
+            "lastUpdatedDate": "2017-09-29 17:23:01 +0300"
+        },
+        {
+            "id": 59976,
+            "name": "SHC - IOT Search and Discovery - 1711",
+            "token": "1184d5d3349d4c02a9c57f97225c378a0fcc8f4a07cc4855bcb8ba7db8dd02fd",
+            "creationDate": "2017-09-22 23:51:08 +0300",
+            "lastUpdatedDate": "2017-09-22 23:51:09 +0300"
+        },
+        {
+            "id": 59983,
+            "name": "business-logging-core-parent",
+            "token": "a630f4c3f5fb4603bd912b15950303ab33cb754850314d138822b4cee0c93bf2",
+            "creationDate": "2017-09-23 05:18:48 +0300",
+            "lastUpdatedDate": "2017-10-16 11:57:54 +0300"
+        },
+        {
+            "id": 60042,
+            "name": "AN-WhiteSourceDemo",
+            "token": "280ca316b9bf46c6b41acec9a3327a55327f3d049c20405c983452af83b399c3",
+            "creationDate": "2017-09-25 17:02:14 +0300",
+            "lastUpdatedDate": "2017-09-25 18:14:27 +0300"
+        },
+        {
+            "id": 60140,
+            "name": "SAP LEONARDO ML FOUND. OD 1.0",
+            "token": "6e6a7acd22654182bde9082e162722544ebe88d0c6d44ad9b5bc1c698b561c86",
+            "creationDate": "2017-09-26 12:05:33 +0300",
+            "lastUpdatedDate": "2017-09-26 12:05:34 +0300"
+        },
+        {
+            "id": 60332,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-document-manager",
+            "token": "2a0148e8359f431dbd6e482212d5e58d18b4bd315c6c46eaaa6d8650fa0f06d6",
+            "creationDate": "2017-09-27 09:11:27 +0300",
+            "lastUpdatedDate": "2017-10-16 02:33:04 +0300"
+        },
+        {
+            "id": 60341,
+            "name": "TEST_SBF",
+            "token": "49817205ed314818b98bf212ad0bc1c51a6fc89025f44788bda1761a09c6b385",
+            "creationDate": "2017-09-27 11:42:02 +0300",
+            "lastUpdatedDate": "2017-10-16 11:21:35 +0300"
+        },
+        {
+            "id": 60351,
+            "name": "SHC - ONEPDMS_EXPLORER",
+            "token": "2eab258f0f28496c98d17771a9a76aa2a88c14d9f1c94c32bd9382975ac9f3d1",
+            "creationDate": "2017-09-27 12:19:06 +0300",
+            "lastUpdatedDate": "2017-09-28 14:23:42 +0300"
+        },
+        {
+            "id": 60353,
+            "name": "SHC - ONEPDMS_PDMS_LAUNCHPAD",
+            "token": "03d82226639244dc83b5c4592a8ea36364bdf1c95c1a423894060a29f005d902",
+            "creationDate": "2017-09-27 12:32:02 +0300",
+            "lastUpdatedDate": "2017-09-28 14:12:47 +0300"
+        },
+        {
+            "id": 60357,
+            "name": "SHC - ONEPDMS_PDMS_ROUTER",
+            "token": "476a776762e64bc99f7ede4280e62c9253970c54db374a0ea811d530894e5801",
+            "creationDate": "2017-09-27 13:02:56 +0300",
+            "lastUpdatedDate": "2017-09-27 14:14:54 +0300"
+        },
+        {
+            "id": 60359,
+            "name": "SHC - LEO SPEECH2TEXT OD 1.0",
+            "token": "9d82a550ffdc4ccdb25cc08a25d5ba615cb7251ed5a74548b5a20dbfac128fa5",
+            "creationDate": "2017-09-27 13:47:05 +0300",
+            "lastUpdatedDate": "2017-09-27 19:06:29 +0300"
+        },
+        {
+            "id": 60363,
+            "name": "SHC - SAP Reporting Hub - RevCI",
+            "token": "f76dfd8fd0f14ef5abe80f77ee89fcd1272d038445684901b3fdfd527e526b1b",
+            "creationDate": "2017-09-27 14:02:15 +0300",
+            "lastUpdatedDate": "2017-09-27 14:05:18 +0300"
+        },
+        {
+            "id": 60386,
+            "name": "SHC-CDT_1.0",
+            "token": "257d4e3dc4584f1ca14294900dadd4225cbe4d7c62114bb89909e867e905c852",
+            "creationDate": "2017-09-27 14:48:35 +0300",
+            "lastUpdatedDate": "2017-10-11 12:15:11 +0300"
+        },
+        {
+            "id": 60432,
+            "name": "SHC - SAP LEONARDO ML FOUND. OD 1.0",
+            "token": "3234b1c9302d458ab71faab935f8612c58f2ab0c5ebf48ab8ace9372788930a3",
+            "creationDate": "2017-09-27 18:45:38 +0300",
+            "lastUpdatedDate": "2017-10-16 07:59:19 +0300"
+        },
+        {
+            "id": 60491,
+            "name": "SHC - SAP LEONARDO BRIDGE 1710",
+            "token": "f6c2299819a043d3860519f102848f87779ef06613d4409a8c243aef20648ba1",
+            "creationDate": "2017-09-28 03:06:52 +0300",
+            "lastUpdatedDate": "2017-09-28 03:07:20 +0300"
+        },
+        {
+            "id": 60540,
+            "name": "SHC - SAP ML STI DATA EXTRACTOR 1.0",
+            "token": "5e0fe805c1464053a198f5c1f419195741d229dd8f7242a88be864fdf3e40adf",
+            "creationDate": "2017-09-28 10:18:33 +0300",
+            "lastUpdatedDate": "2017-10-16 11:05:55 +0300"
+        },
+        {
+            "id": 60556,
+            "name": "My Product",
+            "token": "b5417f2d3b8c462787b3bec4ccfcc2dde92f6c43460b4914b43e2f4163f5655e",
+            "creationDate": "2017-09-28 11:50:38 +0300",
+            "lastUpdatedDate": "2017-10-16 12:03:23 +0300"
+        },
+        {
+            "id": 60586,
+            "name": "SHC - XS LM SERVICES COMMON OPEN",
+            "token": "611a717ecc3f41ffa37867c0fde7a2d58d2b34f723dd43ccbab07fe7ac4bfc01",
+            "creationDate": "2017-09-28 14:22:05 +0300",
+            "lastUpdatedDate": "2017-09-28 14:22:08 +0300"
+        },
+        {
+            "id": 60594,
+            "name": "SHC ? ANWhiteSourceDemo",
+            "token": "2f46884209d84506a9ef155407281c884275fd6b12da4b4ebabbc51e1974b33e",
+            "creationDate": "2017-09-28 15:32:15 +0300",
+            "lastUpdatedDate": "2017-10-03 13:50:07 +0300"
+        },
+        {
+            "id": 61911,
+            "name": "SHC-Connected_Worker_Safety_1.0",
+            "token": "277c2edf968148e3a796c5d984e8ce7d3b15bef072df45f3af49f36cfe1284e9",
+            "creationDate": "2017-09-29 04:23:06 +0300",
+            "lastUpdatedDate": "2017-09-29 13:08:30 +0300"
+        },
+        {
+            "id": 61919,
+            "name": "TEST_SHC - VMS",
+            "token": "a95e1950c75a463c8ef5652bdd3b2dafb31c1e7a169643269e362c0af1c89805",
+            "creationDate": "2017-09-29 10:18:41 +0300",
+            "lastUpdatedDate": "2017-09-29 10:20:25 +0300"
+        },
+        {
+            "id": 61939,
+            "name": "SHC - NODEJS_RT",
+            "token": "27eba1751e1e4fdb9e5a6cd3c368a9bc3e713d77e2cd407c8a25f181ae308bcf",
+            "creationDate": "2017-09-29 15:36:57 +0300",
+            "lastUpdatedDate": "2017-09-29 15:47:50 +0300"
+        },
+        {
+            "id": 61956,
+            "name": "SHC - EDGE ANALYTICS SERVICE 3.1709",
+            "token": "91cc0b3a18ac431f97647e141a41c2c07d36f23f7177463c9fc7df3c225de804",
+            "creationDate": "2017-09-29 18:47:58 +0300",
+            "lastUpdatedDate": "2017-09-29 20:34:32 +0300"
+        },
+        {
+            "id": 61957,
+            "name": "SHC - EDGE BUSESSENTIAL SERVICE 3.1709",
+            "token": "438694f956174a75adee85ef9e769e04e07759dfdf684ef2a163c90fdd913213",
+            "creationDate": "2017-09-29 18:50:29 +0300",
+            "lastUpdatedDate": "2017-09-29 18:51:04 +0300"
+        },
+        {
+            "id": 61958,
+            "name": "SHC - EDGE INTERCEPTOR 3.1709",
+            "token": "0a272d15724746aeb6c075f7a372a39170d9b7b8b14e49cdb43235d2f73d87e9",
+            "creationDate": "2017-09-29 18:52:14 +0300",
+            "lastUpdatedDate": "2017-09-29 18:52:42 +0300"
+        },
+        {
+            "id": 61959,
+            "name": "SHC - EDGE STREAMLITE 3.1709",
+            "token": "c22369601c1e4ad5ac8edad1b7c57abe9cc73b54f6ef4254b2380c1787879945",
+            "creationDate": "2017-09-29 18:52:58 +0300",
+            "lastUpdatedDate": "2017-09-29 20:30:09 +0300"
+        },
+        {
+            "id": 61966,
+            "name": "SHC - EDGE PERSISTENCE SERVICE 3.1709",
+            "token": "6a304e064da74641a70108b2d3f47cf7d68619e1a5c0480197f390c7e292c683",
+            "creationDate": "2017-09-29 20:32:07 +0300",
+            "lastUpdatedDate": "2017-09-29 20:32:16 +0300"
+        },
+        {
+            "id": 61967,
+            "name": "SHC - EDGE SQLANY 3.1709",
+            "token": "f395f97fda5e480099956ced7eed4b54547672ec6c5b4dd4acad91483df26879",
+            "creationDate": "2017-09-29 20:32:54 +0300",
+            "lastUpdatedDate": "2017-09-29 20:33:03 +0300"
+        },
+        {
+            "id": 61969,
+            "name": "SHC - EDGE POLICY SERVER 3.1709",
+            "token": "9515d2d8c3d546c1a576bdafb29b582baff3b059e42844bcbab22af6fc1f7eaa",
+            "creationDate": "2017-09-29 20:34:58 +0300",
+            "lastUpdatedDate": "2017-09-29 21:02:44 +0300"
+        },
+        {
+            "id": 61973,
+            "name": "SHC - EDGE BUSESSENTIAL SYNC 3.0.1709",
+            "token": "a30b0a0b5b5b40b2b0e61697e59a9d6b58643268e42a4844845fdced62a19c33",
+            "creationDate": "2017-09-29 21:31:35 +0300",
+            "lastUpdatedDate": "2017-09-29 21:31:36 +0300"
+        },
+        {
+            "id": 61974,
+            "name": "SHC - EDGE BUSESSENTIAL SQL 3.0.1709",
+            "token": "14c7d0902e8e473f8fa3949b6beb1713b82657c90ec3482bbdd318713d09449e",
+            "creationDate": "2017-09-29 21:31:41 +0300",
+            "lastUpdatedDate": "2017-09-29 21:31:42 +0300"
+        },
+        {
+            "id": 62121,
+            "name": "SHC - hybris as a Service",
+            "token": "ac624c6227de415592d92ad755eef2e75ca51b1302be4ddd848c3624af857d1c",
+            "creationDate": "2017-10-02 16:44:50 +0300",
+            "lastUpdatedDate": "2017-10-02 17:17:05 +0300"
+        },
+        {
+            "id": 62313,
+            "name": "SHC - ANWhiteSourceDemo",
+            "token": "332393e8402a46f4be9a04e0db21ecc17b0f9bb7d6a44a07ac7d581466bf9b2f",
+            "creationDate": "2017-10-03 14:51:59 +0300",
+            "lastUpdatedDate": "2017-10-03 23:58:01 +0300"
+        },
+        {
+            "id": 62565,
+            "name": "SHC - Mob Truerec Wallet 1.0.0",
+            "token": "a5e4777aa7ca439cb043bf6bd390979d11d2bc7d483d4d6ba7d619233f05a329",
+            "creationDate": "2017-10-04 22:34:48 +0300",
+            "lastUpdatedDate": "2017-10-06 01:32:25 +0300"
+        },
+        {
+            "id": 62654,
+            "name": "SCV - FS DATAPLATF CORE 1.0 - INTERFACE GENERATOR",
+            "token": "f5e088fce48d4bd6986bb3ceb9a8fbff5df201cf2fd340dbb2fe5425ceef7fa7",
+            "creationDate": "2017-10-05 12:00:18 +0300",
+            "lastUpdatedDate": "2017-10-07 15:05:49 +0300"
+        },
+        {
+            "id": 62656,
+            "name": "NEWJS_FSAGENT_TESTS",
+            "token": "b312c0f194ce4d19b2dc6f81c4e873bfbd8b4bb694754bf7a6c6793050e1a58c",
+            "creationDate": "2017-10-05 12:23:57 +0300",
+            "lastUpdatedDate": "2017-10-05 12:33:07 +0300"
+        },
+        {
+            "id": 62659,
+            "name": "CloudPot Development Costcenter Controller",
+            "token": "34298808223f4b7887daf2f74dcb9f49b4efb6300e1a442791061dbd2fb626a9",
+            "creationDate": "2017-10-05 12:29:57 +0300",
+            "lastUpdatedDate": "2017-10-16 12:29:37 +0300"
+        },
+        {
+            "id": 62663,
+            "name": "SHC - CO PROJ INFO NET OD 0.9 - copin-digital-twin-service",
+            "token": "4b745e254c8b417c954027c7df587acb0d2e58cdea1445a69b702c3674f88588",
+            "creationDate": "2017-10-05 13:04:15 +0300",
+            "lastUpdatedDate": "2017-10-13 12:23:06 +0300"
+        },
+        {
+            "id": 62679,
+            "name": "SHC - ARIBA_NETWORK_TRUNK",
+            "token": "bad6f390a59041eda177bf25a8dc2ec6c9791e71889c47fa9e9816ef2e47fa76",
+            "creationDate": "2017-10-05 14:37:27 +0300",
+            "lastUpdatedDate": "2017-10-05 16:01:27 +0300"
+        },
+        {
+            "id": 62712,
+            "name": "SHC - FS BANKING API CORE 1.0",
+            "token": "0c1b2a0d3a244685906ef1ff3b0d4658db8e6f86bbbd4be78871598b46ed2d7f",
+            "creationDate": "2017-10-05 17:07:56 +0300",
+            "lastUpdatedDate": "2017-10-16 00:20:14 +0300"
+        },
+        {
+            "id": 62807,
+            "name": "SHC - ARIBA_NETWORK_2017.10",
+            "token": "4eac485b473047acbf7c162c1b1b22b3c896e900df664e388c9f924ae9d58761",
+            "creationDate": "2017-10-06 12:13:18 +0300",
+            "lastUpdatedDate": "2017-10-06 22:04:38 +0300"
+        },
+        {
+            "id": 62813,
+            "name": "SHC - KAFKA_SRV_CF 1.0",
+            "token": "8e94881160e24aafabd05f3a2cb022027c3900745acb4210ab106aa14d402596",
+            "creationDate": "2017-10-06 14:20:04 +0300",
+            "lastUpdatedDate": "2017-10-13 06:38:12 +0300"
+        },
+        {
+            "id": 62820,
+            "name": "SHC - test",
+            "token": "5356c618664240f4a62ea880aaedbfa9de4fdee228d2493292b4cc55ec5e2a06",
+            "creationDate": "2017-10-06 18:04:39 +0300",
+            "lastUpdatedDate": "2017-10-11 17:41:07 +0300"
+        },
+        {
+            "id": 62942,
+            "name": "SHC - cds-test",
+            "token": "4193c7edaf4842408bdf2cb793da58bd9a8c1b64906d41fb9dfeb35777263dd9",
+            "creationDate": "2017-10-09 12:30:32 +0300",
+            "lastUpdatedDate": "2017-10-11 11:56:10 +0300"
+        },
+        {
+            "id": 62951,
+            "name": "SHC - NEO API CLIENT 1.0",
+            "token": "79f5427c00c0472f96c97b7819d355742f5001debff54d09a5fe50f17be2b891",
+            "creationDate": "2017-10-09 15:34:05 +0300",
+            "lastUpdatedDate": "2017-10-09 16:04:18 +0300"
+        },
+        {
+            "id": 62953,
+            "name": "ocr-engine",
+            "token": "7a9f3f32d93d4d708db9412cf3059e48b3360108bdf44c6e90e333ae9ded23c3",
+            "creationDate": "2017-10-09 16:32:17 +0300",
+            "lastUpdatedDate": "2017-10-09 16:48:40 +0300"
+        },
+        {
+            "id": 62954,
+            "name": "SHC - LEO OCR OD 1.0",
+            "token": "7ebfcad4e430443ebb4b75583e1fad7d955a6134654745b5ad4e6899701dc4d3",
+            "creationDate": "2017-10-09 16:54:50 +0300",
+            "lastUpdatedDate": "2017-10-09 16:54:51 +0300"
+        },
+        {
+            "id": 63006,
+            "name": "SHC-CDTClient_1.0",
+            "token": "db291ea8d6544ae6914846ea67424413da567d1d0afb4d919d4213aa7e0ae6a9",
+            "creationDate": "2017-10-10 11:43:37 +0300",
+            "lastUpdatedDate": "2017-10-10 11:46:52 +0300"
+        },
+        {
+            "id": 63037,
+            "name": "SHC - UICS_DPS_CF 1.0",
+            "token": "1d7a3ae71faa4538ae3e680e4846634c063ad6403094463497441003afb370d1",
+            "creationDate": "2017-10-10 15:27:48 +0300",
+            "lastUpdatedDate": "2017-10-13 15:51:05 +0300"
+        },
+        {
+            "id": 63063,
+            "name": "SHC - TIME SERIES MD",
+            "token": "c9ccc42008504345a57ac1fe2d5aecec38f19af7db04441da9039c578aa2ff9a",
+            "creationDate": "2017-10-10 17:16:50 +0300",
+            "lastUpdatedDate": "2017-10-13 15:48:56 +0300"
+        },
+        {
+            "id": 63149,
+            "name": "SHC - HCP POC Pipeline-Test",
+            "token": "eb48cf7f8e7d4626af6f9b4c476b09f8b53deae2a79c4be08733820ed078a3cb",
+            "creationDate": "2017-10-11 10:04:46 +0300",
+            "lastUpdatedDate": "2017-10-11 10:04:46 +0300"
+        },
+        {
+            "id": 63181,
+            "name": "SHC - IAS API CLIENT 1.0",
+            "token": "2148ab0af8874a50828f996c9d0af3529529774bd3f543c8b0989c747ce3159a",
+            "creationDate": "2017-10-11 17:06:38 +0300",
+            "lastUpdatedDate": "2017-10-12 17:16:40 +0300"
+        },
+        {
+            "id": 63182,
+            "name": "SHC-SAP_DKE_DATA_HUB_1.0",
+            "token": "7291a2b3f9b64026b9ea41a7777d8524386a25bf8f064f2ebef9f89a8191dfee",
+            "creationDate": "2017-10-11 17:26:06 +0300",
+            "lastUpdatedDate": "2017-10-16 11:45:54 +0300"
+        },
+        {
+            "id": 63185,
+            "name": "node - test",
+            "token": "1df7f5f31dc44c57968a32421fea84ff2b844782d7f44a25b1e0e9266add605c",
+            "creationDate": "2017-10-11 17:48:08 +0300",
+            "lastUpdatedDate": "2017-10-11 18:13:53 +0300"
+        },
+        {
+            "id": 63187,
+            "name": "Piper",
+            "token": "892d2c3271e14f3f962e2eb223c036abf498005a91fb4905a2b102fee3c991c9",
+            "creationDate": "2017-10-11 18:12:17 +0300",
+            "lastUpdatedDate": "2017-10-16 12:05:42 +0300"
+        },
+        {
+            "id": 63275,
+            "name": "SHC - C4C API CLIENT 1.0",
+            "token": "bf89881c0301430bb6efa6d58a653e49693c54d169d94c1fb737e3fa3a37393a",
+            "creationDate": "2017-10-12 13:46:21 +0300",
+            "lastUpdatedDate": "2017-10-12 16:02:21 +0300"
+        },
+        {
+            "id": 63310,
+            "name": "HEALTH PLATFORM OD 1.0",
+            "token": "f9ee3d5868b54fc8b9d1ff0b9bbe252a9b9aa3b38f9848e0900f6195985f050d",
+            "creationDate": "2017-10-12 17:09:57 +0300",
+            "lastUpdatedDate": "2017-10-16 07:21:03 +0300"
+        },
+        {
+            "id": 63431,
+            "name": "SHC - SAP_PQM_OD_1805",
+            "token": "b5397b4a90874a4dac012b3c08f066ab5977d33f767b412cbd412dadb5febb32",
+            "creationDate": "2017-10-13 12:59:36 +0300",
+            "lastUpdatedDate": "2017-10-13 12:59:50 +0300"
+        }
+    ]
+}

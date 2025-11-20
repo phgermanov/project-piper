@@ -1,0 +1,5 @@
+FROM rootImage
+
+USER root
+
+ENV TEST 2.3.4

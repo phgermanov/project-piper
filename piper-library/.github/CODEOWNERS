@@ -1,0 +1,166 @@
+# This is a comment.
+# Each line is a file pattern followed by one or more owners.
+
+##### GENERAL #####
+* @ContinuousDelivery/piper-core @ContinuousDelivery/epam
+
+##### UNSPECIFIED CONTRIBUTIONS #####
+/src/com/sap/icd/jenkins/EnvironmentManagerRunner.groovy @c5283172
+/src/com/sap/icd/jenkins/JDroid.groovy @D049740
+
+/vars/executePerformanceNGrinderTests.groovy @I513578
+
+##### ENVIRONMENT INFO #####
+/resources/metadata/sapGenerateEnvironmentInfo.yaml @ContinuousDelivery/piper-core
+/vars/sapGenerateEnvironmentInfo.groovy @ContinuousDelivery/piper-core
+/cmd/sapGenerateEnvironmentInfo.go @ContinuousDelivery/piper-core
+/cmd/sapGenerateEnvironmentInfo_test.go @ContinuousDelivery/piper-core
+/pkg/sap/environmentInfo/ @ContinuousDelivery/piper-core
+
+##### CUMULUS #####
+/resources/metadata/sapCumulusUpload.yaml @ContinuousDelivery/piper-core
+/vars/sapCumulusUpload.groovy @ContinuousDelivery/piper-core
+/cmd/sapCumulusUpload.go @ContinuousDelivery/piper-core
+/cmd/sapCumulusUpload_test.go @ContinuousDelivery/piper-core
+/pkg/sap/cumulus/ @ContinuousDelivery/piper-core
+
+##### ECCN #####
+/resources/metadata/sapCheckECCNCompliance.yaml @ContinuousDelivery/eccn
+/vars/sapCheckECCNCompliance.groovy @ContinuousDelivery/eccn
+/cmd/sapCheckECCNCompliance.go @ContinuousDelivery/eccn
+/cmd/sapCheckECCNCompliance_test.go @ContinuousDelivery/eccn
+/pkg/sap/eccn/ @ContinuousDelivery/eccn
+
+##### FOSS SERVICE #####
+/resources/metadata/sapCallFossService.yaml @d069175
+/vars/sapCallFossService.groovy @d069175
+/cmd/sapCallFossService.go @d069175
+/cmd/sapCallFossService_test.go @d069175
+/pkg/sap/fossService/ @d069175
+
+##### FASTLANE #####
+/resources/metadata/sapExecuteFastlane.yaml @ContinuousDelivery/fastlane
+/vars/sapExecuteFastlane.groovy @ContinuousDelivery/fastlane
+/cmd/sapExecuteFastlane.go @ContinuousDelivery/fastlane
+/cmd/sapExecuteFastlane_test.go @ContinuousDelivery/fastlane
+/pkg/sap/fastlane/ @ContinuousDelivery/fastlane
+
+##### FOSSTARS #####
+/resources/metadata/sapCreateFosstarsReport.yaml @D061781 @D074360
+/vars/sapCreateFosstarsReport.groovy @D061781 @D074360
+/cmd/sapCreateFosstarsReport.go @D061781 @D074360
+/cmd/sapCreateFosstarsReport_test.go @D061781 @D074360
+/pkg/sap/fosstars/ @D061781 @D074360
+
+##### IRIS #####
+/vars/callIRIS.groovy  @ContinuousDelivery/iris
+/vars/deployToCloudFoundryWithIRIS.groovy  @ContinuousDelivery/iris
+/vars/exitIRISGeneralPreExit.groovy  @ContinuousDelivery/iris
+
+##### PPMS #####
+/resources/metadata/sapCheckPPMSCompliance.yaml @ContinuousDelivery/piper-core
+/vars/sapCheckPPMSCompliance.groovy @ContinuousDelivery/piper-core
+/cmd/sapCheckPPMSCompliance.go @ContinuousDelivery/piper-core
+/cmd/sapCheckPPMSCompliance_test.go @ContinuousDelivery/piper-core
+/pkg/sap/ppms/ @ContinuousDelivery/piper-core
+
+##### REPORTING INSIGHTS AND DORA ####
+/resources/metadata/sapReportPipelineStatus.yaml @ContinuousDelivery/dora
+/vars/sapReportPipelineStatus.groovy @ContinuousDelivery/dora
+/cmd/sapReportPipelineStatus.go @ContinuousDelivery/dora
+/cmd/sapReportPipelineStatus_test.go @ContinuousDelivery/dora
+/pkg/sap/reportpipelinestatus @ContinuousDelivery/dora
+
+/resources/metadata/sapCollectInsights.yaml @ContinuousDelivery/dora
+/vars/sapCollectInsights.groovy @ContinuousDelivery/dora
+/cmd/sapCollectInsights.go @ContinuousDelivery/dora
+/cmd/sapCollectInsights_test.go @ContinuousDelivery/dora
+/pkg/sap/insights @ContinuousDelivery/dora
+
+/resources/metadata/sapGithubWriteDeployment.yaml @ContinuousDelivery/dora
+/vars/sapGithubWriteDeployment.groovy @ContinuousDelivery/dora
+/cmd/sapGithubWriteDeployment.go @ContinuousDelivery/dora
+/cmd/sapGithubWriteDeployment_test.go @ContinuousDelivery/dora
+##### STAGING SERVICE #####
+/resources/metadata/sapCallStagingService.yaml @ContinuousDelivery/stagingservice
+/vars/sapCallStagingService.groovy @ContinuousDelivery/stagingservice
+/cmd/sapCallStagingService.go @ContinuousDelivery/stagingservice
+/cmd/sapCallStagingService_test.go @ContinuousDelivery/stagingservice
+/pkg/sap/staging/ @ContinuousDelivery/stagingservice
+
+##### SUPA #####
+/resources/metadata/sapSUPAExecuteTests.yaml @ContinuousDelivery/supa @ContinuousDelivery/piper-core
+/vars/sapSUPAExecuteTests.groovy @ContinuousDelivery/supa @ContinuousDelivery/piper-core
+/cmd/sapSUPAExecuteTests.go @ContinuousDelivery/supa @ContinuousDelivery/piper-core
+/cmd/sapSUPAExecuteTests_test.go @ContinuousDelivery/supa @ContinuousDelivery/piper-core
+
+##### XMAKE #####
+/resources/metadata/sapXmakeExecuteBuild.yaml @ContinuousDelivery/xmake
+/vars/sapXmakeExecuteBuild.groovy @ContinuousDelivery/xmake
+/cmd/sapXmakeExecuteBuild.go @ContinuousDelivery/xmake
+/cmd/sapXmakeExecuteBuild_test.go @ContinuousDelivery/xmake
+/pkg/sap/xmake/ @ContinuousDelivery/xmake
+
+##### DwC #####
+/resources/metadata/sapDwCStageRelease.yaml @ContinuousDelivery/dwc
+/vars/sapDwCStageRelease.groovy @ContinuousDelivery/dwc
+/cmd/sapDwCStageRelease.go @ContinuousDelivery/dwc
+/cmd/sapDwCStageRelease_test.go @ContinuousDelivery/dwc
+/pkg/sap/dwc/ @ContinuousDelivery/dwc
+
+##### Security Testing #####
+# sapDasterExecuteScan
+/cmd/sapDasterExecuteScan.go @ContinuousDelivery/sectest
+/cmd/sapDasterExecuteScan_generated.go @ContinuousDelivery/sectest
+/cmd/sapDasterExecuteScan_generated_test.go @ContinuousDelivery/sectest
+/cmd/sapDasterExecuteScan_test.go @ContinuousDelivery/sectest
+/resources/metadata/sapDasterExecuteScan.yaml @ContinuousDelivery/sectest
+/pkg/daster/ @ContinuousDelivery/sectest
+/vars/sapDasterExecuteScan.groovy @ContinuousDelivery/sectest
+/src/com/sap/piper/internal/integration/DasterTest.groovy @ContinuousDelivery/sectest
+/src/com/sap/piper/internal/integration/Daster.groovy @ContinuousDelivery/sectest
+
+# executeDasterScan
+/vars/executeDasterScan.groovy @ContinuousDelivery/sectest
+/test/groovy/steps/ExecuteDasterScanTest.groovy @ContinuousDelivery/sectest
+
+##### API Metadata Validator #####
+/resources/metadata/sapExecuteApiMetadataValidator.yaml @ContinuousDelivery/sap-api-metadata-validator
+/vars/sapExecuteApiMetadataValidator.groovy @ContinuousDelivery/sap-api-metadata-validator
+/cmd/sapExecuteApiMetadataValidator.go @ContinuousDelivery/sap-api-metadata-validator
+/cmd/sapExecuteApiMetadataValidator_test.go @ContinuousDelivery/sap-api-metadata-validator
+
+##### Accessibility team #####
+/cmd/sapAccessContinuumExecuteTests.go @ContinuousDelivery/accesscontinuum
+/cmd/sapAccessContinuumExecuteTests_test.go @ContinuousDelivery/accesscontinuum
+/resources/metadata/sapAccessContinuumExecuteTests.yaml @ContinuousDelivery/accesscontinuum
+/vars/sapAccessContinuumExecuteTests.groovy @ContinuousDelivery/accesscontinuum
+
+##### open-component-model #####
+/cmd/sapOcmCreateComponent.go @ContinuousDelivery/open-component-model
+/cmd/sapOcmCreateComponent_test.go @ContinuousDelivery/open-component-model
+/resources/metadata/sapOcmCreateComponent.yaml @ContinuousDelivery/open-component-model
+/vars/sapOcmCreateComponent.groovy @ContinuousDelivery/open-component-model
+/pkg/sap/ocm/ @ContinuousDelivery/open-component-model
+
+##### Cumulus Policy as Code #####
+/pkg/sap/policy/ @ContinuousDelivery/cumulus
+
+/resources/metadata/sapExecuteCustomPolicy.yaml @ContinuousDelivery/cumulus
+/vars/sapExecuteCustomPolicy.groovy @ContinuousDelivery/cumulus
+/cmd/sapExecuteCustomPolicy.go @ContinuousDelivery/cumulus
+/cmd/sapExecuteCustomPolicy_test.go @ContinuousDelivery/cumulus
+
+/resources/metadata/sapCollectPolicyResults.yaml @ContinuousDelivery/cumulus
+/vars/sapCollectPolicyResults.groovy @ContinuousDelivery/cumulus
+/cmd/sapCollectPolicyResults.go @ContinuousDelivery/cumulus
+/cmd/sapCollectPolicyResults_test.go @ContinuousDelivery/cumulus
+
+/resources/metadata/sapExecuteCentralPolicy.yaml @ContinuousDelivery/cumulus
+/vars/sapExecuteCentralPolicy.groovy @ContinuousDelivery/cumulus
+/cmd/sapExecuteCentralPolicy.go @ContinuousDelivery/cumulus
+/cmd/sapExecuteCentralPolicy_test.go @ContinuousDelivery/cumulus
+
+##### EXCLUDES #####
+/cmd/*_generated.go
+/cmd/*_generated_test.go

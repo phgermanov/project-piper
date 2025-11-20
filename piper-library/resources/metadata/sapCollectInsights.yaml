@@ -1,0 +1,230 @@
+metadata:
+  name: sapCollectInsights
+  description: This step provides the capability to collect metrics related to DevOps.
+  longDescription: |
+    This step enables SAP to collect various metrics about DevOps practices. The metrics are consumed to calculate the
+    DORA metrics, Deployment Frequency and Lead Time for Changes. The DORA relevant metrics which can be collected
+    utilizing this step are `Lead Time for Changes` (LT) and `DeploymentFrequency` (DF).
+    The ChangeSet necessary for LT is by default only collected for pipelines with deploymentTarget `development`.
+    In case you are running on the GPP you solely need to configure the following in your .pipeline/config.yml file:
+    ```yaml
+    sapCollectInsights:
+      deploymentTarget: 'development' OR 'production'
+      identifier: YOUR-MICROSERVICE-NAME
+    ```
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        type: jenkins
+        description: "Jenkins 'Secret text' credentials ID containing the token used to authenticate
+          with the Github server."
+      - name: devOpsInsightsTokenCredentialsId
+        description: "Jenkins 'Secret text' DevOpsInsights token, only use if you dont use Vault."
+        type: jenkins
+    params:
+      - name: devOpsInsightsToken
+        type: string
+        description: DevOps Insights Token
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: token
+        resourceRef:
+          - name: devOpsInsightsTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: devops-insights
+            name: devOpsInsightsTokenVaultSecretName
+      - name: doraSystemTrustToken
+        type: string
+        description: Access token for DevOps Insights as provided by Hyperspace System Trust. Precedence over the devOpsInsightsToken from Vault is controlled via the tokenOrder parameter.
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - type: systemTrustSecret
+            name: doraTrustSecretName
+            default: dora
+      - name: tokenOrder
+        secret: false
+        description: This field is used to define the order of the token to be used. Possible values are 'i2', 'trust'.
+        scope:
+          - PARAMETERS
+          - STEPS
+        type: string
+        default: 'i2'
+      - name: devOpsInsightsAPI
+        secret: false
+        description: DevOpsInsights API base URL
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: ''
+      - name: githubToken
+        type: string
+        description: Token of Git user for Github access.
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubTokenCredentialsVaultSecretName
+      - name: commitId
+        type: string
+        description: CommitId of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/headCommitId
+      - name: previousReleaseCommitId
+        type: string
+        description: CommitId of the last release.
+        mandatory: false
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/previousReleaseRef
+      - name: branch
+        type: string
+        description: Branch of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/branch
+      - name: gitOrganization
+        type: string
+        description: Git organization of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/organization
+      - name: gitRepository
+        type: string
+        description: Git repository of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/repository
+      - name: gitInstance
+        type: string
+        description: Git instance of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/instance
+      - name: gitURL
+        type: string
+        description: DEPRECATED. Git URL of the repository. Not needed anymore as we compose it from the other parameters.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/url
+      - name: artifactVersion
+        description: The version assigned by artifactPrepareVersion to the uploaded log files/documents.
+        type: string
+        mandatory: false
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: identifier
+        type: string
+        mandatory: true
+        description: Identifier string for e.g. dedicated artifact version. Used for later mapping.
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+      - name: deploymentTarget
+        type: string
+        mandatory: false
+        default: development
+        description: Indicates the release status for the current pipeline run.
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+      - name: serializeIntermediateResults
+        type: bool
+        mandatory: false
+        default: false
+        description: Use only for debug purpose. Creates two files collected_structure.json and gateway_response.json.
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+      - name: collectChangeSetProduction
+        type: bool
+        mandatory: false
+        default: false
+        description: In case you are running a pipeline with deploymentTarget `production` you can force the step to collect the ChangeSet
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+      - name: deploymentTime
+        type: string
+        mandatory: false
+        description: The UTC timestamp of when the deployment happened. Format `2006-01-02 15:04:05`. Uses current time if this parameter is empty
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+      - name: changeSetRetrieval
+        type: string
+        description: DEPRECATED Defines the way a ChangeSet is retrieved. e.g. through cumulus or orchestrator
+        mandatory: true
+        default: btp
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+        possibleValues:
+          - orchestrator
+          - fourkeys
+          - btp
+      - name: devOpsInsightsVersion
+        type: string
+        description: DevOpsInsights version pattern looks like this v.X.Y.Z, or dev refers to main version
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STEPS
+          - STAGES
+      - name: gcsBucketID
+        type: string
+        description: gcsBucketID/cumulusId of the current pipeline.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/gcsBucketID
+  outputs:
+    resources:
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "changes.txt"
+            type: log

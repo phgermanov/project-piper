@@ -1,0 +1,20 @@
+{
+  "name": "piper-test",
+  "version": "1.0.0",
+  "description": "Frontend Tests",
+  "scripts": {
+    "ci-e2e": "nightwatch -e chrome --skiptags=ignore"
+  },
+  "author": "SAP",
+  "private": true,
+  "devDependencies": {
+    "chromedriver": "^2.29.0",
+    "cucumber": "^2.3.0",
+    "cucumber-html-report": "^0.6.0",
+    "cucumber-junit": "^1.7.0",
+    "nightwatch": "^0.9.16",
+    "nightwatch-cucumber": "^7.1.7",
+    "phantomjs-prebuilt": "^2.1.14",
+    "selenium-server": "^3.4.0"
+  }
+}

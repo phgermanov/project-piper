@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: I want to report an incident!
+    url: 'https://itsm.services.sap/sp?id=sc_cat_item&sys_id=703f22d51b3b441020c8fddacd4bcbe2&service_offering=455f43371b487410341e11739b4bcb67&public=yes&description=My pipeline repository and complete logs can be found here:'
+    about: We use ServiceNow as the only support channel to report breakages or bugs.
+  - name: I want to request a feature!
+    url: https://itsm.services.sap/sp?id=sc_cat_item&sys_id=703f22d51b3b441020c8fddacd4bcbe2&service_offering=455f43371b487410341e11739b4bcb67&public=yes
+    about: Please create the request with **[Feature]** in the Subject so that it can be easily identified. Please note that the feature requests we accept are closed by providing a link to a backlog item.
+  - name: I have a question or need support for a specific piper step
+    url: https://go.sap.corp/piper/3rdparty_support/
+    about: Most likely there is a tool specific question, check the support channels for the individual tools or piper steps.
+  - name: I'm unsure where to go
+    url: https://sap-piper.slack.com/archives/C92KW1H55
+    about: If you are unsure where to go, then feel free to simply ask the community in the Piper Slack channel, where Piper developers will also look without any SLA.

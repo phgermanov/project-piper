@@ -1,0 +1,9 @@
+name: 'PostPPMS'
+runs:
+  using: "composite"
+  steps:
+    - name: Notify Piper team on failure
+      uses: SAP/project-piper-action@v1
+      with:
+        step-name: shellExecute
+        flags: "--sources .github/workflows/scripts/notify_on_failure.sh"

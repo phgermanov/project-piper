@@ -1,0 +1,149 @@
+metadata:
+  name: sapExecuteCentralPolicy
+  description: Execute a central policy.
+  longDescription: |
+    This step evaluates central policies which you can use to validate the quality of your software.
+
+    For the evaluation, you need to provide an evidence file which contains the measured properties of your software and the key oft the central policy to execute.
+    This step validates the evidence file against the central policy and stores the result in a json file.
+
+    The central policies will be downloaded automatically from cumulus.
+    By default policy violations will abort the pipeline (can be changed by `failOnPolicyViolation` parameter to `false`).
+
+    Example:
+    In order to execute a central policy you have to call the step sapExecuteCentralPolicy i.e. by using a piper extension.
+
+    ```
+    sapExecuteCentralPolicy script: script, policyKey: 'SDOL-009', evidenceFile: 'my-evidence-1.json'
+    ```
+
+    A working showcase with [piper extension](https://github.wdf.sap.corp/cumulus/cumulus-showcase-nestjs/blob/master/.pipeline/extensions/Central%20Build.groovy) and a policy can be found in the [cumulus-showcase-nestjs](https://github.wdf.sap.corp/cumulus/cumulus-showcase-nestjs/tree/master/.policy/code_coverage) repository.
+
+    Cumulus Integration:
+
+    The generated result file can be uploaded to [Cumulus](https://go.sap.corp/piper/steps/sapCumulusUpload/):
+    ```
+    sapCumulusUpload script: this, filePattern: 'policy-result/SDOL-009/**/*.json', subFolderPath: 'SDOL-009', stepResultType: 'policy-result'
+    ```
+    This can be used for documentation purposes and to display the results in the [Cumulus pipeline dashboard](https://wiki.one.int.sap/wiki/x/icIy1g#PoliciesasCode-WherecanIseepolicyresults?).
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        type: jenkins
+        description:
+          "Jenkins 'Secret text' credentials ID containing the token used to authenticate
+          with the Github server."
+      - name: cumulusFileCredentialsId
+        description: Jenkins 'File' credentials ID containing the key file to authenticate to Cumulus on the Google Cloud Platform.
+        type: jenkins
+    params:
+      - name: jsonKeyFilePath
+        description: File path to Google Cloud JSON key file. If this parameter is not set, the 'token' parameter will be used for authentication.
+        type: string
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: cumulusFileCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            name: cumulusFileCredentialsVaultSecretName
+            default: cumulus
+      - name: token
+        type: string
+        description: "The token used to authenticate with the Google Cloud Storage service. It is provided by TrustEngine, so usually there is no need to set this parameter."
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - type: systemTrustSecret
+            name: cumulusSystemTrustSecretName
+            default: cumulus
+      - name: policyKey
+        description: The key of the policy to be executed.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+      - name: evidenceFile
+        description: The evidence file to be evaluated.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+      - name: centralPolicyPath
+        description: Path of a directory containing the policies.
+        type: string
+        mandatory: false
+        default: .central-policy-cache
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL
+      - name: failOnPolicyViolation
+        description: Fail the pipeline if the policy is not compliant.
+        type: bool
+        mandatory: false
+        default: true
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL
+      - name: resultFile
+        description: |
+          Path of the result file that is generated. The placeholder <policyKey> will be replaced by the policy key.
+          The path can contain subfolders which might be useful if the same policy is executed multiple times (e.g. mono repo / maven multi module project)
+          Attention: If you execute the same policy multiple times without specifying resultFile parameter results will be overwritten.
+        type: string
+        mandatory: false
+        default: ./policy-result/<policyKey>/result.json
+        scope:
+          - PARAMETERS
+      - name: generateJunitReport
+        description: |
+          Whether a junit test-report xml is generated or not. If so, the report will be generated at the following path: ./TEST-central-policy-<policyKey>.xml
+        type: bool
+        mandatory: false
+        default: false
+        scope:
+          - PARAMETERS
+      - name: githubToken
+        type: string
+        description: Token of Git user for GitHub access. Required if pipeline is running outside of the corporate network.
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubTokenCredentialsVaultSecretName
+      - name: cumulusPolicyAgentVersion
+        description: |
+          The version of the cumulus policy agent to be used for the execution.
+          Note: Normally you should use the default
+        type: string
+        mandatory: false
+        default: latest
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL
+      - name: cumulusPolicyBucket
+        description: |
+          The bucket containing the central policy bundles
+          Note: Normally you should use the default
+        type: string
+        mandatory: false
+        default: sap-cumulus-store-prod-policy-bundles
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL

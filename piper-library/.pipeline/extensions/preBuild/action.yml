@@ -1,0 +1,72 @@
+name: 'PreBuild'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Get draft release tag
+      id: get_release_tag
+      shell: bash
+      run: |
+        RELEASE_TAG=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" \
+          "${{ github.api_url }}/repos/${{ github.repository }}/releases" \
+          | jq -r '.[] | select(.draft == true) | .tag_name' | head -1)
+        if [ "$RELEASE_TAG" != "null" ] && [ -n "$RELEASE_TAG" ]; then
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "::notice::Using version from draft release: $RELEASE_TAG"
+        else
+          echo "release_tag=" >> $GITHUB_OUTPUT
+        fi
+
+    # Fallback: fetch tag from latest release if no draft exists
+    - name: Get latest release tag (fallback)
+      if: steps.get_release_tag.outputs.release_tag == ''
+      id: latest_tag
+      shell: bash
+      run: >
+        echo "latest_release_tag=$(
+        curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}"
+        ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest
+        | jq .tag_name -r)" >> $GITHUB_OUTPUT
+
+    - name: Versioning (use draft or increment minor)
+      id: version
+      shell: bash
+      run: |
+        if [ -n "${{ steps.get_release_tag.outputs.release_tag }}" ]; then
+          # Use version from release-drafter draft
+          VERSION="${{ steps.get_release_tag.outputs.release_tag }}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "::notice::Using release-drafter version: $VERSION"
+        else
+          # Fallback to increment from latest release
+          export current_version="${{ steps.latest_tag.outputs.latest_release_tag }}"
+          .github/workflows/scripts/increment_version.sh
+        fi
+
+    # Appends suffix to version. This version is used in ldflags during go binary compilation and for promoting artifact.
+    # on push to master '-master-{commitSHA}' will be appended
+    #
+    # For example, version 1.333.0 will become:
+    # 1.333.0-master-ffac537e6cbbf934b08745a378932722df287a53 on push to master
+    - name: Versioning (pre + commit sha)
+      if: github.event_name == 'push' && contains(github.ref, 'master')
+      id: version_suffix
+      shell: bash
+      run: echo "version=${{ steps.version.outputs.version }}-master-${{ github.sha }} " >> ${GITHUB_OUTPUT}
+
+    - name: Write version file
+      shell: bash
+      run: echo "${{ steps.version_suffix.outputs.version || steps.version.outputs.version }}" > VERSION
+
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.0'
+
+    - name: Verify generated source files are up-to-date
+      shell: bash
+      run: |
+        go generate
+        git diff --exit-code --name-status ./cmd
+

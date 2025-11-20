@@ -1,0 +1,34 @@
+- "error message example":
+   - "regex example 1"
+   - "regex example 2"
+- "Please ensure that your repository is public or that the xmake user has access in case of a private repository":
+   - "^fatal: Could not read from remote repository.$"
+- "CFG-JJEN-000: Check that your treeish is valid":
+   - "^FATAL: Failed during treesh resolving.$"
+   - "^ERROR: Couldn't find any revision to build. Verify the repository and branch configuration for this job.$"
+- "SDE-JJEN-000: Swift error please create a Service Now Ticket":
+   - "\\s+at com\\.sap\\.prd\\.jenkins\\.plugins\\.swiftblobstore\\."
+- "SDE-JJEN-000: Github commit status error, please check your Github owner rights or create a Service Now Ticket":
+   - "\\s+at com\\.sap\\.prd\\.jenkins\\.plugins\\.github\\.postbuild\\.CiConnectCommitStatusNotifier\\.perform"
+- "USR-JJEN-000: Submodule could not be fetched, please check your repo":
+   - "Fetched in submodule path .+ but it did not contain .+ Direct fetching of that commit failed"
+- "CFG-JJEN-000: Make sure your token in the Project Portal has a valid GitHub associated token":
+   - "Send commit status to Github / CI\\-Connect.+ failed\\: Received [0-9]{3}"
+   - "ERROR\\: Step .+Send commit status to Github .+ aborted due to exception"
+- "USR-JJEN-000: The build has been aborted, check the build log":
+   - "Result was ABORTED"
+- "USR-JJEN-000: Please follow the release process to register your project with NAAS team":
+   - "please check with NAAS team if your project is registered"
+- "XMA-JJEN-000: xmake build agent issue, if retry still failed, please create a Service Now ticket with the component ISV-DL-CICD-BUILD-XMAKE":
+   - "ERROR\\: Failed to bind token to IP address"
+   - "Caused\\: java.io.IOException: Unexpected termination of the channel"
+- "SDE-JJEN-000: The github.wdf.sap.corp server is not accessible. Please check the github server status":
+   - "Failed to connect to github\\.wdf\\.sap\\.corp.+Connection timed out"
+- "USR-JJEN-000: The xmake Promote step failed, please make sure the Specified staging repository ID is correct":
+   - "FATAL\\: Specified staging repository ID not found in Nexus!"
+- "USR-JJEN-000: Please make sure triggering xmake build with correct parameters":
+   - "ERROR\\: Build aborted. .+trigger undefined projects.+be resolved\\:"
+- "USR-JJEN-000: Please check the xmake downstream build log for details":
+   - ".+completed\\. Result was FAILURE"
+- "USR-JJEN-000: The xmake build been aborted for some reasons, please check in the xmake build log":
+   - "Finished: ABORTED"

@@ -1,0 +1,253 @@
+metadata:
+  name: sapDasterExecuteScan
+  description: 'Dynamic Application Security Testing (DAST)'
+  longDescription: |-
+    The name DASTer is derived from Dynamic Application Security Testing. As the name implies, the tool targets to provide black-box security testing capabilities for your solutions in an automated fashion.
+    DASTer itself ships with a [Swagger based frontend](https://daster.tools.sap/api-spec/viewer/) and a [Web UI](https://app.daster.tools.sap/ui5/) to generate tokens
+    required to record your consent and to authenticate. Please see the [documentation](https://github.wdf.sap.corp/pages/Security-Testing/doc/daster/) for
+    background information about the tool, its usage scenarios and channels to report problems.
+
+
+spec:
+  inputs:
+    secrets:
+      - name: oAuthCredentialsId
+        description: ID referencing user/password credentials to fetch an oAuth token for FioriDAST service testing. Encode `client_id` as username and `client_secret` as password.
+        type: jenkins
+      - name: dasterTokenCredentialsId
+        description: ID referencing a secret text credential to fetch a DASTer token.
+        type: jenkins
+      - name: userCredentialsId
+        description: ID referencing a secret text credential for authentication in the scanning application.
+        type: jenkins
+      - name: targetAuthCredentialsId
+        description: ID referencing user/password credentials for authentication in the scanning application.
+        type: jenkins
+    resources:
+      - name: commonPipelineEnvironment
+        resourceSpec:
+          type: piperEnvironment
+      - name: buildDescriptor
+        type: stash
+      - name: tests
+        type: stash
+    params:
+      - name: clientId
+        description: client id used to fetch an oAuth token for FioriDAST service testing.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        mandatory: true
+        resourceRef:
+          - name: oAuthCredentialsId
+            type: secret
+            param: clientId
+          - type: vaultSecret
+            default: daster
+            name: dasterVaultSecretName
+      - name: clientSecret
+        description: client secret used to fetch an oAuth token for FioriDAST service testing.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        mandatory: true
+        resourceRef:
+          - name: oAuthCredentialsId
+            type: secret
+            param: clientSecret
+          - type: vaultSecret
+            default: daster
+            name: dasterVaultSecretName
+      - name: userCredentials
+        description: |-
+          Access token for the scanning application. Example: `LOGIN:PASSWORD`.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        mandatory: true
+        resourceRef:
+          - name: userCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: userCredentialsId
+            name: dasterVaultSecretName
+      - name: dasterToken
+        description: DASTer token. It must be generated for each system using a self-service application.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        mandatory: true
+        resourceRef:
+          - name: dasterTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: daster
+            name: dasterVaultSecretName
+      - name: user
+        description: Username for authentication in the scanning application.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        mandatory: true
+        resourceRef:
+          - name: targetAuthCredentialsId
+            type: secret
+            param: user
+          - type: vaultSecret
+            default: daster
+            name: dasterVaultSecretName
+      - name: password
+        description: Password for authentication in the scanning application.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        secret: true
+        mandatory: true
+        resourceRef:
+          - name: targetAuthCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            default: daster
+            name: dasterVaultSecretName
+      - name: targetUrl
+        description: URL of the scanning application.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+      - name: maxRetries
+        description: Number of retries to attempt in case of HTTP connection instability.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: int
+        default: 3
+      - name: retryDelay
+        description: Delay in seconds before retrying an HTTP request.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: int
+        default: 30
+      - name: oAuthGrantType
+        description: Grant type used for fetching the oAuth token.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: client_credentials
+      - name: oAuthSource
+        description: Source used to fetch the oAuth token.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: uaa.resource
+      - name: oAuthServiceUrl
+        description: URL to the XSUAA used for fetching the oAuth token.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+      - name: synchronous
+        description: Whether to use the step in synchronous or asynchronous mode.
+        longDescription: |-
+          Setting `synchronous: false` will only trigger the DASTer scan without polling for results.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: bool
+        default: true
+      - name: scanType
+        description: Type of DASTer scan to trigger, corresponding to the API endpoints (e.g., 'basicScan').
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: fioriDASTScan
+        possibleValues:
+          - fioriDASTScan
+      - name: settings
+        description: Settings configuration object required by DASTer.
+        longDescription: |-
+          ```yaml
+             recipients: <email1>,<email2>
+             version: <version>
+          ```
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: map[string]interface{}
+      - name: deleteScan
+        description: Whether to delete the scan after completion. Only supported for `fioriDASTScan`.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: bool
+        default: true
+      - name: serviceUrl
+        description: URL to DASTer.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: https://daster.tools.sap/
+      - name: thresholds
+        description: Defines the threshold levels for test failures.
+        longDescription: |-
+          Thresholds determine the criteria for build failure based on the level and quantity of findings.
+          By defining these limits, you can instate a level of quality assurance in your codebase.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: map[string]interface{}
+        default: |-
+          map[string]interface{}{
+            "high": 0,
+          }
+      - name: verbose
+        description: Enable verbose logging.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: bool
+        default: false
+  containers:
+    - image: ""

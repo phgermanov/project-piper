@@ -1,0 +1,121 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "ignorePaths": [
+    "test/resources",
+    "pom.xml"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "labels": [
+        "maintenance"
+      ]
+    },
+    {
+      "description": "Create PRs to roll back Go module if the current version is not found in the registry.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "rollbackPrs": true
+    },
+    {
+      "automerge": true,
+      "platformAutomerge": true,
+      "matchPackageNames": [
+        "/github.com/sap/jenkins-library/"
+      ]
+    },
+    {
+      "description": "Automerge patch version updates for Go modules (except versions 0.x as they could have breaking changes)",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^(v?0)/",
+      "automerge": true,
+      "platformAutomerge": true,
+      "addLabels": [
+        "renovate-automerge"
+      ]
+    },
+    {
+      "description": "Automerge piper-ocm-cli updates in sapOcmCreateComponent",
+      "matchDepNames": [
+        "ghcr-remote.common.repositories.cloud.sap/open-component-model/piper-ocm-cli"
+      ],
+      "commitMessageTopic": "piper-ocm-cli",
+      "automerge": true,
+      "platformAutomerge": true,
+      "addLabels": [
+        "renovate-automerge"
+      ]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "matchStringsStrategy": "any",
+      "managerFilePatterns": [
+        "/resources/piper-defaults.yml$/"
+      ],
+      "matchStrings": [
+        "syftDownloadUrl: 'https://github.com/(?<depName>.*)/releases/download/v(?<currentValue>.*)/.*'"
+      ],
+      "depTypeTemplate": "dependencies",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "autoReplaceStringTemplate": "syftDownloadUrl: 'https://github.com/{{depName}}/releases/download/v{{newValue}}/syft_{{newValue}}_linux_amd64.tar.gz'"
+    },
+    {
+      "customType": "regex",
+      "matchStringsStrategy": "any",
+      "managerFilePatterns": [
+        "/resources/piper-defaults.yml$/"
+      ],
+      "matchStrings": [
+        "golangciLintUrl: 'https://github.com/(?<depName>.*)/releases/download/v(?<currentValue>.*)/.*'"
+      ],
+      "depTypeTemplate": "dependencies",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "autoReplaceStringTemplate": "golangciLintUrl: 'https://github.com/{{depName}}/releases/download/v{{newValue}}/golangci-lint-{{newValue}}-linux-amd64.tar.gz'"
+    },
+    {
+      "customType": "regex",
+      "matchStringsStrategy": "any",
+      "managerFilePatterns": [
+        "/resources/metadata/sapOcmCreateComponent.yaml$/",
+        "/cmd/sapOcmCreateComponent_generated.go$/"
+      ],
+      "matchStrings": [
+        "image: (?<depName>.*):(?<currentValue>.*)",
+        "{Image: \"(?<depName>.*):(?<currentValue>.*)\""
+      ],
+      "depTypeTemplate": "dependencies",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "datasourceTemplate": "pypi",
+      "autoReplaceStringTemplate": "pip install {{depName}}=={{newValue}}",
+      "matchStrings": [
+        "pip install (?<depName>.*)==(?<currentValue>.*)"
+      ],
+      "managerFilePatterns": [
+        "/.github/workflows/.+.ya?ml$/"
+      ],
+      "customType": "regex",
+      "matchStringsStrategy": "any"
+    }
+  ],
+  "postUpdateOptions": [
+    "gomodTidy",
+    "gomodUpdateImportPaths"
+  ]
+}

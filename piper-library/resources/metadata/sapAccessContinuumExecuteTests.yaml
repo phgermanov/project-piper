@@ -1,0 +1,83 @@
+metadata:
+  name: sapAccessContinuumExecuteTests
+  description: This step runs accessibility test using Access Continuum
+  longDescription: |-
+    This step runs accessibility test using Access Continuum and uploads results to [Accessibility Management Platform (AMP)](https://sap.levelaccess.net/). You can find more details here in the [support document](https://wiki.one.int.sap/wiki/pages/viewpage.action?pageId=3380188814).
+
+    !!! note "Support channels"
+        If you are facing any problem, want to raise a ticket, please use our support channels to get in touch with us.
+        You can use one of the following channels:
+
+        * Contact DL_644A39DC20F71A028E11D1E5@global.corp.sap for *Access Continuum* rollout or pipeline setup
+
+        * You can create a ticket on [ServiceNow](https://itsm.services.sap/sp?id=sc_cat_item&sys_id=703f22d51b3b441020c8fddacd4bcbe2) and here you need to select service offering as "Accessibility Automation - Access Continuuum".
+spec:
+  inputs:
+    secrets:
+      - name: AMPTokenCredentialsID
+        description: Jenkins 'Secret text' credentials ID containing token to authenticate to AMP dashboard portal. Details can be found in the [support document](https://wiki.one.int.sap/wiki/pages/viewpage.action?pageId=3380188814).
+        type: jenkins
+
+    params:
+      - name: buildTool
+        type: string
+        description: "Defines the tool which is used for building the application code"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        possibleValues:
+          - npm
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: buildTool
+
+      - name: installCommand
+        type: string
+        description: "The installCommand can be run to install npm dependencies in the workspace folder. You can give extra commands separated by '&&' to install necessary dependencies for example : npm install --prefix ./CPS-UI-MPQ && npm install -g chromedriver@87.0.4 --unsafe-perm=true"
+        default: npm install && npm install -g chromedriver@87.0.4 --unsafe-perm=true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        mandatory: false
+
+      - name: runCommand
+        type: string
+        description: "The runCommand initiates the accessibility test in the workspace folder. This command also can be overridden as per development requirements."
+        default: export NODE_PATH=/usr/lib/node_modules && npm run -q testaccessibility || true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+          - GENERAL
+        mandatory: false
+
+      - name: token
+        type: string
+        description: This token is used to access AMP dashboard portal. It can be stored as a Jenkins 'Secret text' credentials ID containing token to authenticate to AMP dashboard portal.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: AMPTokenCredentialsID
+            type: secret
+            param: token
+
+  containers:
+    - name: accessibility
+      image: acservices/accessibilitytest:latest
+      workingDir: /home/node
+
+  sidecars:
+    - image: selenium/standalone-chrome:107.0
+      name: selenium
+      containerPortMappings:
+        'selenium/standalone-chrome:107.0':
+          - containerPort: 4444
+            hostPort: 4444

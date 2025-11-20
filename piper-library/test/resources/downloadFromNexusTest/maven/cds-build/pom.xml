@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.sap.cloud.application</groupId>
+    <artifactId>cap-spring-boot-root</artifactId>
+    <version>0.0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>cds-build-pom</artifactId>
+  <packaging>pom</packaging>
+
+  <name>POM executing CDS Build</name>
+
+  <properties>
+    <frontend.maven.plugin.version>1.8.0</frontend.maven.plugin.version>
+    <node.download.url>http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.releases/org/nodejs/download/node/node/</node.download.url>
+    <npm.registry.url>http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.releases.npm</npm.registry.url>
+    <node.version>v10.4.1</node.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <!-- Plugin installing NPM and Node via Maven. -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend.maven.plugin.version}</version>
+        <configuration>
+          <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+          <nodeVersion>${node.version}</nodeVersion>
+          <downloadRoot>${node.download.url}</downloadRoot>
+        </configuration>
+        <executions>
+        
+          <!-- Install NPM and Node JS via Maven -->
+          <execution>
+            <id>Install Node.JS and NPM</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+
+          <!-- NPM install CDS dependencies -->
+          <execution>
+            <id>NPM Install</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${parent.basedir}</workingDirectory>
+              <arguments>
+                install --no-save --registry=${npm.registry.url} --@sap:registry=${npm.registry.url}
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- CDS Build -->
+          <execution>
+            <id>CDS Build</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${parent.basedir}</workingDirectory>
+              <arguments>
+                run build
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+  </build>
+</project>

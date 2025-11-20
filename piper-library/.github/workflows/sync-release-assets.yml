@@ -1,0 +1,565 @@
+# This workflow synchronizes release assets between the source repository
+# (github.wdf.sap.corp/ContinuousDelivery/piper-library) and the mirror repository
+# (github.wdf.sap.corp/project-piper/sap-piper).
+#
+# Purpose:
+# - Checks if releases exist in both source and mirror repositories
+# - Identifies missing assets in the mirror repository
+# - Downloads missing assets from source and uploads them to mirror
+# - Creates releases in mirror if they don't exist or publishes drafts
+#
+# Modes:
+# - Dry-run (default): Only checks and reports what would be synced
+# - Production: Actually performs the sync operations
+#
+# Required assets to sync:
+# - piper-defaults-github.yml
+# - piper-stage-config.yml
+# - sap-piper
+
+name: Sync Release Assets to Mirror
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to sync (leave empty for latest)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run mode - only check and report, no changes (default: true for safety)'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  SOURCE_REPO: ${{ github.repository }}
+  MIRROR_REPO: project-piper/sap-piper
+  HOST: github.wdf.sap.corp  # Both repositories are on the same host
+  ASSETS_TO_SYNC: |
+    piper-defaults-github.yml
+    piper-stage-config.yml
+    sap-piper
+
+jobs:
+  sync-release-assets:
+    runs-on: [solinas, self-hosted]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required tools
+        run: |
+          echo "Verifying required tools..."
+          curl --version || { echo "::error::curl not found"; exit 1; }
+          jq --version || { echo "::error::jq not found"; exit 1; }
+
+
+      - name: Display run mode
+        run: |
+          echo "========================================="
+          if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then
+            echo "🚀 PRODUCTION MODE - Changes WILL be applied"
+            echo "========================================="
+            echo "⚠️  WARNING: This will create/update releases and sync assets to the mirror repository"
+          else
+            echo "🔍 DRY RUN MODE - No changes will be made"
+            echo "========================================="
+            echo "ℹ️  This is a safe check-only run to preview what would happen"
+          fi
+          echo ""
+
+      - name: Create temp directory
+        run: mkdir -p /tmp/assets
+
+      - name: Get release from source
+        id: source-release
+        run: |
+          echo "📋 Fetching release from source repository (${{ env.HOST }}/${{ env.SOURCE_REPO }})..."
+
+          # If specific tag provided, use it; otherwise get latest
+          if [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag }}"
+            echo "Using specified tag: $TAG_NAME"
+            API_URL="https://${{ env.HOST }}/api/v3/repos/${{ env.SOURCE_REPO }}/releases/tags/$TAG_NAME"
+          else
+            echo "Getting latest release..."
+            API_URL="https://${{ env.HOST }}/api/v3/repos/${{ env.SOURCE_REPO }}/releases/latest"
+          fi
+
+          # Use curl to get release data
+          RELEASE_DATA=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            "$API_URL")
+
+          # Check if we got a release
+          if [ -z "$RELEASE_DATA" ] || [ "$RELEASE_DATA" = "{}" ]; then
+            echo "::error::No release found in source repository"
+            echo "has_release=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          TAG_NAME=$(echo "$RELEASE_DATA" | jq -r '.tag_name // empty')
+          RELEASE_NAME=$(echo "$RELEASE_DATA" | jq -r '.name // .tag_name // empty')
+          RELEASE_BODY=$(echo "$RELEASE_DATA" | jq -r '.body // empty')
+          IS_DRAFT=$(echo "$RELEASE_DATA" | jq -r '.draft // false')
+          IS_PRERELEASE=$(echo "$RELEASE_DATA" | jq -r '.prerelease // false')
+          RELEASE_ID=$(echo "$RELEASE_DATA" | jq -r '.id // empty')
+
+          if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "null" ]; then
+            echo "::error::Could not extract tag name from release data"
+            echo "has_release=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "✅ Found source release: $TAG_NAME (ID: $RELEASE_ID)"
+          echo "   Release Name: $RELEASE_NAME"
+          echo "   Is Draft: $IS_DRAFT"
+          echo "   Is Pre-release: $IS_PRERELEASE"
+
+          # Output variables
+          echo "has_release=true" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+          echo "is_draft=$IS_DRAFT" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
+          # Save release body to file to preserve formatting
+          echo "$RELEASE_BODY" > /tmp/release_body.md
+
+          # Get source assets for analysis
+          echo ""
+          echo "📦 Source release assets:"
+          SOURCE_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            "https://${{ env.HOST }}/api/v3/repos/${{ env.SOURCE_REPO }}/releases/$RELEASE_ID/assets" | \
+            jq -r '.[].name')
+
+          if [ -n "$SOURCE_ASSETS" ]; then
+            echo "$SOURCE_ASSETS" | sed 's/^/   - /'
+          else
+            echo "   (no assets)"
+          fi
+
+      - name: Check if release exists in mirror
+        id: mirror-release
+        run: |
+          TAG_NAME="${{ steps.source-release.outputs.tag_name }}"
+          echo ""
+          echo "🔍 Checking mirror repository (${{ env.HOST }}/${{ env.MIRROR_REPO }})..."
+          echo "   Looking for release: $TAG_NAME"
+
+          # Try to get the release by tag
+          MIRROR_RELEASE=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/tags/$TAG_NAME" 2>/dev/null || echo "")
+
+          if [ -z "$MIRROR_RELEASE" ] || [ "$MIRROR_RELEASE" = "{}" ]; then
+            echo ""
+            echo "⚠️  Release does not exist in mirror"
+            if [ "${{ github.event.inputs.dry_run }}" != "false" ]; then
+              echo "   → Would CREATE new release (dry-run: no action taken)"
+            else
+              echo "   → Will CREATE new release"
+            fi
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "needs_creation=true" >> $GITHUB_OUTPUT
+          else
+            IS_DRAFT=$(echo "$MIRROR_RELEASE" | jq -r '.draft // false')
+            RELEASE_ID=$(echo "$MIRROR_RELEASE" | jq -r '.id // empty')
+
+            if [ "$IS_DRAFT" = "true" ]; then
+              echo ""
+              echo "📝 Release exists but is a DRAFT (ID: $RELEASE_ID)"
+              if [ "${{ github.event.inputs.dry_run }}" != "false" ]; then
+                echo "   → Would PUBLISH the draft (dry-run: no action taken)"
+              else
+                echo "   → Will PUBLISH the draft"
+              fi
+              echo "exists=true" >> $GITHUB_OUTPUT
+              echo "is_draft=true" >> $GITHUB_OUTPUT
+              echo "needs_update=true" >> $GITHUB_OUTPUT
+              echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+            else
+              echo ""
+              echo "✅ Release exists and is PUBLISHED (ID: $RELEASE_ID)"
+              echo "   → No release creation/update needed"
+              echo "exists=true" >> $GITHUB_OUTPUT
+              echo "is_draft=false" >> $GITHUB_OUTPUT
+              echo "needs_update=false" >> $GITHUB_OUTPUT
+              echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+            fi
+
+            # Get mirror assets for analysis
+            echo ""
+            echo "📦 Mirror release assets:"
+            MIRROR_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/$RELEASE_ID/assets" | \
+              jq -r '.[].name' 2>/dev/null || echo "")
+
+            if [ -n "$MIRROR_ASSETS" ]; then
+              echo "$MIRROR_ASSETS" | sed 's/^/   - /'
+            else
+              echo "   (no assets)"
+            fi
+          fi
+
+      - name: Analyze assets to sync
+        id: asset-analysis
+        run: |
+          TAG_NAME="${{ steps.source-release.outputs.tag_name }}"
+          echo ""
+          echo "🔍 Analyzing assets to sync..."
+          echo "========================================="
+
+          # Get source assets
+          SOURCE_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            "https://${{ env.HOST }}/api/v3/repos/${{ env.SOURCE_REPO }}/releases/${{ steps.source-release.outputs.release_id }}/assets" | \
+            jq -r '.[].name')
+
+          # Get mirror assets if release exists
+          if [ "${{ steps.mirror-release.outputs.exists }}" = "true" ]; then
+            MIRROR_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/${{ steps.mirror-release.outputs.release_id }}/assets" | \
+              jq -r '.[].name' 2>/dev/null || echo "")
+          else
+            MIRROR_ASSETS=""
+          fi
+
+          # Analyze each required asset
+          ASSETS_TO_DOWNLOAD=""
+          ASSETS_MISSING_IN_SOURCE=""
+          ASSETS_ALREADY_SYNCED=""
+
+          echo "${{ env.ASSETS_TO_SYNC }}" | while IFS= read -r asset; do
+            [ -z "$asset" ] && continue
+
+            echo ""
+            echo "📄 Asset: $asset"
+
+            # Check if asset exists in source
+            if ! echo "$SOURCE_ASSETS" | grep -q "^$asset$"; then
+              echo "   ❌ NOT found in source release"
+              ASSETS_MISSING_IN_SOURCE="$ASSETS_MISSING_IN_SOURCE $asset"
+            else
+              echo "   ✅ Found in source release"
+
+              # Check if asset exists in mirror
+              if echo "$MIRROR_ASSETS" | grep -q "^$asset$"; then
+                echo "   ✅ Already exists in mirror"
+                ASSETS_ALREADY_SYNCED="$ASSETS_ALREADY_SYNCED $asset"
+              else
+                echo "   ⚠️  Missing in mirror"
+                if [ "${{ github.event.inputs.dry_run }}" != "false" ]; then
+                  echo "   → Would SYNC to mirror (dry-run: no action taken)"
+                else
+                  echo "   → Will SYNC to mirror"
+                fi
+                ASSETS_TO_DOWNLOAD="$ASSETS_TO_DOWNLOAD $asset"
+              fi
+            fi
+          done
+
+          echo ""
+          echo "========================================="
+          echo "📊 Summary:"
+          echo "========================================="
+
+          # Count assets
+          TOTAL_REQUIRED=$(echo "${{ env.ASSETS_TO_SYNC }}" | grep -c '^[^[:space:]]' || echo 0)
+          echo "Total required assets: $TOTAL_REQUIRED"
+
+          if [ -n "$ASSETS_ALREADY_SYNCED" ]; then
+            COUNT=$(echo "$ASSETS_ALREADY_SYNCED" | wc -w | xargs)
+            echo "✅ Already synced: $COUNT"
+          fi
+
+          if [ -n "$ASSETS_TO_DOWNLOAD" ]; then
+            COUNT=$(echo "$ASSETS_TO_DOWNLOAD" | wc -w | xargs)
+            echo "⚠️  Need to sync: $COUNT"
+          fi
+
+          if [ -n "$ASSETS_MISSING_IN_SOURCE" ]; then
+            COUNT=$(echo "$ASSETS_MISSING_IN_SOURCE" | wc -w | xargs)
+            echo "❌ Missing in source: $COUNT"
+          fi
+
+      - name: Create or update release in mirror
+        if: (steps.mirror-release.outputs.needs_creation == 'true' || steps.mirror-release.outputs.needs_update == 'true') && github.event.inputs.dry_run == 'false'
+        run: |
+          TAG_NAME="${{ steps.source-release.outputs.tag_name }}"
+          RELEASE_NAME="${{ steps.source-release.outputs.release_name }}"
+
+          echo ""
+          echo "🚀 Executing release operations..."
+          echo "========================================="
+
+          if [ "${{ steps.mirror-release.outputs.needs_creation }}" = "true" ]; then
+            echo "Creating release $TAG_NAME in mirror repository..."
+
+            # Create the release using API
+            RELEASE_PAYLOAD=$(jq -n \
+              --arg tag "$TAG_NAME" \
+              --arg name "$RELEASE_NAME" \
+              --arg body "$(cat /tmp/release_body.md)" \
+              --argjson draft false \
+              --argjson prerelease "${{ steps.source-release.outputs.is_prerelease }}" \
+              '{
+                tag_name: $tag,
+                name: $name,
+                body: $body,
+                draft: $draft,
+                prerelease: $prerelease
+              }')
+
+            CREATED_RELEASE=$(curl -s -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              -H "Content-Type: application/json" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases" \
+              -d "$RELEASE_PAYLOAD")
+
+            RELEASE_ID=$(echo "$CREATED_RELEASE" | jq -r '.id')
+            echo "✅ Created release with ID: $RELEASE_ID"
+            echo "mirror_release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+
+          elif [ "${{ steps.mirror-release.outputs.is_draft }}" = "true" ]; then
+            echo "Publishing draft release in mirror..."
+
+            # Update the release to published using curl
+            curl -X PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              -H "Content-Type: application/json" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/${{ steps.mirror-release.outputs.release_id }}" \
+              -d '{"draft": false}' \
+              && echo "✅ Published draft release"
+
+            echo "mirror_release_id=${{ steps.mirror-release.outputs.release_id }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download assets from source
+        if: github.event.inputs.dry_run == 'false'
+        id: download-assets
+        run: |
+          TAG_NAME="${{ steps.source-release.outputs.tag_name }}"
+          echo ""
+          echo "⬇️  Downloading assets from source release..."
+          echo "========================================="
+
+          # Get list of all assets in source release
+          SOURCE_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            "https://${{ env.HOST }}/api/v3/repos/${{ env.SOURCE_REPO }}/releases/${{ steps.source-release.outputs.release_id }}/assets")
+
+          # Clear temp directory
+          rm -rf /tmp/assets/*
+          mkdir -p /tmp/assets
+
+          # Track downloaded assets
+          > /tmp/assets/manifest.txt
+
+          # Process each required asset
+          echo "${{ env.ASSETS_TO_SYNC }}" | while IFS= read -r asset; do
+            [ -z "$asset" ] && continue
+
+            echo "Processing: $asset"
+
+            # Find the asset in source release
+            ASSET_ID=$(echo "$SOURCE_ASSETS" | jq -r ".[] | select(.name == \"$asset\") | .id // empty")
+
+            if [ -z "$ASSET_ID" ]; then
+              echo "  ⚠️  Asset not found in source release (skipping)"
+              continue
+            fi
+
+            # Download the asset using the API
+            echo "  ⬇️  Downloading..."
+            curl -s -H "Accept: application/octet-stream" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.SOURCE_REPO }}/releases/assets/$ASSET_ID" \
+              -o "/tmp/assets/$asset"
+
+            if [ -f "/tmp/assets/$asset" ] && [ -s "/tmp/assets/$asset" ]; then
+              FILE_SIZE=$(ls -lh "/tmp/assets/$asset" | awk '{print $5}')
+              echo "  ✅ Downloaded successfully ($FILE_SIZE)"
+              echo "$asset" >> /tmp/assets/manifest.txt
+            else
+              echo "  ❌ Failed to download"
+            fi
+          done
+
+          echo ""
+          echo "Download complete. Files ready for upload:"
+          if [ -f /tmp/assets/manifest.txt ] && [ -s /tmp/assets/manifest.txt ]; then
+            cat /tmp/assets/manifest.txt | sed 's/^/  - /'
+          else
+            echo "  (no files downloaded)"
+          fi
+
+      - name: Upload assets to mirror
+        if: github.event.inputs.dry_run == 'false'
+        run: |
+          TAG_NAME="${{ steps.source-release.outputs.tag_name }}"
+          echo ""
+          echo "⬆️  Uploading assets to mirror release..."
+          echo "========================================="
+
+          # Get mirror release ID
+          if [ "${{ steps.mirror-release.outputs.needs_creation }}" = "true" ]; then
+            # Get the release we just created
+            MIRROR_RELEASE=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/tags/$TAG_NAME")
+            MIRROR_RELEASE_ID=$(echo "$MIRROR_RELEASE" | jq -r '.id')
+          else
+            MIRROR_RELEASE_ID="${{ steps.mirror-release.outputs.release_id }}"
+          fi
+
+          echo "Target release ID: $MIRROR_RELEASE_ID"
+
+          # Get list of existing assets in mirror release
+          MIRROR_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/$MIRROR_RELEASE_ID/assets" | \
+            jq -r '.[].name' 2>/dev/null || echo "")
+
+          # Upload each downloaded asset
+          if [ -f /tmp/assets/manifest.txt ] && [ -s /tmp/assets/manifest.txt ]; then
+            while IFS= read -r asset; do
+              [ -z "$asset" ] && continue
+
+              echo "Processing: $asset"
+
+              # Check if asset already exists in mirror
+              if echo "$MIRROR_ASSETS" | grep -q "^$asset$"; then
+                echo "  ⏭️  Already exists (skipping)"
+              else
+                echo "  ⬆️  Uploading..."
+
+                # Upload using curl
+                UPLOAD_URL=$(curl -s -H "Accept: application/vnd.github+json" \
+                  -H "Authorization: Bearer ${{ github.token }}" \
+                  "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/$MIRROR_RELEASE_ID" | \
+                  jq -r '.upload_url' | sed 's/{?name,label}//')
+
+                if curl -s -X POST \
+                  -H "Authorization: Bearer ${{ github.token }}" \
+                  -H "Content-Type: application/octet-stream" \
+                  --data-binary @"/tmp/assets/$asset" \
+                  "${UPLOAD_URL}?name=$asset" > /dev/null; then
+                  echo "  ✅ Uploaded successfully"
+                else
+                  echo "  ❌ Failed to upload"
+                fi
+              fi
+            done < /tmp/assets/manifest.txt
+          else
+            echo "No assets to upload"
+          fi
+
+      - name: Final verification and report
+        run: |
+          TAG_NAME="${{ steps.source-release.outputs.tag_name }}"
+          echo ""
+          echo "========================================="
+          echo "📋 FINAL REPORT FOR RELEASE: $TAG_NAME"
+          echo "========================================="
+
+          if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then
+            echo "Mode: PRODUCTION (changes applied)"
+          else
+            echo "Mode: DRY-RUN (no changes made)"
+          fi
+
+          echo ""
+          echo "Source: ${{ env.HOST }}/${{ env.SOURCE_REPO }}"
+          echo "Mirror: ${{ env.HOST }}/${{ env.MIRROR_REPO }}"
+          echo ""
+
+          # Get final list of assets in mirror (if not dry-run and release exists)
+          if [ "${{ env.FORCED_DRY_RUN }}" = "false" ] || [ "${{ steps.mirror-release.outputs.exists }}" = "true" ]; then
+            # First get the release, then get its assets
+            MIRROR_RELEASE=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/tags/$TAG_NAME" 2>/dev/null || echo "{}")
+
+            if [ "$MIRROR_RELEASE" != "{}" ] && [ -n "$MIRROR_RELEASE" ]; then
+              MIRROR_RELEASE_ID=$(echo "$MIRROR_RELEASE" | jq -r '.id // empty')
+              if [ -n "$MIRROR_RELEASE_ID" ] && [ "$MIRROR_RELEASE_ID" != "empty" ]; then
+                MIRROR_ASSETS=$(curl -s -H "Accept: application/vnd.github+json" \
+                  -H "Authorization: Bearer ${{ github.token }}" \
+                  "https://${{ env.HOST }}/api/v3/repos/${{ env.MIRROR_REPO }}/releases/$MIRROR_RELEASE_ID/assets" | \
+                  jq -r '.[].name' 2>/dev/null || echo "")
+              else
+                MIRROR_ASSETS=""
+              fi
+            else
+              MIRROR_ASSETS=""
+            fi
+          else
+            MIRROR_ASSETS=""
+          fi
+
+          # Check all required assets
+          echo "Asset Status:"
+          echo "-------------"
+          SUCCESS_COUNT=0
+          MISSING_COUNT=0
+
+          echo "${{ env.ASSETS_TO_SYNC }}" | while IFS= read -r asset; do
+            [ -z "$asset" ] && continue
+
+            if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then
+              # Production mode - check actual status
+              if echo "$MIRROR_ASSETS" | grep -q "^$asset$"; then
+                echo "  ✅ $asset - synced"
+                SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              else
+                echo "  ❌ $asset - missing"
+                MISSING_COUNT=$((MISSING_COUNT + 1))
+              fi
+            else
+              # Dry-run mode - show what would happen
+              if [ "${{ steps.mirror-release.outputs.exists }}" = "true" ]; then
+                if echo "$MIRROR_ASSETS" | grep -q "^$asset$"; then
+                  echo "  ✅ $asset - already synced"
+                else
+                  echo "  ⚠️  $asset - would be synced"
+                fi
+              else
+                echo "  ⚠️  $asset - would be synced (after creating release)"
+              fi
+            fi
+          done
+
+          echo ""
+          echo "========================================="
+
+          if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then
+            if [ "$MISSING_COUNT" -gt 0 ]; then
+              echo "⚠️  Sync completed with warnings"
+              echo "Some assets could not be synced - they may not exist in source"
+            else
+              echo "✅ All assets successfully synced!"
+            fi
+          else
+            echo "🔍 DRY-RUN COMPLETE"
+            echo ""
+            echo "To apply these changes, run the workflow again with:"
+            echo "  - dry_run: false"
+            echo ""
+            echo "⚠️  REMINDER: Setting dry_run to false will modify the mirror repository"
+          fi
+          echo "========================================="
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf /tmp/assets
+          rm -f /tmp/release_body.md

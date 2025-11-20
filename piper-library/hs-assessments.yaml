@@ -1,0 +1,47 @@
+ignore:
+  # Usage path for CVE-2024-23651, CVE-2024-23652, CVE-2024-23653 change every week due to our weekly release and hence for all usage paths '*' is used,
+  # uage path at this time is: github.com/sap/jenkins-library@v1.372.0 > github.com/moby/buildkit@v0.11.6
+  CVE-2024-23651:
+    - '*':
+        reason: false positive
+        expires: 2025-01-01
+  CVE-2024-23652:
+    - '*':
+        reason: false positive
+        expires: 2025-01-01
+  CVE-2024-23653:
+    - '*':
+        reason: false positive
+        expires: 2025-01-01
+  CVE-2019-25210:
+    - '*':
+        reason: false positive
+        expires: 2026-01-01
+  BDSA-2024-2343:
+    - '*':
+        reason: false positive
+        expires: 2026-01-01
+
+licenseIgnore:
+  # Fixed as part of https://jira.tools.sap/browse/HSPIPER-365
+  github.com/docker/go-metrics:
+    - '*':
+        reason: Risk has been mitigated.
+        expires: '2027-12-12'
+  # Fixed as part of https://jira.tools.sap/browse/HSPIPER-366
+  github.com/opencontainers/go-digest:
+    - '*':
+        reason: Risk has been mitigated.
+        expires: '2027-12-12'
+
+  # Fixed as part of https://jira.tools.sap/browse/HSPIPER-610
+  github.com/hashicorp/vault/api/auth/approle:
+    - '*':
+        reason: Risk has been mitigated.
+        expires: '2027-12-12'
+
+  # Fixed as part of https://jira.tools.sap/browse/HSPIPER-750
+  golang/oras.land/oras-go:
+    - '*':
+        reason: Risk has been mitigated.
+        expires: '2027-12-12'

@@ -1,0 +1,99 @@
+name: Change Management
+
+on:
+  workflow_call:
+    inputs:
+      jira_project:
+        required: true
+        type: string
+      jira_issue_type:
+        required: true
+        type: string
+      jira_summary:
+        required: true
+        type: string
+      jira_description:
+        required: true
+        type: string
+      jira_comment:
+        required: false
+        type: string
+        default: "Approved for Production"
+    secrets:
+      JIRA_URL:
+        required: true
+      JIRA_API_TOKEN:
+        required: true
+
+jobs:
+  create-jira-change-request:
+    runs-on: self-hosted
+    steps:
+      - name: Create Jira Issue via curl
+        id: create_jira_issue
+        run: |
+          set -e
+          response=$(curl -s -w "\n%{http_code}" -H 'Authorization: Bearer ${{ secrets.JIRA_API_TOKEN }}' \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+                  "fields": {
+                    "project": { "key": "${{ inputs.jira_project }}" },
+                    "issuetype": { "name": "${{ inputs.jira_issue_type }}" },
+                    "summary": "${{ inputs.jira_summary }}",
+                    "description": "${{ inputs.jira_description }}",
+                    "duedate": "'$(date -d "+2 days" +%Y-%m-%d)'",
+                    "customfield_10855": {"value": "No"},
+                    "customfield_46940": { "value": "No impact" },
+                    "customfield_43740": { "value": "Piper" }
+                  }
+                }' \
+            ${{ secrets.JIRA_URL }}/rest/api/2/issue)
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n1)
+          echo "$body"
+          if [ "$status" -ne 201 ]; then
+            echo "::error::Failed to create Jira issue. Status: $status"
+            exit 1
+          fi
+          issue_key=$(echo "$body" | jq -r '.key')
+          if [ -z "$issue_key" ]; then
+            echo "::error::Issue key not found in response."
+            exit 1
+          fi
+          echo "issue_key=$issue_key" >> $GITHUB_OUTPUT
+
+      - name: Transition Jira Issue to Closed via curl
+        env:
+          JIRA_COMMENT: ${{ inputs.jira_comment }}
+        run: |
+          set -e
+          # Add comment from input variable
+          comment_response=$(curl -s -w "\n%{http_code}" -H 'Authorization: Bearer ${{ secrets.JIRA_API_TOKEN }}' \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"body\": \"${JIRA_COMMENT}\"}" \
+            ${{ secrets.JIRA_URL }}/rest/api/2/issue/${{ steps.create_jira_issue.outputs.issue_key }}/comment)
+          comment_body=$(echo "$comment_response" | head -n -1)
+          comment_status=$(echo "$comment_response" | tail -n1)
+          echo "$comment_body"
+          if [ "$comment_status" -ne 201 ]; then
+            echo "::error::Failed to add comment to Jira issue. Status: $comment_status"
+            exit 1
+          fi
+
+          # Transition issue to Closed
+          response=$(curl -s -w "\n%{http_code}" -H 'Authorization: Bearer ${{ secrets.JIRA_API_TOKEN }}' \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+                  "transition": { "id": "21" }
+                }' \
+            ${{ secrets.JIRA_URL }}/rest/api/2/issue/${{ steps.create_jira_issue.outputs.issue_key }}/transitions)
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n1)
+          echo "$body"
+          if [ "$status" -ne 204 ]; then
+            echo "::error::Failed to transition Jira issue. Status: $status"
+            exit 1
+          fi

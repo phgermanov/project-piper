@@ -1,0 +1,200 @@
+{
+    "projectVitals": [
+        {
+            "id": 169514,
+            "name": "core - 1.0.1",
+            "token": "45ece021-f67f-4230-8dc1-f9f295b28dfe",
+            "creationDate": "2017-05-31 11:21:32 +0300",
+            "lastUpdatedDate": "2017-06-12 09:01:21 +0300"
+        },
+        {
+            "id": 169516,
+            "name": "parent - 1.0.1",
+            "token": "8d4ad9d8-a583-4935-88dd-bb34166d9188",
+            "creationDate": "2017-05-31 11:54:34 +0300",
+            "lastUpdatedDate": "2017-06-12 08:57:02 +0300"
+        },
+        {
+            "id": 169517,
+            "name": "conversion - 1.0.1",
+            "token": "182430f6-f7ba-4ed1-a206-b3b87aac87c0",
+            "creationDate": "2017-05-31 11:54:35 +0300",
+            "lastUpdatedDate": "2017-06-12 09:01:21 +0300"
+        },
+        {
+            "id": 169518,
+            "name": "backend - 1.0.1",
+            "token": "edd0c34a-c261-4be4-8849-dd9d69a64cef",
+            "creationDate": "2017-05-31 11:54:35 +0300",
+            "lastUpdatedDate": "2017-06-12 09:01:21 +0300"
+        },
+        {
+            "id": 201092,
+            "name": "core - 1.1.0",
+            "token": "2ce37219-bca0-49c3-8c7e-31d20ecd6650",
+            "creationDate": "2017-07-17 10:29:01 +0300",
+            "lastUpdatedDate": "2017-07-20 20:03:16 +0300"
+        },
+        {
+            "id": 201093,
+            "name": "parent - 1.1.0",
+            "token": "5cad4c60-6da7-4ee9-b7a9-d554a8d23695",
+            "creationDate": "2017-07-17 10:29:01 +0300",
+            "lastUpdatedDate": "2017-07-20 20:03:16 +0300"
+        },
+        {
+            "id": 201094,
+            "name": "unitofmeasure - 1.1.0",
+            "token": "8cdb1bcd-e39b-4459-9ada-0fd1d42c320c",
+            "creationDate": "2017-07-17 10:29:01 +0300",
+            "lastUpdatedDate": "2017-07-20 20:03:16 +0300"
+        },
+        {
+            "id": 201095,
+            "name": "conversion - 1.1.0",
+            "token": "e06603a5-9644-449e-a83b-2f2346d1be06",
+            "creationDate": "2017-07-17 10:29:01 +0300",
+            "lastUpdatedDate": "2017-07-20 20:03:16 +0300"
+        },
+        {
+            "id": 201096,
+            "name": "backend - 1.1.0",
+            "token": "b925e0ca-5047-409b-b274-45cc47a7520a",
+            "creationDate": "2017-07-17 10:29:01 +0300",
+            "lastUpdatedDate": "2017-07-20 20:03:16 +0300"
+        },
+        {
+            "id": 214949,
+            "name": "backend - 1.1.1",
+            "token": "201353f0-f70c-4ef8-adcf-04755c6e0684",
+            "creationDate": "2017-07-27 13:59:09 +0300",
+            "lastUpdatedDate": "2017-09-07 03:11:48 +0300"
+        },
+        {
+            "id": 214950,
+            "name": "core - 1.1.1",
+            "token": "317c0b01-6430-44ab-9ea1-f9a421902ca8",
+            "creationDate": "2017-07-27 13:59:09 +0300",
+            "lastUpdatedDate": "2017-09-07 03:11:48 +0300"
+        },
+        {
+            "id": 214951,
+            "name": "unitofmeasure - 1.1.1",
+            "token": "30b3a377-e83f-48ef-bed9-2f31e199ba99",
+            "creationDate": "2017-07-27 13:59:09 +0300",
+            "lastUpdatedDate": "2017-09-07 03:11:48 +0300"
+        },
+        {
+            "id": 214952,
+            "name": "parent - 1.1.1",
+            "token": "7365edeb-0813-4f35-bb32-c96b44963ff3",
+            "creationDate": "2017-07-27 13:59:09 +0300",
+            "lastUpdatedDate": "2017-09-07 03:11:48 +0300"
+        },
+        {
+            "id": 214953,
+            "name": "conversion - 1.1.1",
+            "token": "44252775-83b5-4045-bd7c-ecf8522cfeba",
+            "creationDate": "2017-07-27 13:59:09 +0300",
+            "lastUpdatedDate": "2017-09-07 03:11:48 +0300"
+        },
+        {
+            "id": 217245,
+            "name": "backend - 2.0.0",
+            "token": "f4e5f644-edcc-4d64-82bd-ae6292e1eb9d",
+            "creationDate": "2017-07-31 13:28:16 +0300",
+            "lastUpdatedDate": "2017-09-18 05:31:16 +0300"
+        },
+        {
+            "id": 217246,
+            "name": "parent - 2.0.0",
+            "token": "3b5b9495-cde2-43f2-8e70-cfbcae5e9b87",
+            "creationDate": "2017-07-31 13:28:16 +0300",
+            "lastUpdatedDate": "2017-09-18 05:31:16 +0300"
+        },
+        {
+            "id": 217247,
+            "name": "unitofmeasure - 2.0.0",
+            "token": "17bfe729-11a7-442b-a1f4-59ac50692f31",
+            "creationDate": "2017-07-31 13:28:16 +0300",
+            "lastUpdatedDate": "2017-09-18 05:31:16 +0300"
+        },
+        {
+            "id": 217248,
+            "name": "conversion - 2.0.0",
+            "token": "17012fe1-b4d1-4fb3-abf7-306b20ef6f22",
+            "creationDate": "2017-07-31 13:28:16 +0300",
+            "lastUpdatedDate": "2017-09-18 05:31:16 +0300"
+        },
+        {
+            "id": 217249,
+            "name": "core - 2.0.0",
+            "token": "fe9ed0e9-75b0-47e4-b323-d4101692a0fe",
+            "creationDate": "2017-07-31 13:28:16 +0300",
+            "lastUpdatedDate": "2017-09-18 05:31:16 +0300"
+        },
+        {
+            "id": 251692,
+            "name": "business-logging-core-service-parent - 1.0.0",
+            "token": "4ce3aa07dd574fa0b8967670183b559de8b644eb70f04e03811f7e332f06f7e6",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251693,
+            "name": "business-logging-config-db - 1.0.0",
+            "token": "2ae5724c8fd14aae8308129d3f4e8bf2d506aae130464f0b8311a5c8cbaf289e",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251694,
+            "name": "business-logging-service-broker - 1.0.0",
+            "token": "e0177cedb4af4c439f1c90b9fb74963ab1a44e7dd20c4546858c4f4a013ef0e2",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251695,
+            "name": "business-logging-core-db - 1.0.0",
+            "token": "1756cb80045f44529f23772b767e69acf0cd92117e86449eb7fae53692491468",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251696,
+            "name": "assembly - 1.0.0",
+            "token": "d5fec3c4db4f4184b00c6976ef88416f593635e1cbe543f7ba60bb79ee4b8443",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251697,
+            "name": "business-logging-core-service-appconfig - 1.0.0",
+            "token": "2c4b44b4ea6b498c9dceabc2d98fcdddcb5ec1ad967740a38a172148f64379f9",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251698,
+            "name": "business-logging-write-service - 1.0.0",
+            "token": "a667dd8709a641f3a635fabebc2e2d1efe018ac2c2ea4285866a4589bc905d80",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251699,
+            "name": "business-logging-core-service-core - 1.0.0",
+            "token": "f6e012eaa3d34b218b911b3385fc51629c19ab803d1d44d98355913996c0345f",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        },
+        {
+            "id": 251700,
+            "name": "business-logging-core-parent - 1.0.0",
+            "token": "c6bf7336595d438991dcac9daa7e8ab562a69038ac7842baa85d60e11a3cea08",
+            "creationDate": "2017-09-08 10:53:03 +0300",
+            "lastUpdatedDate": "2017-09-08 10:53:03 +0300"
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<coverage lines-valid="764" lines-covered="485" line-rate="0.6347999999999999" branches-valid="264" branches-covered="125" branch-rate="0.47350000000000003" timestamp="1488957456059" complexity="0" version="0.1">
+    <sources>
+        <source>/test</source>
+    </sources>
+    <packages>
+        <package name="lib" line-rate="0.6004" branch-rate="0.43579999999999997">
+            <classes>
+                <class name="cloudconfig.js" filename="src/lib/cloudconfig.js" line-rate="0.8636" branch-rate="0.875">
+                    <methods>
+                        <method name="mongodb_uri_from_VCAP_SERVICES" hits="1" signature="()V">
+                            <lines><line number="10" hits="1"/></lines>
+                        </method>
+                        <method name="mongodb_uri_from_env" hits="3" signature="()V">
+                            <lines><line number="22" hits="3"/></lines>
+                        </method>
+                    </methods>
+                    <lines></lines>
+                </class>
+                <class name="tokens.js" filename="src/lib/tokens.js" line-rate="1" branch-rate="1">
+                    <methods></methods>
+                    <lines></lines>
+                </class>
+            </classes>
+        </package>
+    </packages>
+</coverage>

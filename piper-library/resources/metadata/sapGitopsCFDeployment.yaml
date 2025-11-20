@@ -1,0 +1,133 @@
+metadata:
+  name: sapGitopsCFDeployment
+  description: ALPHA - Updates Cloud Foundry CF Deploy CRD in an Infrastructure Git Repository
+  longDescription: |
+    ALPHA version: not supported for productive use, changes might happen without further notice
+
+    This step allows you to update the Cloud Orchestrator's custom resource for Cloud Foundry Deployments in a git repository.
+
+    It can for example be used for GitOps scenarios where the update of the manifests triggers an update of the corresponding deployment in Cloud Foundry.
+
+    As of today, it supports the update of custom resource yaml files via kubectl only.
+
+spec:
+  inputs:
+    secrets:
+      - name: gitHttpsCredentialsId
+        description: Jenkins 'Username with password' credentials ID containing username/password for http access to your git repository.
+        type: jenkins
+    params:
+      - name: branchName
+        description: The name of the branch where the changes should get pushed into.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        default: main
+        mandatory: true
+      - name: commitMessage
+        description: The commit message of the commit that will be done to do the changes.
+        longDescription: If the commit message is empty a default message will be used.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "Update MTA artifact URL"
+        type: string
+      - name: serverUrl
+        aliases:
+          - name: githubServerUrl
+        description: GitHub server url to the repository.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: true
+      - name: forcePush
+        type: bool
+        description: Force push to serverUrl
+        longDescription: |
+          To bypass branch-protections the git push command can be forced.
+
+          Example:
+          ```yaml
+          steps:
+            gitopsUpdateDeployment:
+              forcePush: true
+          ```
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: false
+        default: false
+      - name: username
+        type: string
+        description: User name for git authentication
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+        secret: true
+        resourceRef:
+          - name: gitHttpsCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            name: gitHttpsCredentialVaultSecretName
+            default: gitHttpsCredential
+      - name: password
+        type: string
+        description: Password/token for git authentication.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+        secret: true
+        resourceRef:
+          - name: gitHttpsCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            name: gitHttpsCredentialVaultSecretName
+            default: gitHttpsCredential
+      - name: filePath
+        description: |
+          Relative path in the git repository to the custom resource definition file that shall be updated. For different tools this has different semantics:
+
+           * `kubectl` - path to the `mta.yaml` that should be patched. Supports globbing.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+        mandatory: true
+      - name: mtarUrls
+        description: "The download url of the MTA files which is typically provided via the pipeline environment. Please note: only the first entry will be used"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: "[]string"
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/promotedArtifactUrls
+      - name: customTlsCertificateLinks
+        type: "[]string"
+        description: List containing download links of custom TLS certificates. This is required to ensure trusted connections to registries with custom certificates.
+        scope:
+          - PARAMETERS
+          - GENERAL
+          - STAGES
+          - STEPS
+  containers:
+    - image: dtzar/helm-kubectl:3.8.0
+      workingDir: /config
+      options:
+        - name: -u
+          value: "0"

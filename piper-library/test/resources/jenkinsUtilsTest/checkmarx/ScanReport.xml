@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CxXMLResults InitiatorName="Piper Continuous Integration" Owner="GLOBAL\ASA1_CI_CHECKMARX" ScanId="4273160" ProjectId="18182" ProjectName="testProject02" TeamFullPathOnReportDate="CxServer\SP\SAP\PI\IndustryCloud\CloudFoundryServices" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182" ScanStart="Wednesday, May 8, 2019 2:16:49 PM" Preset="SAP_Default" ScanTime="00h:02m:40s" LinesOfCodeScanned="69" FilesScanned="3" ReportCreationTime="Thursday, May 9, 2019 2:17:14 PM" Team="CloudFoundryServices" CheckmarxVersion="8.8.0.72 HF14" ScanComments="; ; ; ; " ScanType="Incremental" SourceOrigin="LocalPath" Visibility="Public">
+  <Query id="5404" cweId="346" name="Missing_HSTS_Header" group="JavaScript_Medium_Threat" Severity="Medium" Language="JavaScript" LanguageHash="3602822811217894" LanguageChangeDate="2018-10-10T00:00:00.0000000" SeverityIndex="2" QueryPath="JavaScript\Cx\JavaScript Medium Threat\Missing HSTS Header Version:1" QueryVersionCode="118674716">
+    <Result NodeId="42731600002" FileName="index.js" Status="Recurrent" Line="13" Column="15" FalsePositive="True" Severity="Medium" AssignToUser="" state="1" Remark="" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182&amp;pathid=2" SeverityIndex="2">
+      <Path ResultId="4273160" PathId="2" SimilarityId="-782296731">
+        <PathNode>
+          <FileName>index.js</FileName>
+          <Line>13</Line>
+          <Column>15</Column>
+          <NodeId>1</NodeId>
+          <Name>end</Name>
+          <Type></Type>
+          <Length>1</Length>
+          <Snippet>
+            <Line>
+              <Number>13</Number>
+              <Code>      response.end(data);</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+  <Query id="4033" categories="PCI DSS v3.2;PCI DSS (3.2) - 6.5.7 - Cross-site scripting (XSS),OWASP Top 10 2013;A3-Cross-Site Scripting (XSS)" cweId="346" name="Missing_CSP_Header" group="JavaScript_Server_Side_Vulnerabilities" Severity="Low" Language="JavaScript" LanguageHash="3602822811217894" LanguageChangeDate="2018-10-10T00:00:00.0000000" SeverityIndex="1" QueryPath="JavaScript\Cx\JavaScript Server Side Vulnerabilities\Missing CSP Header Version:1" QueryVersionCode="98493596">
+    <Result NodeId="42731600001" FileName="index.js" Status="Recurrent" Line="24" Column="13" FalsePositive="False" Severity="Low" AssignToUser="" state="2" Remark="" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182&amp;pathid=1" SeverityIndex="1">
+      <Path ResultId="4273160" PathId="1" SimilarityId="-119483428">
+        <PathNode>
+          <FileName>index.js</FileName>
+          <Line>24</Line>
+          <Column>13</Column>
+          <NodeId>1</NodeId>
+          <Name>writeHead</Name>
+          <Type></Type>
+          <Length>1</Length>
+          <Snippet>
+            <Line>
+              <Number>24</Number>
+              <Code>    response.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+  <Query id="110076" categories="FISMA 2014;Configuration Management,NIST SP 800-53;SC-8 Transmission Confidentiality and Integrity (P1)" cweId="693" name="Client_Insufficient_ClickJacking_Protection" group="JavaScript_Low_Visibility" Severity="Low" Language="JavaScript" LanguageHash="3602822811217894" LanguageChangeDate="2018-10-10T00:00:00.0000000" SeverityIndex="1" QueryPath="JavaScript\Corp\JavaScript Low Visibility\Client Insufficient ClickJacking Protection Version:4" QueryVersionCode="7209673244">
+    <Result NodeId="42731600006" FileName="serve/form.html" Status="Recurrent" Line="1" Column="1" FalsePositive="False" Severity="Low" AssignToUser="" state="0" Remark="" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182&amp;pathid=6" SeverityIndex="1">
+      <Path ResultId="4273160" PathId="6" SimilarityId="-1123122363">
+        <PathNode>
+          <FileName>serve/form.html</FileName>
+          <Line>1</Line>
+          <Column>1</Column>
+          <NodeId>1</NodeId>
+          <Name>CxJSNS_797715104</Name>
+          <Type></Type>
+          <Length>0</Length>
+          <Snippet>
+            <Line>
+              <Number>1</Number>
+              <Code>&lt;!DOCTYPE html&gt;</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+  <Query id="100090" cweId="0" name="Parsing_started" group="JavaScript_Medium_Threat" Severity="Information" Language="JavaScript" LanguageHash="3602822811217894" LanguageChangeDate="2018-10-10T00:00:00.0000000" SeverityIndex="0" QueryPath="JavaScript\Corp\JavaScript Medium Threat\Parsing started Version:2" QueryVersionCode="6060189280">
+    <Result NodeId="42731600003" FileName="Gulpfile.js" Status="Recurrent" Line="1" Column="1" FalsePositive="False" Severity="Information" AssignToUser="" state="3" Remark="" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182&amp;pathid=3" SeverityIndex="0">
+      <Path ResultId="4273160" PathId="3" SimilarityId="-952407338">
+        <PathNode>
+          <FileName>Gulpfile.js</FileName>
+          <Line>1</Line>
+          <Column>1</Column>
+          <NodeId>1</NodeId>
+          <Name>CxJSNS_1713409769</Name>
+          <Type></Type>
+          <Length>0</Length>
+          <Snippet>
+            <Line>
+              <Number>1</Number>
+              <Code>const gulp = require('gulp');</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+    <Result NodeId="42731600004" FileName="index.js" Status="Recurrent" Line="1" Column="1" FalsePositive="False" Severity="Information" AssignToUser="" state="4" Remark="" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182&amp;pathid=4" SeverityIndex="0">
+      <Path ResultId="4273160" PathId="4" SimilarityId="613937936">
+        <PathNode>
+          <FileName>index.js</FileName>
+          <Line>1</Line>
+          <Column>1</Column>
+          <NodeId>1</NodeId>
+          <Name>CxJSNS_1890066577</Name>
+          <Type></Type>
+          <Length>0</Length>
+          <Snippet>
+            <Line>
+              <Number>1</Number>
+              <Code>'use strict';</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+    <Result NodeId="42731600005" FileName="serve/form.html" Status="Recurrent" Line="1" Column="1" FalsePositive="False" Severity="Information" AssignToUser="" state="0" Remark="" DeepLink="https://cx.wdf.sap.corp/CxWebClient/ViewerMain.aspx?scanid=4273160&amp;projectid=18182&amp;pathid=5" SeverityIndex="0">
+      <Path ResultId="4273160" PathId="5" SimilarityId="-1317999722">
+        <PathNode>
+          <FileName>serve/form.html</FileName>
+          <Line>1</Line>
+          <Column>1</Column>
+          <NodeId>1</NodeId>
+          <Name>CxJSNS_797715104</Name>
+          <Type></Type>
+          <Length>0</Length>
+          <Snippet>
+            <Line>
+              <Number>1</Number>
+              <Code>&lt;!DOCTYPE html&gt;</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+</CxXMLResults>

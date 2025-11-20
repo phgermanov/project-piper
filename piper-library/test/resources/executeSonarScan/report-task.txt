@@ -1,0 +1,6 @@
+projectKey=piper-demo-test
+serverUrl=https://sonarci.wdf.sap.corp:8443/sonar
+serverVersion=6.7.7.38951
+dashboardUrl=https://sonarci.wdf.sap.corp:8443/sonar/dashboard/index/piper-demo-test
+ceTaskId=AXERR2JBbm9IiM5TEST
+ceTaskUrl=https://sonarci.wdf.sap.corp:8443/sonar/api/ce/task?id=AXERR2JBbm9IiMTEST

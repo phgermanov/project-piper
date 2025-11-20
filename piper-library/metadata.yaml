@@ -1,0 +1,47 @@
+# Hyperspace portal component metadata file
+# For more information, please see:
+# https://portal.hyperspace.tools.sap/projects/dxp/documentation/User-Guide/Manage-Metadata
+kind: Component
+metadata:
+  displayName: piper-library
+  description: Convenience Step Library for Continuous Delivery Pipelines including ready-made CI/CD Pipelines
+  tags:
+    - cicd
+    - cloud
+    - continuousdelivery
+    - inner-source
+    - jenkins
+spec:
+  logo: https://avatars.github.tools.sap/u/29490
+  type:
+    name: cli
+  docs:
+    helpDocsLinks:
+      - name: Docs
+        url: https://url.sap/piper
+        description: User Documentation
+    techDocsLinks:
+      - name: DEVELOPMENT.md
+        url: https://github.wdf.sap.corp/ContinuousDelivery/piper-library/blob/master/DEVELOPMENT.md
+        description: Developer Documentation
+      - name: CONTRIBUTION.md
+        url: https://github.wdf.sap.corp/ContinuousDelivery/piper-library/blob/master/CONTRIBUTION.md
+        description: Contributing Guidelines
+  team:
+    name: piper-core
+    productOwner: I065942
+    securityLead: D074360
+    contactChannels:
+      - channelType: Stack
+        value: piper
+        link: https://sap.stackenterprise.co/questions/ask/?tags=1886
+  links:
+    - url: https://prod.splunk.tools.sap/de-DE/app/u3000_piperusage/piper
+      name: Splunk Dashboard
+      icon: dashboard
+  ci:
+    pipelineLinks:
+      - name: Build Pipeline
+        url: https://github.wdf.sap.corp/ContinuousDelivery/piper-library/actions/workflows/piper-golang-gpp.yml
+        icon: .sap-icon-factory
+        description: Piper GPP

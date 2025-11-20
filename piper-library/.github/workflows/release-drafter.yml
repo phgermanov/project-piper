@@ -1,0 +1,42 @@
+name: Release Drafter
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  update_release_draft:
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    runs-on: self-hosted
+    steps:
+      - name: Configure Release-Drafter
+        run: |
+          echo "GHE_HOST=${GITHUB_SERVER_URL##https:\/\/}" >> $GITHUB_ENV
+      # Label PRs when it's a PR event
+      - name: Label PRs
+        uses: release-drafter/release-drafter@v6
+        if: github.event_name == 'pull_request'
+        with:
+          disable-releaser: true
+          commitish: master
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      # Create draft release on push to master (for preBuild to use)
+      - name: Create draft release
+        uses: release-drafter/release-drafter@v6
+        if: github.event_name == 'push'
+        with:
+          publish: false
+          commitish: master
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

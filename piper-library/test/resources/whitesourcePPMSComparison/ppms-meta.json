@@ -1,0 +1,26 @@
+{
+    "header": {
+        "cvnr": "73554900100200005965",
+        "cvname": "UOM LIBRARY OD 1.0",
+        "technicalName": "JCO_UOM_LIB_OD",
+        "technicalRelease": "1",
+        "description": "Unit of Measure Library 1.0, information provided in https://jam4.sapjam.com/groups/about_page/keQoBl4Evb1yPXO7LMW3qJ, indirect shipment only",
+        "releaseTypeKey": "STD",
+        "releaseType": "Standard",
+        "developmentEnvironmentKey": "JAVA",
+        "developmentEnvironment": "Java",
+        "runtimeEnvironmentKey": "J2SE",
+        "runtimeEnvironment": "JAVA Standalone (Java SE)",
+        "manufacturerClassifKey": "SAP",
+        "manufacturerClassif": "SAP",
+        "eccnClassification": "Done: No Export Restrictions",
+        "lifecyclePhase": "Undefined",
+        "component": {
+            "otype": "C",
+            "onr": "73554900100100003186",
+            "displayName": "UOM LIBRARY OD"
+        },
+        "cnr": "73554900100100003186",
+        "cname": "UOM LIBRARY OD"
+    }
+}

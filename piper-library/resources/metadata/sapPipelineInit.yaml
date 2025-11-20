@@ -1,0 +1,140 @@
+metadata:
+  name: sapPipelineInit
+  aliases:
+    - name: setupPipelineEnvironment
+    - name: sapCumulusUpload  # Needed for pipelineId
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        type: jenkins
+        description: "Jenkins 'Secret text' credentials ID containing the token used to authenticate
+          with the Github Server."
+    params:
+      - name: pipelineOptimization
+        type: bool
+        description: Defines if the "Security" and "IPScan and PPMS" stages run only scheduled according to the schedule defined in parameter 'nightlySchedule' in step setupPipelineEnvironment.
+        scope:
+          - PARAMETERS
+          - GENERAL
+          - STAGES
+          - STEPS
+      - name: buildURL
+        type: string
+        description:
+        scope:
+          - PARAMETERS
+      - name: productiveBranch
+        type: string
+        description: Reads the productive branch from the pipeline config yaml file.
+        scope:
+          - PARAMETERS
+          - GENERAL
+      - name: isScheduled
+        type: bool
+        description:
+        scope:
+          - PARAMETERS
+      - name: githubApiUrl
+        type: string
+        description: The URL to the Github API. If not the API URL will be assumed by the gitInstance.
+        scope:
+          - PARAMETERS
+      - name: pipelineId
+        type: string
+        description: The cumulus pipelineId.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: gcsBucketId
+      - name: githubToken
+        type: string
+        description: Token of Git user for Github access.
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubTokenCredentialsVaultSecretName
+      - name: useCommitIdForCumulus
+        description: To be set to true if cumulus storage needs to be only with commit id. If set to false, the step relies on the version parameter.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/isOptimizedAndScheduled
+            type: bool
+          - name: custom/scheduledRun
+            type: bool
+          - name: custom/cumulusPipelineID
+            type: string
+          - name: custom/gcsBucketID
+            type: string
+          - name: custom/isProductiveBranch
+            type: bool
+          - name: custom/piperConfig
+            type: string
+          - name: git/instance
+            type: string
+          - name: git/repository
+            type: string
+          - name: git/organization
+            type: string
+          - name: git/branch
+            type: string
+          - name: git/commitId
+            type: string
+          - name: git/headCommitId
+            type: string
+          - name: git/url
+            type: string
+          - name: git/github_changes
+            type: int
+          - name: git/github_additions
+            type: int
+          - name: git/github_deletions
+            type: int
+          - name: git/github_filesChanged
+            type: int
+          - name: custom/eventData
+            type: string
+      - name: influx
+        type: influx
+        params:
+          - name: step_data
+            fields:
+              - name: build_url
+          - name: pipeline_data
+            fields:
+              - name: build_url
+              - name: github_changes
+                type: int
+              - name: github_additions
+                type: int
+              - name: github_deletions
+                type: int
+              - name: github_filesChanged
+                type: int
+              - name: cumulusPipelineID
+                type: string
+              - name: gcsBucketID
+                type: string
+          - name: jenkins_custom_data
+            fields:
+              - name: build_result
+              - name: build_result_key
+                type: int

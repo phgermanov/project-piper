@@ -1,0 +1,6 @@
+steps:
+  executeWhitesourceScan:
+    scanType: 'pip'
+  executeFortifyScan:
+    buildDescriptorExcludeList:
+      - moduleExclude

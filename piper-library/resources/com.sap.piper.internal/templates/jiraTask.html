@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>${reportTitle}</title>
+<style type="text/css">
+${style}
+</style>
+</head>
+<body>
+<h1>${reportTitle}</h1>
+<p>As documented in Jira task <a href="${jiraServerUrl}/browse/${jiraIssue.key}">${jiraIssue.fields.summary}</a></p>
+<p>Relevant for version/delivery: ${jiraFixVersion}</p>
+<p>Overall Status: ${jiraIssue.fields.status.name}</p>
+<p>Assignee: ${assignee}</p>
+<p>Description: <br />${jiraIssue.fields.description}</p>
+<p>Snapshot taken: ${now} GMT</p>
+<table>
+    <tr>
+      <th>Task</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Assignee</th>
+    </tr>
+
+    ${subTaskTable}
+
+</table>
+</body>
+</html>

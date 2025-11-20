@@ -1,0 +1,159 @@
+metadata:
+  name: sapCallFossService
+  description: Call Foss Service
+  longDescription: |
+    This step allows to call all FOSS Service API methods and implements a default integration process.
+    It is currently in **BETA** mode, thus incompatible changes may occur although we aim to limit those kind of changes.
+
+    You find details about Foss in the [Foss Service Documentation](https://github.wdf.sap.corp/pages/DLM-CoDePipeS/CoDePipeS/Howto/Freeware%20and%20Open%20Source/)
+
+    By default, this step calls the api method 'analyze' and tries to 'compare' this result with a previous one (if found).
+    The FOSS Service will find you previous runs, if 'pipelineIdentification' or 'scmIdentification' is given. If your target is
+    PPMS and the given PPMS Build Version does not exist in PPMS, it is automatically created. The PPMS Change Request
+    is also send automatically, if PPMS is not up to date. As a precondition, proper PPMS credentials must be given. If
+    PPMS credentials are missing all PPMS updates are siglently skipped.
+
+    PipelineIdentification/scmIdentification:
+
+    The 'pipelineIdentification' and the 'scmIdentification' are first of all client given datapoints that help are
+    maintained with the FOSS Service result and helps the client to find and link the data. Both identifications help
+    the FOSS Service to search for a preceding analysis and compare its result with the current one ('compare' method
+    enablement for the default behavior).
+
+    pipelineIdentification:
+
+    The caller can provide a so-called 'global pipeline identifier' as UUID. In addition, you can send a 'pipeline instance id'
+    as UUID and the 'job URL'. The same job (or pipeline) should always send the same 'global pipeline identifier'. The optional
+    'pipeline instance id' and 'job URL' is used to provide you with a proper back reference in the result (e.g. if you browse
+    the result via FOSS UI).
+
+        Format: <global pipeline identifier>;<pipeline instance id>;<job URL>
+        Example: f3ece352-5eee-11ea-bc55-0242ac130003;fb37d16c-5eee-11ea-bc55-0242ac130003;https://foss.codepipes.wdf.sap.corp/job/DLM-FOSS/view/Foss%20CI%20Pipeline/
+        (escape char: '\\', separator: ';')
+
+
+    scmIdentification:
+
+    The caller can provide its 'SCM repository URL' and the 'revision' (e.g. sha1 of git, a branch, or, a tag). In addition, this
+    information is used to provide a proper back reference in the result (e.g. if you browse the result via FOSS UI).
+
+        Format: <SCM repository URL>;<revision>
+        Example: https://github.wdf.sap.corp/DLM-FOSS/Foss;master
+        (escape char: '\\', separator: ';')
+
+    If both, 'pipelineIdentification' and 'scmIdentification' is given, the parameter 'predecessorVia' determines which
+    identification is used to find the preceding analysis (fallback is 'pipelineIdentification')
+
+    callApi:
+
+    You can use this parameter to force this step to call a dedicated FOSS Service api method instead of the default
+    step behavior. To do this, you have to give the api method name followed by all needed parameters separated by
+    semicolon. In every case the result is delivered as JSON.
+
+    The following api methods are available
+    (please compare to pkg/fossService/fossService.go#RawApi):
+
+        * analyze;request <JsonObjectString>
+        * compare;source <uuid.UUID>;target <uuid.UUID>
+        * getResultCertificate;resultId <uuid.UUID>
+        * sendPpmsChangeRequest;request <JsonObjectString>
+        * createPpmsBuildVersion;request <JsonObjectString>
+        (escape char: '\\', separator: ';')
+
+spec:
+  inputs:
+    secrets:
+      - name: ppmsCredentialsId
+        type: jenkins
+    params:
+      - name: username
+        secret: true
+        description: "PPMS user that is allowed to update ppms."
+        mandatory: false
+        type: string
+        resourceRef:
+          - name: ppmsCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            name: ppmsCredentialsVaultSecretName
+            default: ppms
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: ppmsUsername
+      - name: password
+        secret: true
+        description: "PPMS password for the given PPMS user."
+        type: string
+        resourceRef:
+          - name: ppmsCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            name: ppmsCredentialsVaultSecretName
+            default: ppms
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        aliases:
+          - name: ppmsPassword
+      - name: pipelineIdentification
+        mandatory: false
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "Informs the foss service about important pipeline parameters. See description for details."
+      - name: scmIdentification
+        mandatory: false
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "Informs the foss service about important scm parameters. See description for details."
+      - name: predecessorVia
+        mandatory: false
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "Can be set to 'pipelineIdentification' or 'scmIdentification' to define precedence if needed."
+      - name: analyzeRequestBody
+        mandatory: false
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "Json formatted string to define your analyze request used to run the default behavior."
+      - name: callApi
+        mandatory: false
+        type: string
+        default: stepBehavior
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "Runs a dedicated foss API. See description for details."
+      - name: fossBaseUrl
+        type: string
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        description: "Foss Service Base URL."
+        default: https://foss-service.wdf.sap.corp
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: foss/resultJson

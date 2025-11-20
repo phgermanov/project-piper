@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.sap.cloud.application</groupId>
+  <artifactId>cap-spring-boot-root</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.1</version>
+
+  <name>CAP Spring Boot Sample (Root POM)</name>
+
+  <modules>
+    <module>cds-build</module>
+    <module>srv</module>
+  </modules>
+
+  <properties>
+    <parent.basedir>${project.basedir}</parent.basedir>
+    <srv.folder>srv</srv.folder>
+    <db.folder>db</db.folder>
+    <srv.resources.location>${srv.folder}/src/main/resources/edmx</srv.resources.location>
+  </properties>
+
+
+  <build>
+    <plugins>
+      <!-- Remove unwanted node_modules folders and files that should be 
+        removed by a "cds clean" (which today does not exist). Note: WORKAROUND - 
+        That's why having to install deployer apps sucks. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.1.0</version>
+        <inherited>false</inherited>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>.</directory>
+              <includes>**/package-lock.json</includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${parent.basedir}/node_modules</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${db.folder}/node_modules</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${db.folder}/src/gen</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${srv.folder}/src/main/resources/edmx</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

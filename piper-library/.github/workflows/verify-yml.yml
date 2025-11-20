@@ -1,0 +1,43 @@
+name: YAML
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**/*.yml'
+      - '**/*.yaml'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Install yamllint
+        run: pip install yamllint==1.37.1
+      - name: 🚀 Lint YAML files
+        run: |
+          shopt -s globstar
+          /home/runner/.local/bin/yamllint \
+            -c .yamllint.yml \
+            ./**/*.y*ml
+  codespell:
+    name: Codespell
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Install Codespell
+        run: pip install codespell==2.4.1
+      - name: 🚀 Check code for common misspellings
+        run: |
+          shopt -s globstar
+          /home/runner/.local/bin/codespell \
+            --count \
+            --ignore-words-list synopsys \
+            ./**/*.y*ml

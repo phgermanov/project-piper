@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/cloudconfig.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">lib/</a> cloudconfig.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">86.36% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>19/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">87.5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>7/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>2/2</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">86.36% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>19/22</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+/*
+    Provide mogodb connection string based on environment variables
+    provided by the cloud environment, e.g. cloudfoundry or docker or local
+&nbsp;
+*/
+var winston = require("winston");
+var mongo_database_name = "nhub";
+/*  extract mongodb connection string from cloudfoundry json object */
+function mongodb_uri_from_VCAP_SERVICES(configuration) {
+    for (var key in configuration) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (key.indexOf("mongodb") !== -1) {
+            var uri = configuration[key][0]["credentials"]["uri"]; // HCP
+            //            var uri = configuration[key][0]["credentials"]["url"];   // Anynines
+            return uri;
+        }
+    }
+<span class="cstat-no" title="statement not covered" >    return null;</span>
+}
+/**  extract connection string from environment variables or use default for
+    local */
+function mongodb_uri_from_env(env) {
+    // check cloudfoundry first
+    var vcap_services = env["VCAP_SERVICES"];
+    if (vcap_services) {
+        var vcap_services_json = void 0;
+        try {
+            // cloudfoundry binding contains database name already
+            vcap_services_json = JSON.parse(vcap_services);
+        }
+        catch (e) {
+<span class="cstat-no" title="statement not covered" >            winston.error("failed to parse VCAP_SERVICES json\n", vcap_services);</span>
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+        }
+        return mongodb_uri_from_VCAP_SERVICES(vcap_services_json);
+    }
+    // check for docker variables
+    var mongo_hostname = env["MONGO_PORT_27017_TCP_ADDR"] || "localhost";
+    var mongo_port = env["MONGO_PORT_27017_TCP_PORT"] || "27017";
+    var mongo_connection_string = "mongodb://" + mongo_hostname + ":" + mongo_port + "/" + mongo_database_name;
+    return mongo_connection_string;
+}
+exports.mongodb_uri_from_env = mongodb_uri_from_env;
+//# sourceMappingURL=cloudconfig.js.map</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 08 2017 08:17:35 GMT+0100 (CET)
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+	"sirius_program": "My sirius program name",
+	"sirius_delivery": "My sirius delivery name",
+	"jira_keys": [
+      "JENKINSBCKLG-3",
+      "JENKINSBCKLG-4"
+    ]
+}

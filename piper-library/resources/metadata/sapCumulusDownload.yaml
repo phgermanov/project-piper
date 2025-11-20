@@ -1,0 +1,107 @@
+metadata:
+  name: sapCumulusDownload
+  description: Download files from Cumulus
+  longDescription: |
+    This step allows to download files from Cumulus.
+
+    You find details about Cumulus in the [Cumulus Wiki](https://wiki.wdf.sap.corp/wiki/x/nCu1g).
+
+    More information about the Cumulus integration in the general purpose pipeline template can be found [here](https://go.sap.corp/piper/stages/cumulus-integration/).
+spec:
+  inputs:
+    secrets:
+      - name: cumulusFileCredentialsId
+        description: Jenkins 'File' credentials ID containing the key file to authenticate to Cumulus on the Google Cloud Platform.
+        type: jenkins
+    params:
+      - name: filePattern
+        description: Pattern of the files to be downloaded using doublestar wildcard logic (e.g. **/*.xml).
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: jsonKeyFilePath
+        description: File path to Google Cloud JSON key file.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: cumulusFileCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            name: cumulusFileCredentialsVaultSecretName
+            default: cumulus
+      - name: token
+        type: string
+        description: "The token used to authenticate with the Google Cloud Storage service. It is provided by System Trust, so usually there is no need to set this parameter."
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - type: systemTrustSecret
+            name: cumulusSystemTrustSecretName
+            default: cumulus
+      - name: pipelineId
+        description: Id of the Cumulus pipeline.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: stepResultType
+        description: Step result type to be used in Cumulus store.
+        default: general
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: subFolderPath
+        description: Used to logically separate results of the same type.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: targetPath
+        description: Path on disk where we want to save the downloaded files.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEP
+      - name: version
+        description: The version assigned to the uploaded documents.
+        type: string
+        mandatory: true
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: gitHeadCommitId
+        type: string
+        description: Specifies the headcommitId to be sent as part of the environment information.
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/headCommitId
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+      - name: useCommitIdForCumulus
+        description: Parameter in Beta mode. To be set to true if cumulus storage needs to be only with commit id.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS

@@ -1,0 +1,96 @@
+_schema-version: "2.0"
+ID: com.sap.icf.samples.shoppinglist
+version: 0.3.1
+
+# This MTA file is prepared in a way that it allows standalone deployment (e.g. in a trial space)
+# but at the same time allows overriding key parameters via extension descriptor e.g. when deploying to multiple spaces or
+# using a multitenancy UAA.
+
+modules:
+  - name: shoppinglist-ui
+    type: html5
+    path: shoppinglist-ui/
+    parameters:
+      memory: 128M
+    requires:
+      - name: shoppinglist-uaa
+      - name: shoppinglist-service
+        group: destinations
+        properties:
+          name: SHOPPINGLIST_BACKEND
+          url: ~{url}
+          forwardAuthToken: true
+          strictSSL: false
+      - name: sapui5-provider
+        group: destinations
+        properties:
+          name: SAPUI5
+          url: ~{url}
+          forwardAuthToken: false
+          strictSSL: false
+
+  - name: shoppinglist-service
+    type: java
+    path: shoppinglist-service/
+    parameters:
+      memory: 768M
+      buildpack: sap_java_buildpack
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+    provides:
+      - name: shoppinglist-service
+        properties:
+          url: "${default-url}"
+    requires:
+      - name: shoppinglist-uaa
+      - name: shoppinglist-hdi-container
+      - name: shoppinglist-db
+    build-parameters:
+      ignore: ["*.md"]
+      build-result: target/*.jar
+      maven-opts:
+        command: [clean, verify, "dependency:tree"]
+
+  - name: shoppinglist-db
+    type: hdb
+    path: shoppinglist-db/
+    parameters:
+      memory: 128M
+    requires:
+      - name: shoppinglist-hdi-container
+        properties:
+          TARGET_CONTAINER: shoppinglist-hdi-container
+
+resources:
+  - name: shoppinglist-hdi-container
+    type: com.sap.xs.hdi-container
+
+  - name: sapui5-provider
+    properties:
+      url: https://sapui5.hana.ondemand.com
+
+  - name: shoppinglist-uaa
+    # As of 2017-02-02, there is no type for the application plan. Therefore, UAA is created as plain managed service.
+    # Also, the tenant-mode should be "dedicated" but due to a bug this doesn't work currently --> "external" is a workaround. See https://jtrack/browse/XSBUG-1199
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      config:
+        xsappname: shoppinglist-${space}
+        tenant-mode: external
+        scopes:
+          - name: $XSAPPNAME.DisplayProduct
+            description: Display Products
+          - name: $XSAPPNAME.EditProduct
+            description: Edit Products
+        role-templates:
+          - name: DisplayProducts
+            description: Display Products
+            scope-references:
+              - $XSAPPNAME.DisplayProduct
+          - name: EditProducts
+            description: Edit Products
+            scope-references:
+              - $XSAPPNAME.DisplayProduct
+              - $XSAPPNAME.EditProduct

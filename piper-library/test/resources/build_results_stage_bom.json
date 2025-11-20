@@ -1,0 +1,151 @@
+{
+	"stage_repourl": "http://nexus.wdf.sap.corp:8081/stage_from_bom/repository/123456789",
+	"stage_gitrepo": "git://github.wdf.sap.corp/IndustryCloudFoundation/pipeline-test-node.git",
+	"stage_gittreeish": "bc7d12de355c96d68fb5429023da2e68acecfd0e",
+	"staging_repo_id": "123456789",
+	"TAG_PREFIX": "None",
+	"TAG_EXTENSION": "None",
+	"project_version": "1.0.0-20170308080159+0aa64aa944540dd3e7db64773bbacd6bbe1aa2d3",
+	"version_extension": "None",
+	"build_options": "--productive, -I, Common=http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.milestones/, -I, NPM=http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.milestones.npm/, -E, Common=http://nexus.wdf.sap.corp:8081/nexus/service/local/staging/profiles/3ea2f553956b01, -E, NPM=http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.npm/, --deploy-credentials-key, Common=deploy_milestones_xmake, --deploy-credentials-key, NPM=deploy_milestones_npm",
+	"projectArchive": "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.snapshots.blob/com/sap/production-services/build-service/IndustryCloudFoundation/pipeline-test-node/bc7d12de355c96d68fb5429023da2e68acecfd0e/2017_03_08__08_03_08/deployPackage.tar.gz",
+	"stage-bom": {
+		"f227c9ff8081-20210106-160717889-237": {
+			"components": [
+				{
+					"artifact": "sap-notification-hub",
+					"assets": [
+						{
+							"fileName": "sap-notification-hub-1.1.11-20170222101742.tar.gz",
+							"url": "http://nexus.wdf.sap.corp:8081/stage/repository/123456789/com/sap/npm/sap-notification-hub/1.1.11-20170222101742/sap-notification-hub-1.1.11-20170222101742.tar.gz"
+						}
+					],
+					"group": null,
+					"version": "1.1.11-20170222101742"
+				}
+			],
+			"credentials": {
+				"password": "*************",
+				"repository": "f227c9ff8081-20210106-160717889-237",
+				"user": "PZa9wPjw4Jl7qya"
+			},
+			"format": "npm"
+		},
+		"f29d08558081-20210106-16072018-931": {
+			"components": [
+				{
+					"artifact": "pipeline-test",
+					"assets": [
+						{
+							"extension": "war",
+							"fileName": "pipeline-test-0.0.1-20170301-104821_8ffcbe7.war",
+							"url": "http://nexus.wdf.sap.corp:8081/stage/repository/123456789/com/sap/suite/cloud/foundation/pipeline-test/0.0.1-20170301-104821_8ffcbe7/pipeline-test-0.0.1-20170301-104821_8ffcbe7.war"
+						}
+					],
+					"group": "com.sap.suite.cloud.foundation",
+					"version": "0.0.1-20170301-104821_8ffcbe7"
+				},
+				{
+					"artifact": "Pipeline-Test",
+					"assets": [
+						{
+							"classifier": "linux-amd64",
+							"extension": "tar.gz",
+							"fileName": "Pipeline-Test-1.0.0-linux-amd64.tar.gz",
+							"url": "http://nexus.wdf.sap.corp:8081/stage/repository/123456789/com/sap/golang/github/wdf/sap/corp/test-org/Pipeline-Test/1.0.0/Pipeline-Test-1.0.0-linux-amd64.tar.gz"
+						}
+					],
+					"group": "com.sap.golang.github.wdf.sap.corp.test-org",
+					"version": "1.0.0"
+				},
+				{
+					"artifact": "dummy",
+					"assets": [
+						{
+							"extension": "jar",
+							"fileName": "dummy-0.0.1-<Timestamp>_<CommitId>.jar",
+							"url": "http://nexus.wdf.sap.corp:8081/stage/repository/123456789/dummy/dummy/0.0.1-<Timestamp>_<CommitId>/dummy-0.0.1-<Timestamp>_<CommitId>.jar"
+						}
+					],
+					"group": "dummy",
+					"version": "0.0.1-<Timestamp>_<CommitId>"
+				},
+				{
+					"artifact": "dummy",
+					"assets": [
+						{
+							"extension": "jar",
+							"fileName": "Pipeline-Test-1.0.0-linux-amd64.tar.gz",
+							"url": "http://nexus.wdf.sap.corp:8081/stage/repository/123456789/dummy/dummy/1.2.34/dummy-1.2.34.jar"
+						}
+					],
+					"group": "dummy",
+					"version": "1.2.34"
+				},
+				{
+					"artifact": "sap-notification-hub",
+					"assets": [
+						{
+							"classifier": "bundle",
+							"extension": "tar.gz",
+							"fileName": "sap-notification-hub-1.1.11-20170222101742+a6181bdecc50cc829329d3b38671585ac5c99ed0.tar.gz",
+							"url": "http://nexus.wdf.sap.corp:8081/stage/repository/123456789/com/sap/npm/sap-notification-hub/1.1.11-20170222101742+a6181bdecc50cc829329d3b38671585ac5c99ed0/sap-notification-hub-1.1.11-20170222101742+a6181bdecc50cc829329d3b38671585ac5c99ed0-bundle.tar.gz"
+						}
+					],
+					"group": "com.sap.npm",
+					"version": "1.1.11-20170222101742+a6181bdecc50cc829329d3b38671585ac5c99ed0"
+				}
+				
+			],
+			"credentials": {
+				"password": "********",
+				"repository": "f29d08558081-20210106-16072018-932",
+				"user": "pK2XyGGhvVy4mMa"
+			},
+			"format": "maven2"
+		},
+		"f29d08558081-20210106-16072018-932": {
+			"components": [
+				{
+					"artifact": "gradle-sample",
+					"assets": [
+						{
+							"classifier": "releaseMetadata",
+							"extension": "zip",
+							"fileName": "gradle-sample-0.0.1-piper-releaseMetadata.zip",
+							"relativePath": "com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper-releaseMetadata.zip",
+							"url": "https://nexus.wdf.sap.corp:8443/stage/repository/f29d08558081-20210106-16072018-932/com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper-releaseMetadata.zip"
+						},
+						{
+							"classifier": "releaseMetadataReference",
+							"extension": "xml",
+							"fileName": "gradle-sample-0.0.1-piper-releaseMetadataReference.xml",
+							"relativePath": "com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper-releaseMetadataReference.xml",
+							"url": "https://nexus.wdf.sap.corp:8443/stage/repository/f29d08558081-20210106-16072018-932/com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper-releaseMetadataReference.xml"
+						},
+						{
+							"extension": "jar",
+							"fileName": "gradle-sample-0.0.1-piper.jar",
+							"relativePath": "com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper.jar",
+							"url": "https://nexus.wdf.sap.corp:8443/stage/repository/f29d08558081-20210106-16072018-932/com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper.jar"
+						},
+						{
+							"extension": "pom",
+							"fileName": "gradle-sample-0.0.1-piper.pom",
+							"relativePath": "com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper.pom",
+							"url": "https://nexus.wdf.sap.corp:8443/stage/repository/f29d08558081-20210106-16072018-932/com/sap/prd/test/gradle/sample/gradle-sample/0.0.1-piper/gradle-sample-0.0.1-piper.pom"
+						}
+					],
+					"group": "com.sap.prd.test.gradle.sample",
+					"version": "0.0.1-piper"
+				}
+			],
+			"credentials": {
+				"password": "********",
+				"repository": "f29d08558081-20210106-16072018-932",
+				"user": "pK2XyGGhvVy4mMa"
+			},
+			"format": "maven2"
+		}
+	}
+}

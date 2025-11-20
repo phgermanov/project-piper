@@ -1,0 +1,111 @@
+metadata:
+  name: sapExecuteCustomPolicy
+  description: Execute a custom policy.
+  longDescription: |
+    This step evaluates custom policies which you can use to validate the quality of your software.
+
+    For the evaluation, you need to provide an evidence file which contains the measured properties of your software and the custom policy which contains the constraints.
+    This step validates the evidence file against the custom policy and stores the result in a json file.
+
+    It uses the [Open Policy Agent (OPA)](https://www.openpolicyagent.org/) as policy execution engine, which means that policies are written in the [Rego policy language](https://www.openpolicyagent.org/docs/latest/policy-language/).
+    You are free in the way you implement your policy, the only constraint is that the produced policy result has to match the [Cumulus result schema](https://github.tools.sap/P4TEAM/cumulus-file-schema/blob/main/schema/v1/custom-policy-validation-result/custom-policy-validation-result.schema.json).
+    By default policy violations will abort the pipeline (can be changed by `failOnPolicyViolation` parameter to `false`).
+
+    Example:
+    In order to execute a custom policy you have to call the step sapExecuteCustomPolicy i.e. by using a piper extension.
+
+    ```
+    sapExecuteCustomPolicy script: script, policyKey: 'MY-POLICY-1', evidenceFile: 'my-evidence-1.json'
+    ```
+
+    A working showcase with [piper extension](https://github.wdf.sap.corp/cumulus/cumulus-showcase-nestjs/blob/master/.pipeline/extensions/Central%20Build.groovy) and a policy can be found in the [cumulus-showcase-nestjs](https://github.wdf.sap.corp/cumulus/cumulus-showcase-nestjs/tree/master/.policy/code_coverage) repository.
+
+    Cumulus Integration:
+
+    The generated result file can be uploaded to [Cumulus](https://go.sap.corp/piper/steps/sapCumulusUpload/):
+    ```
+    sapCumulusUpload script: this, filePattern: 'custom-policy-result/MY-POLICY-1/**/*.json', subFolderPath: 'MY-POLICY-1', stepResultType: 'custom-policy-result'
+    ```
+    This can be used for documentation purposes and to display the results in the [Cumulus pipeline dashboard](https://wiki.one.int.sap/wiki/x/icIy1g#PoliciesasCode-WherecanIseepolicyresults?).
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        type: jenkins
+        description: "Jenkins 'Secret text' credentials ID containing the token used to authenticate
+          with the Github server."
+    params:
+      - name: policyKey
+        description: The key of the policy to be executed. The key is annotated in the metadata in the policy.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+      - name: evidenceFile
+        description: The evidence file to be evaluated.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+      - name: policyPath
+        description: Path of a directory containing the policies.
+        type: string
+        mandatory: false
+        default: .policy
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL
+      - name: failOnPolicyViolation
+        description: Fail the pipeline if the policy is not compliant.
+        type: bool
+        mandatory: false
+        default: true
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL
+      - name: resultFile
+        description: |
+          Path of the result file that is generated. The placeholder <policyKey> will be replaced by the policy key.
+          The path can contain subfolders which might be useful if the same policy is executed multiple times (e.g. mono repo / maven multi module project)
+          Attention: If you execute the same policy multiple times without specifying resultFile parameter results will be overwritten.
+        type: string
+        mandatory: false
+        default: ./custom-policy-result/<policyKey>/result.json
+        scope:
+          - PARAMETERS
+      - name: generateJunitReport
+        description: |
+          Whether a junit test-report xml is generated or not. If so, the report will be generated at the following path: ./TEST-custom-policy-<policyKey>.xml
+        type: bool
+        mandatory: false
+        default: false
+        scope:
+          - PARAMETERS
+      - name: githubToken
+        type: string
+        description: Token of Git user for GitHub access. Required if pipeline is running outside of the corporate network.
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubTokenCredentialsVaultSecretName
+      - name: cumulusPolicyAgentVersion
+        description: |
+          The version of the cumulus policy agent to be used for the execution.
+          Note: Normally you should use the default
+        type: string
+        mandatory: false
+        default: latest
+        scope:
+          - PARAMETERS
+          - STEPS
+          - GENERAL

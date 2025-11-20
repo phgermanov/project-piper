@@ -1,0 +1,88 @@
+general:
+  buildTool: golang
+  nativeBuild: true
+  vaultNamespace: ies/hyperspace/pipelines
+  vaultPath: piper/PIPELINE-GROUP-2705
+  vaultBasePath: piper/PIPELINE-GROUP-2705
+  vaultPipelineName: PIPELINE-22254
+stages:
+  Acceptance:
+    sapCumulusUpload: false
+    sapDownloadArtifact: false
+  Integration:
+    sapCumulusUpload: false
+  Performance:
+    sapCumulusUpload: false
+    sapDownloadArtifact: false
+  Promote:
+    sapCumulusUpload: false
+steps:
+  artifactPrepareVersion:
+    versioningType: library
+  golangBuild:
+    dockerImage: golang:1.24.0
+    coverageFormat: cobertura
+    output: sap-piper
+    targetArchitectures:
+      - linux,amd64
+      - darwin,amd64
+      - darwin,arm64
+    ldflagsTemplate: >-
+      -X github.com/SAP/jenkins-library/cmd.GitCommit={{ index .CPE "git/commitId" }}
+      -X github.com/SAP/jenkins-library/cmd.GitTag={{ index .CPE "artifactVersion" }}
+      -X github.com/SAP/jenkins-library/pkg/log.LibraryRepository={{ index .CPE "git/url" }}
+      -X github.com/SAP/jenkins-library/pkg/log.LibraryName=piper-lib
+      -X github.com/SAP/jenkins-library/pkg/telemetry.LibraryRepository={{ index .CPE "git/url" }}'
+    buildFlags:
+      - "-buildvcs=false"
+    runIntegrationTests: true
+    # These vault credentials are used in integration tests in integration/jenkins.go
+    vaultCredentialEnvPrefix: PIPER_INTEGRATION_
+    vaultCredentialPath: jenkins-integration
+    vaultCredentialKeys: ['jenkins_user_name', 'jenkins_token']
+  sapCallStagingService:
+    profile: group-2705-default
+    url: https://staging.repositories.cloud.sap/stage/api
+  sapCumulusUpload:
+    pipelineId: 277fddb9-a768-418f-9ae7-3a49c6c16db5
+  sonarExecuteScan:
+    serverUrl: https://sonar.tools.sap
+    # TODO: remove 'instance' after disabling Jenkins pipeline
+    instance: 'SAP SonarQube Enterprise'
+    skipVault: true
+  githubPublishRelease:
+    apiUrl: https://github.wdf.sap.corp/api/v3
+    githubApiTimeout: 60
+    uploadUrl: https://github.wdf.sap.corp/api/uploads
+    owner: ContinuousDelivery
+    repository: piper-library
+    preRelease: true
+    addClosedIssues: true
+    addDeltaToLastRelease: true
+    vaultDisableOverwrite: true
+    excludeLabels:
+      - 'wontfix'
+      - 'discussion'
+      - 'duplicate'
+      - 'invalid'
+      - 'question'
+  checkmarxOneExecuteScan:
+    projectName: piper-library
+    applicationName: INT_HYPERSPACE_PIPER
+    preset: SAP_Corp_Microservice_Backend
+    checkmarxOneCredentialsId: checkmarxOne
+    branch: master
+  detectExecuteScan:
+    buildTool: golang
+    dockerImage: cpipublic.int.repositories.cloud.sap/com.sap.it.img/golang:1.22.5-sapmachine.17
+    projectName: piper-library
+    includedPackageManagers: ["GO_MOD"]
+  shellExecute:
+    dockerImage: ""
+    vaultCredentialPath: ['github_tokens', 'smtp']
+    vaultCredentialKeys: [['github_tools_token', 'github_wdf_token'], ['smtp_user', 'smtp_password']]
+  # TODO: remove below step configuration after disabling Jenkins pipeline
+  sapCollectInsights:
+      identifier: piper
+      deploymentTarget: production
+      collectChangeSetProduction: true

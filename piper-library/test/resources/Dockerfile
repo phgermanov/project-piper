@@ -1,0 +1,7 @@
+FROM jenkins:2.46.2
+
+USER root
+
+ENV VERSION 1.2.3
+
+ARG TEST=2.3.4

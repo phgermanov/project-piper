@@ -1,0 +1,13 @@
+{
+    "oauth2-configuration": {
+        "token-validity": 14400
+    },
+    "xsappname": "testApp",
+    "scopes": [
+    ],
+    "authorities": [ "$XSAPPNAME.test" ],
+    "attributes": [
+    ],
+    "role-templates": [
+    ]
+}

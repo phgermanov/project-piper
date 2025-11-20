@@ -1,0 +1,107 @@
+metadata:
+  name: sapExecuteFastlane
+  description: Execute fastlane lane
+  longDescription: |
+    This step allows to execute a specific fastlane lane (defined in your `Fastfile`) and ensures that the dependencies specified in your Gemfile.lock are installed.
+    It requires a Ruby installation (we recommend to use [RVM](https://rvm.io/rvm)). Also, it requires the Gemfile and/or Gemfile.lock and the fastlane folder to be present at the project root directory.
+    Please note that some fastlane actions require you to run on macOS.
+
+    You find details about fastlane here: [fastlane docs](https://docs.fastlane.tools/).
+spec:
+  inputs:
+    secrets:
+      - name: gitHttpsCredentialsId
+        description: Jenkins 'Username with password' credentials ID containing username/password for http access to github.tools.sap
+        type: jenkins
+    params:
+      - name: laneName
+        description: Name of the lane in your Fastfile that shall be executed using bundle exec fastlane <laneName>.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: platform
+        description: Platform name where the lane is specified in your `Fastfile`. This will mainly impact whether this step tries to set up `fastlane match` (iOS-only) or not.
+        type: string
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STEPS
+        default: ios
+        possibleValues:
+          - android
+          - ios
+          - mac
+      - name: setupSigning
+        description: Whether Piper will inject iOS/macOS signing secrets for fastlane task
+        type: bool
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STEPS
+        default: false
+      - name: setupBundlerAuthentication
+        description: Whether piper should run `bundle config` with username and password specified in `gitHttpsCredential`
+        type: bool
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: username
+        type: string
+        description: User name for git authentication
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: false
+        secret: true
+        resourceRef:
+          - name: gitHttpsCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            name: gitHttpsCredentialsVaultSecretName
+            default: gitHttpsCredential
+      - name: password
+        type: string
+        description: Password/token for git authentication.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: false
+        secret: true
+        resourceRef:
+          - name: gitHttpsCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            default: gitHttpsCredential
+            name: gitHttpsCredentialsVaultSecretName
+      - name: fastlaneMatchPassphrase
+        type: string
+        description: (iOS/macOS only) AES-256-cbc key (passphrase) used for `fastlane match`.
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - type: vaultSecret
+            default: fastlane
+            name: fastlaneMatchPassphraseVaultSecretName
+      - name: fastlaneMatchRepositoryCredentials
+        type: string
+        description: (iOS/macOS only) Basic authentication token used to access the fastlane match git storage.
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - type: vaultSecret
+            default: fastlane
+            name: fastlaneMatchRepositoryCredentialsVaultSecretName

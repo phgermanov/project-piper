@@ -1,0 +1,6 @@
+FROM scratch
+
+COPY ./sap-piper sap-piper
+COPY ./sap-piper-darwin.x86_64 sap-piper-darwin.x86_64
+ENV PATH /usr/local/bin:/sap-piper
+ENTRYPOINT ["/sap-piper"]

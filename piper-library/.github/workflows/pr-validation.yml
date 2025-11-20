@@ -1,0 +1,14 @@
+name: "Pull Request Validation"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  verify-pr:
+    name: "Verify PR"
+    uses: ContinuousDelivery/.github/.github/workflows/verify-pr.yml@main
+    secrets: inherit

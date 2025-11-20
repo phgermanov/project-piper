@@ -1,0 +1,265 @@
+metadata:
+  name: sapSUPAExecuteTests
+  description: This step allows to run performance tests with SUPA
+  longDescription: |
+    This step allows to run performance tests with SUPA monitoring and load tests with JMeter. Several automation frameworks for test execution are supported.
+
+    Following automation test scenarios can be executed:
+
+    - Selenium
+    - NPM-based scenarios (Wdio, Wdi5, general npm ..)
+    - JMeter
+    - UiVeri5
+
+    The parameter scriptType defines the automation type. The test script is provided using Github repository. The required repository URL, access token and the folder containing the test case are given as parameters.
+
+    Also multiple test runs with different automation scripts and scenarios can be started in one single Piper step.
+
+    In case of Selenium test the additionally required test class name is given in parameter testScript.
+    Optionally an explicit repository name (testRepositoryName) and branch name (testRepositoryBranch) can be passed. By default that name is extracted from the URL.
+    Further properties used for the environment variables inside the Docker container can be passed as parameter dockerEnvVars.
+
+    Additional Info regarding the execution of [Selenium test scenarios with SUPA in Docker](https://workzone.one.int.sap/site#workzone-home&/articles/eb5Ko3s5pgViDx0G7W827p).
+
+    Additional Info regarding [Performance tests in Piper](https://github.wdf.sap.corp/SAPPERF/supa-docker-perf/blob/master/doc/Setup_SUPA_Piper.md) and [SUPA Docker Container with Piper in JaaS Pipelines](https://workzone.one.int.sap/site#workzone-home&/articles/nZHsMLpGg7iWI7dBvK0zPf).
+
+    Additional Info regarding the execution of [Wdio test scenarios with SUPA in Docker](https://github.wdf.sap.corp/SAPPERF/supa-docker-perf/blob/master/doc/How_to_integrateSUPA_into_wdio.md).
+
+    Additional Info regarding the execution of [JMeter test scenarios with and without SUPA](https://workzone.one.int.sap/site#workzone-home&/articles/fUxV9HC6TJe5qYz2RcoVmO).
+
+    Additional Info regarding the execution of [UiVeri5 test scenarios with SUPA in Docker](https://github.wdf.sap.corp/SAPPERF/uiveri5-SUPA).
+spec:
+  inputs:
+    secrets:
+      - name: githubTokenCredentialsId
+        type: jenkins
+        description: "Jenkins 'Secret text' credentials ID containing the token used to authenticate
+          with the Github Server."
+      - name: supaKeystoreKeyId
+        type: jenkins
+        description: "Jenkins 'Secret text' credentials ID containing the key used to access the SUPA keystore file."
+    params:
+      - name: scriptType
+        type: string
+        description: Defines the script type used in the test scenario.
+        scope:
+          - PARAMETERS
+          - STEPS
+        default: all
+        possibleValues:
+          - all
+          - selenium
+          - wdio
+          - qmate
+          - npm
+          - uiveri5
+          - jmeter
+          - krypton
+          - any
+      - name: testRepository
+        type: string
+        description: URL of test repository in GitHub that should be executed.
+        scope:
+          - PARAMETERS
+          - STEPS
+        mandatory: true
+      - name: testScript
+        type: string
+        description: Name of test scenario that should be executed (required for Selenium test scenarios).
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testScriptFolder
+        type: string
+        description: Path to the folder of base directory of test scenario that should be used. For Selenium scenario equal to path of pom folder of the test (optional, default is current folder).
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testRepositoryName
+        type: string
+        description: Name of test repository (optional, default is repository name given in URL).
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testRepositoryBranch
+        type: string
+        description: Name of test repository branch.
+        scope:
+          - PARAMETERS
+          - STEPS
+        default: master
+      - name: testUiVeri5Params
+        type: string
+        description: String of UiVeri5 parameter list, parameters separated by spaces. Only required for UiVeri5 test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testWdioParams
+        type: string
+        description: String of WebdriverIO parameter list, parameters separated by spaces. Only required for WebdriverIO test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testQmateParams
+        type: string
+        description: String of Qmate parameter list, parameters separated by spaces. Only required for Qmate test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testQmateCfg
+        type: string
+        description: Name of Qmate configuration file. Only required for Qmate test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testNpmParams
+        type: string
+        description: String of NPM parameter list, parameters separated by spaces. Only required for general NPM based test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testKryptonParams
+        type: string
+        description: String of Krypton parameter list, parameters separated by spaces. Only required for Krypton test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testKryptonScript
+        type: string
+        description: String contains the name of Krypton script file.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testKryptonRuns
+        type: string
+        description: String contains number of executed Krypton iterations.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testJMeterParams
+        type: string
+        description: String of JMeter parameter list, parameters separated by spaces. Only required for JMeter test scenarios.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: testJMeterScript
+        type: string
+        description: String contains the name of JMeter script file.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: supaConfig
+        type: string
+        description: String contains the name of SUPA configuration file.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: cmdExe
+        type: string
+        description: String of command exe, only used for testing.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: cmdParams
+        type: string
+        description: String of cmd parameters, separated by spaces, only used for testing.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: replaceParameters
+        type: string
+        description: String defines the replace parameters, replace file and replace operator.
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: archiveSUPAResult
+        type: bool
+        description: When true, will archive the SUPA result folder and save in project base path
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: githubToken
+        type: string
+        description: Token of Git user for Github access.
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubTokenCredentialsVaultSecretName
+      - name: supaKeystoreKey
+        type: string
+        description: Key used to access the SUPA keystore file.
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: supaKeystoreKeyId
+            type: secret
+          - type: vaultSecret
+            default: supakey
+            name: supaKeystoreKeyVaultSecret
+      - name: envVars
+        type: "[]string"
+        description: Additional list of properties in form of key=value. Passed to started Docker container and set as environment variables.
+        scope:
+          - PARAMETERS
+          - STEPS
+  containers:
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test_all
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: all
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: selenium
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: any
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: jmeter
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test_js
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: wdio
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test_js
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: npm
+    - image: sapperf.int.repositories.cloud.sap/performance_scalability/supa_performance_test_js
+      workingDir: /home/ubuntu/testautomation
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: scriptType
+              value: uiveri5

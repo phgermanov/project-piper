@@ -1,0 +1,290 @@
+name: Promote Draft Release
+
+on:
+  workflow_run:
+    workflows: ["Piper Golang GPP"]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+env:
+  PIPER_ACTION_SAP_PIPER_OWNER: ContinuousDelivery
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: piper-library
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+  PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+
+  WDF_RELEASE_OWNER: ContinuousDelivery
+  WDF_RELEASE_REPO: piper-library
+  GH_RELEASE_OWNER: project-piper
+  GH_RELEASE_REPO: sap-piper
+  GH_TOOLS_API_URL: https://github.tools.sap/api/v3
+  GH_WDF_API_URL: https://github.wdf.sap.corp/api/v3
+
+  ARTIFACTORY_REPOSITORY_URL: https://sap-piper.int.repositories.cloud.sap/artifactory/sap-piper/releases
+  ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+  ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+
+jobs:
+  MakeReleaseWDF:
+    runs-on: self-hosted
+    outputs:
+      release_tag: ${{ steps.get_release_tag.outputs.tag }}
+      release_url: ${{ steps.get_release_url.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest draft release tag
+        id: get_release_tag
+        run: |
+          RELEASE_TAG=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" \
+            "${{ github.api_url }}/repos/${{ github.repository }}/releases" \
+            | jq -r '.[] | select(.draft == true) | .tag_name' | head -1)
+          if [ "$RELEASE_TAG" != "null" ] && [ -n "$RELEASE_TAG" ]; then
+            echo "tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+            echo "Found release tag: $RELEASE_TAG"
+          else
+            echo "::error::No draft release found. Please create a draft release first."
+            exit 1
+          fi
+      - name: Get latest release url
+        id: get_release_url
+        run: |
+          echo "url=https://github.tools.sap/${{ env.GH_RELEASE_OWNER }}/${{ env.GH_RELEASE_REPO }}/releases/tag/${{ steps.get_release_tag.outputs.tag }}" >> $GITHUB_OUTPUT
+
+      # Script downloads sap-piper binary, defaults and stage-config from recently published draft on WDF
+      # Outputs release.id
+      - name: Download all required assets from latest draft
+        id: download_assets
+        run: >
+          .github/workflows/scripts/download_draft_assets.sh ${{ github.api_url }} ${{ env.WDF_RELEASE_OWNER }} ${{ env.WDF_RELEASE_REPO }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      # Test binary command output by comparing tag of the release with the tag injected to binary during Build stage
+      - name: Test sap-piper binary
+        run: |
+          chmod +x sap-piper
+          if ./sap-piper version | grep -Fq "tag: \"${{ steps.get_release_tag.outputs.tag }}\""; then
+              echo "sap-piper binary test successful"
+          else
+              echo "sap-piper binary test failed"
+              ./sap-piper version
+              exit 1
+          fi
+
+      # Test files contents
+      - name: Test stage config file
+        run: >
+          .github/workflows/scripts/test_file_content.sh piper-stage-config.yml apiVersion: metadata: spec: stages:
+      - name: Test Jenkins defaults file
+        run: >
+          .github/workflows/scripts/test_file_content.sh piper-defaults-jenkins.yml general: stages: steps:
+      - name: Test Github defaults file
+        run: >
+          .github/workflows/scripts/test_file_content.sh piper-defaults-github.yml general: stages: steps:
+
+      - name: Expose vault secrets to env vars (github.tools token)
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: shellExecute
+          flags: >
+            --sources .github/workflows/scripts/expose_vault_secrets.sh
+            --scriptArguments GITHUB_WDF_TOKEN
+
+      # Upload already downloaded assets to sap-piper repository on WDF
+      - name: Upload assets to sap-piper repository on WDF
+        shell: bash
+        env:
+          CREATE_DRAFT: "true"
+          RELEASE_BODY: "Piper release assets"
+          TARGET_COMMITISH: "main"
+        run: |
+          # Use the new reusable script to create/find release and upload assets to github.tools
+          .github/workflows/scripts/upload_release_assets.sh \
+            "${{ env.GH_WDF_API_URL }}" \
+            "${{ env.GH_RELEASE_OWNER }}" \
+            "${{ env.GH_RELEASE_REPO }}" \
+            "${{ steps.get_release_tag.outputs.tag }}" \
+            "${{ env.PIPER_VAULTCREDENTIAL_GITHUB_WDF_TOKEN }}" \
+            piper-defaults-github.yml piper-stage-config.yml sap-piper
+
+      - name: Promote draft to full release on WDF mirror
+        shell: bash
+        run: |
+          # Find the release with the specified tag
+          RELEASE_INFO=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ env.PIPER_VAULTCREDENTIAL_GITHUB_WDF_TOKEN }}" \
+            "${{ env.GH_WDF_API_URL }}/repos/${{ env.GH_RELEASE_OWNER }}/${{ env.GH_RELEASE_REPO }}/releases" \
+            | jq -r ".[] | select(.tag_name == \"${{ steps.get_release_tag.outputs.tag }}\") | {id: .id, draft: .draft}")
+
+          if [ -n "$RELEASE_INFO" ] && [ "$RELEASE_INFO" != "null" ]; then
+            RELEASE_ID=$(echo "$RELEASE_INFO" | jq -r '.id')
+            IS_DRAFT=$(echo "$RELEASE_INFO" | jq -r '.draft')
+            
+            if [ "$IS_DRAFT" == "true" ]; then
+              echo "Found draft release ${{ steps.get_release_tag.outputs.tag }} with ID: $RELEASE_ID on WDF mirror"
+              
+              # Update the release to make it a full release
+              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X PATCH \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{ env.PIPER_VAULTCREDENTIAL_GITHUB_WDF_TOKEN }}" \
+                -H "Content-Type: application/json" \
+                "${{ env.GH_WDF_API_URL }}/repos/${{ env.GH_RELEASE_OWNER }}/${{ env.GH_RELEASE_REPO }}/releases/$RELEASE_ID" \
+                -d '{"draft": false}')
+              
+              if [ "$HTTP_CODE" == "200" ] || [ "$HTTP_CODE" == "201" ]; then
+                echo "✓ Successfully promoted ${{ steps.get_release_tag.outputs.tag }} to full release on WDF mirror"
+              else
+                echo "⚠ Warning: Failed to promote draft (HTTP $HTTP_CODE), but continuing workflow"
+              fi
+            else
+              echo "✓ Release ${{ steps.get_release_tag.outputs.tag }} already exists as a full release on WDF mirror"
+            fi
+          else
+            echo "⚠ Warning: No release found with tag ${{ steps.get_release_tag.outputs.tag }} on WDF mirror, but continuing workflow"
+          fi
+
+      - name: Upload binary to internal artifactory (version)
+        uses: fjogeleit/http-request-action@v1
+        id: upload_v
+        with:
+          method: 'PUT'
+          url: ${{ env.ARTIFACTORY_REPOSITORY_URL }}/${{ steps.get_release_tag.outputs.tag }}/sap-piper
+          file: ./sap-piper
+          username: ${{ env.ARTIFACTORY_USERNAME }}
+          password: ${{ env.ARTIFACTORY_PASSWORD }}
+          timeout: '15000'
+
+      - name: Upload binary to internal artifactory (latest)
+        uses: fjogeleit/http-request-action@v1
+        id: upload_latest
+        with:
+          method: 'PUT'
+          url: ${{ env.ARTIFACTORY_REPOSITORY_URL }}/latest/sap-piper
+          file: ./sap-piper
+          username: ${{ env.ARTIFACTORY_USERNAME }}
+          password: ${{ env.ARTIFACTORY_PASSWORD }}
+          timeout: '15000'
+
+      - name: Verify upload responses
+        run: |
+          if [[ "${{ fromJson(steps.upload_v.outputs.response).size }}" == "0" ]]; then
+            echo "Version ${{ steps.get_release_tag.outputs.tag }} uploaded size is zero"
+            exit 1
+          fi
+
+          if [[ "${{ fromJson(steps.upload_latest.outputs.response).size }}" == "0" ]]; then
+            echo "Latest version uploaded size is zero"
+            exit 1
+          fi
+
+      - name: Configure Release-Drafter
+        run: |
+          echo "GHE_HOST=${GITHUB_SERVER_URL##https:\/\/}" >> $GITHUB_ENV
+
+      - name: Update draft to full release using Release-Drafter
+        id: update
+        uses: release-drafter/release-drafter@v6
+        with:
+          publish: true
+          commitish: master
+          tag: ${{ steps.get_release_tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  MakeReleaseTools:
+    needs: MakeReleaseWDF
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Expose vault secrets to env vars (github.tools token)
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: shellExecute
+          flags: >
+            --sources .github/workflows/scripts/expose_vault_secrets.sh
+            --scriptArguments GITHUB_TOOLS_TOKEN
+
+      # Script downloads sap-piper binary, defaults and stage-config from recently published draft on Tools
+      # Outputs release.id
+      - name: Download all required assets from latest draft
+        id: download_assets
+        run: >
+          .github/workflows/scripts/download_draft_assets.sh  ${{ env.GH_TOOLS_API_URL }} ${{ env.GH_RELEASE_OWNER }} ${{ env.GH_RELEASE_REPO }}
+        env:
+          GH_TOKEN: ${{ env.PIPER_VAULTCREDENTIAL_GITHUB_TOOLS_TOKEN }}
+
+      # Test binary command output by comparing tag of the release with the tag injected to binary during Build stage
+      - name: Test sap-piper binary
+        run: |
+          chmod +x sap-piper
+          if ./sap-piper version | grep -Fq "tag: \"${{ needs.MakeReleaseWDF.outputs.release_tag }}\""; then
+              echo "sap-piper binary test is successful"
+          else
+              echo "sap-piper binary test failed"
+              ./sap-piper version
+              exit 1
+          fi
+
+      # Test files contents
+      - name: Test stage config file
+        run: >
+          .github/workflows/scripts/test_file_content.sh piper-stage-config.yml apiVersion: metadata: spec: stages:
+      - name: Test Azure defaults file
+        run: >
+          .github/workflows/scripts/test_file_content.sh piper-defaults-azure.yml general: stages: steps:
+      - name: Test Github defaults file
+        run: >
+          .github/workflows/scripts/test_file_content.sh piper-defaults-github.yml general: stages: steps:
+
+      - name: Promote draft to full release on github.tools
+        shell: bash
+        run: |
+          # Find the draft with the specified tag
+          RELEASE_ID=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ env.PIPER_VAULTCREDENTIAL_GITHUB_TOOLS_TOKEN }}" \
+            "${{ env.GH_TOOLS_API_URL }}/repos/${{ env.GH_RELEASE_OWNER }}/${{ env.GH_RELEASE_REPO }}/releases" \
+            | jq -r ".[] | select(.tag_name == \"${{ needs.MakeReleaseWDF.outputs.release_tag }}\") | .id")
+
+          if [ "$RELEASE_ID" != "null" ] && [ -n "$RELEASE_ID" ]; then
+            echo "Found draft ${{ needs.MakeReleaseWDF.outputs.release_tag }} with ID: $RELEASE_ID on github.tools"
+
+            # Update the release to make it a full release
+            curl -X PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ env.PIPER_VAULTCREDENTIAL_GITHUB_TOOLS_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              "${{ env.GH_TOOLS_API_URL }}/repos/${{ env.GH_RELEASE_OWNER }}/${{ env.GH_RELEASE_REPO }}/releases/$RELEASE_ID" \
+              -d '{"draft": false}' \
+              && echo "Successfully promoted ${{ needs.MakeReleaseWDF.outputs.release_tag }} to full release on github.tools"
+          else
+            echo "Error: No draft found with tag ${{ needs.MakeReleaseWDF.outputs.release_tag }} on github.tools"
+            exit 1
+          fi
+
+  CreateJiraChangeRequest:
+    needs: MakeReleaseTools
+    uses: ./.github/workflows/change-management.yml
+    with:
+      jira_project: CHMGNTHS
+      jira_issue_type: "Change Request"
+      jira_summary: "Release Change Request - ${{ needs.MakeReleaseWDF.outputs.release_tag }}"
+      jira_description: "Release name: ${{ needs.MakeReleaseWDF.outputs.release_tag }}. Release link: ${{ needs.MakeReleaseWDF.outputs.release_url }}"
+    secrets:
+      JIRA_URL: ${{ secrets.JIRA_URL }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+  Post:
+    # comment out to skip till approved
+    # needs: CreateJiraChangeRequest
+    needs: MakeReleaseTools
+    runs-on: self-hosted
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Notify Piper team on failure
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: shellExecute
+          flags: "--sources .github/workflows/scripts/notify_on_failure.sh"

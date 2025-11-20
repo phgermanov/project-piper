@@ -1,0 +1,187 @@
+metadata:
+  name: sapCumulusUpload
+  description: Upload file to Cumulus
+  errors:
+    - pattern: "googleapi: Error 400: Invalid bucket name:.*invalid"
+      message: "Google Cloud Storage rejected the bucket name. Please check your pipelineId"
+      category: "service_error"
+    - pattern: "key file auth failed.*cannot read credentials file.*no such file or directory"
+      message: "Google Cloud credentials file not found. Verify it exists in Vault"
+      category: "authentication"
+  longDescription: |
+    This step allows to upload files to Cumulus.
+
+    You find details about Cumulus in the [Cumulus Wiki](https://wiki.wdf.sap.corp/wiki/x/nCu1g).
+
+    More information about the Cumulus integration in the general purpose pipeline template can be found [here](https://go.sap.corp/piper/stages/cumulus-integration/).
+spec:
+  inputs:
+    secrets:
+      - name: cumulusFileCredentialsId
+        description: Jenkins 'File' credentials ID containing the key file to authenticate to Cumulus on the Google Cloud Platform.
+        type: jenkins
+    params:
+      - name: filePattern
+        description: Pattern of the files to be uploaded using doublestar wildcard logic (e.g. **/*.xml).
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: jsonKeyFilePath
+        description: File path to Google Cloud JSON key file. If this parameter is not set, the 'token' parameter will be used for authentication.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: cumulusFileCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            name: cumulusFileCredentialsVaultSecretName
+            default: cumulus
+      - name: token
+        type: string
+        description: "The token used to authenticate with the Google Cloud Storage service. It is provided by System Trust, so usually there is no need to set this parameter."
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - type: systemTrustSecret
+            name: cumulusSystemTrustSecretName
+            default: cumulus
+      - name: pipelineId
+        description: Id of the Cumulus pipeline.
+        type: string
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: revision
+        description: Defines the code revision which will then be part of the folder name. Only for scheduled runs so far.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: scheduled
+        description: Indicates if the run was scheduled. Adds the `schedulingTimestamp` to the folder name.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/scheduledRun
+      - name: schedulingTimestamp
+        description: Used within the folder name of scheduled runs. Will be current date in case it is not provided.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/schedulingTimestamp
+      - name: stepResultType
+        description: Step result type to be used in Cumulus store.
+        default: general
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: subFolderPath
+        description: Used to logically separate results of the same type.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: targetFileName
+        description: Target name of the file in the Cumulus store, will default to name of the source if not provided.`Currently not supported`.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: version
+        description: Version to be assigned to the uploaded documents.
+        type: string
+        mandatoryIf:
+          - name: useCommitIdForCumulus
+            value: false
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: versioningModel
+        aliases:
+          - name: defaultVersioningModel
+        type: string
+        description: The default project versioning model used for Cumulus versioning based on the parameter `version`.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: full
+        possibleValues:
+          - major
+          - major-minor
+          - semantic
+          - full
+      - name: gitHeadCommitId
+        type: string
+        description: "Specifies the headcommitId to be sent as part of the environment information."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/headCommitId
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+      - name: useCommitIdForCumulus
+        description: To be set to true if cumulus storage needs to be only with commit id. If set to false, the step relies on the version parameter.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+      - name: bucketLockedWarning
+        description: Allows configuring whether the step should fail or return a warning message when the step is trying to overwrite the file in cumulus bucket. Works only with locked pipelines.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+      - name: uploadCumulusFilesforPR
+        description: Parameter in beta mode. To be set to true if env.json, bom xmls and build-settings.json are to be uploaded for a Pull-Request.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+        default: false
+      - name: eventData
+        type: string
+        description: Contains the "data" field of a CloudEvent that is used by the gcpPublishEvent step. If present, the pipelineRunKey will be added to the event data.
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/eventData
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/schedulingTimestamp
+          - name: custom/cumulusPipelineRunKey
+            type: string
+          - name: custom/eventData
+            type: string

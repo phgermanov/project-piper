@@ -1,0 +1,35 @@
+---
+cf_api_endpoint: https://api.cf.sap.hana.ondemand.com/
+cf_organization: CCXCourseTesting
+cf_space: emtest-c5261232
+required-services:
+  - instance_name: postgres-bulletinboard-ads
+    service: postgresql
+    plan: v9.6-dev
+    recreate: true
+    tag: our data Storage
+  - instance_name: mq-bulletinboard
+    service: rabbitmq
+    plan: v3.7-dev
+    recreate: true
+  - instance_name: applogs-bulletinboard
+    service: application-logs
+    plan: lite
+    recreate: false
+  - instance_name: xsuaa-bulletinboard
+    service: xsuaa
+    plan: application
+    jsonString: '{"xsappname":"bulletinboard-c5261232"}'
+    recreate: true
+user-provided-service:
+  - ups_name: hana-aws
+    jsonString: '{ "driver": "com.sap.db.jdbc.Driver", "host": "cps-hana-aws.de", "password": "removed", "port": "30015", "schema": "SKYWALKER", "url": "jdbc:sap://cps-hana-aws.de:30015/?currentschema=SKYWALKER", "user": "testuser" }'
+user-roles:
+  remove-other-users: true
+  manager:
+    - c5261232
+  developer:
+    - c5261232
+  auditor:
+    - c5261232  # kai-martin.dittkrist@sap.com
+    - d035958  # ralf.schmitt-roquette@sap.com, Schmitt-Roquette, Ralf

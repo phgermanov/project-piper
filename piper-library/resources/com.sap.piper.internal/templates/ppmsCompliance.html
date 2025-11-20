@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>${reportTitle}</title>
+    <style type="text/css">${style}</style>
+</head>
+<body>
+    <h1>${reportTitle}</h1>
+    <h2>
+        <span>
+            <i>WhiteSource product name: ${whitesourceProductName}</i><br />
+        	<i>Filtered project names: ${whitesourceProjectNames?:''}</i>
+        </span>
+        <br>
+        PPMS PV/SCV:&nbsp;
+        <a href="${ppmsResourceDetails.overviewLink}" target="_blank">${ppmsResourceDetails.name}</a>${ppmsBVInformation}
+        <br>
+        PPMS go to market channel name: ${ppmsChannelName}
+    </h2>
+    <div>
+        <h3> total number of libraries: ${totalLibraries}<br />
+        total number of successful library matches: <span class="${failedMatches > 0 ? 'red' : ''}">${successfulMatches}
+        ${ppmsChangeRequestInformation}
+    </h3>
+    </div>
+    <p>Snapshot taken:${now} GMT</p>
+    <table>
+    <tr>
+      <th>Entry #</th>
+      <th>Group-ID</th>
+      <th>Artifact-ID</th>
+      <th>Version</th>
+      <th>Comprised in PV/SCV</th>
+      <th>PPMS FOSS license risk rating</th>
+    </tr>
+
+    ${ppmsComparisonTable}
+
+    </table>
+</body>
+</html>

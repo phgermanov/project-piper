@@ -1,0 +1,16 @@
+{
+    "artifactSetVersion": "setVersion",
+    "batsExecuteTests": "executeBatsTests",
+    "checksPublishResults": "publishCheckResults",
+    "cloudFoundryDeploy": "deployToCloudFoundry",
+    "dockerExecute": "executeDocker",
+    "dockerExecuteOnKubernetes": "executeDockerOnKubernetes",
+    "gaugeExecuteTests": "executeGaugeTests",
+    "githubPublishRelease": "publishGithubRelease",
+    "handlePipelineStepErrors": "handleStepErrors",
+    "healthExecuteCheck": "executeHealthCheck",
+    "influxWriteData": "writeInflux",
+    "newmanExecute": "executeNewmanTests",
+    "pipelineRestartSteps": "restartableSteps",
+    "testsPublishResults": "publishTestResults"
+}

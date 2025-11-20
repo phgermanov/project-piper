@@ -1,0 +1,29 @@
+[
+  {
+    "source_reference": "com.sap.suite.cloud.foundation.currencyconversion.CurrencyConversionUnitTest.skeletonTest()",
+    "jira_keys": [
+      "JENKINSBCKLG-4"
+    ],
+    "filepath": "src/test/com/sap/bulletinboard/ads/resources/CurrencyConversionTest.java"
+  },
+  {
+    "source_reference": "com.sap.suite.cloud.foundation.currencyconversion.CurrencyConversionUnitTest",
+    "jira_keys": [
+      "JENKINSBCKLG-6",
+      "JENKINSBCKLG-1"
+    ]
+  },
+  {
+    "source_reference": "com.sap.suite.cloud.foundation.currencyconversion.CurrencyCodeListServiceTest.get_currency_codelist()",
+    "jira_keys": [
+      "JENKINSBCKLG-2"
+    ]
+  },
+  {
+    "source_reference": "com.sap.suite.cloud.foundation.currencyconversion.CurrencyCodeListServiceTest.notExistingTest()",
+    "jira_keys": [
+      "JENKINSBCKLG-4",
+      "JENKINSBCKLG-5"
+    ]
+  }
+]

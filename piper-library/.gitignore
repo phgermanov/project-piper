@@ -1,0 +1,49 @@
+### Java template
+/logs
+/reports
+*.class
+.classpath
+.project
+
+# IDEs
+/.vscode
+/.idea
+/.settings
+*.iml
+
+# GoLang
+coverage.out
+gosec.sarif
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Created by .ignore support plugin (hsz.mobi)
+/target/
+/bin/
+
+# Sonar Scanner
+.scannerwork
+
+*.orig
+*.bak
+
+*.code-workspace
+*.exe
+piper-library
+/piper
+/sap-piper
+/cumulus-policy-agent*
+debug.test
+
+# created by Piper binary
+*_links.json
+*_reports.json
+*_errorDetails.json
+
+pkg/sap/staging/test.json
+
+# additional ignores for ocm
+gen/
+
+*.log

@@ -1,0 +1,31 @@
+name: Piper Groovy build
+
+on:
+  workflow_dispatch:
+
+env:
+  PIPER_ACTION_SAP_PIPER_OWNER: ContinuousDelivery
+  PIPER_ACTION_SAP_PIPER_REPOSITORY: piper-library
+  PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ github.token }}
+  PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+  PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+
+jobs:
+  groovy-build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: mavenExecute
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: mavenExecute
+          docker-image: docker.wdf.sap.corp:50000/piper/maven:3-jdk-8-20190410062418
+          # dockerOptions: -v /var/jenkins_home/.m2:/home/piper/.m2
+          flags: >
+            --flags clean
+            --flags verify
+            --defines -Dmaven.test.failure.ignore=true
+            --globalSettingsFile https://int.repositories.cloud.sap/artifactory/build-releases/settings.xml
+
+        # sonar to be implemented (was disabled in Jenkins pipeline)

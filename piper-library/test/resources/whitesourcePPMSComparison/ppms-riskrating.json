@@ -1,0 +1,1878 @@
+{
+    "riskRating": {
+        "gtmcName": [
+            {
+                "gtmcId": "GTMC_01",
+                "gtmcName": "GTMC_01 – Direct On-premise",
+                "gtmcSortSequence": 1
+            },
+            {
+                "gtmcId": "GTMC_02",
+                "gtmcName": "GTMC_02 – Value Added Reseller (VAR)",
+                "gtmcSortSequence": 2
+            },
+            {
+                "gtmcId": "GTMC_03",
+                "gtmcName": "GTMC_03 – Software Subscription",
+                "gtmcSortSequence": 3
+            },
+            {
+                "gtmcId": "GTMC_04",
+                "gtmcName": "GTMC_04 – Application Specific Runtime",
+                "gtmcSortSequence": 4
+            },
+            {
+                "gtmcId": "GTMC_05",
+                "gtmcName": "GTMC_05 – OOEM On-premise Embedded",
+                "gtmcSortSequence": 5
+            },
+            {
+                "gtmcId": "GTMC_06",
+                "gtmcName": "GTMC_06 – OOEM / PMC [public cloud] (Partner On-premise, Customer On-demand)",
+                "gtmcSortSequence": 6
+            },
+            {
+                "gtmcId": "GTMC_07",
+                "gtmcName": "GTMC_07 – Channel Cloud SaaS",
+                "gtmcSortSequence": 7
+            },
+            {
+                "gtmcId": "GTMC_08",
+                "gtmcName": "GTMC_08 – Channel Cloud PaaS & IaaS",
+                "gtmcSortSequence": 8
+            },
+            {
+                "gtmcId": "GTMC_09",
+                "gtmcName": "GTMC_09 – PMC/ BPO [private cloud] (Partner On-premise, Customer On-demand)",
+                "gtmcSortSequence": 9
+            },
+            {
+                "gtmcId": "GTMC_10",
+                "gtmcName": "GTMC_10 – Cloud Direct (SaaS, PaaS & IaaS)",
+                "gtmcSortSequence": 10
+            },
+            {
+                "gtmcId": "GTMC_11",
+                "gtmcName": "GTMC_11 – Mobile Pure Licensing",
+                "gtmcSortSequence": 11
+            },
+            {
+                "gtmcId": "GTMC_12",
+                "gtmcName": "GTMC_12 – OOEM Mobile Store",
+                "gtmcSortSequence": 12
+            }
+        ],
+        "riskName": [
+            {
+                "risk": "BLACK",
+                "riskLevel": 60,
+                "riskName": "Not Allowed"
+            },
+            {
+                "risk": "GREEN",
+                "riskLevel": 10,
+                "riskName": "Low Risk"
+            },
+            {
+                "risk": "GREY",
+                "riskLevel": 50,
+                "riskName": "Nicht bewertet"
+            },
+            {
+                "risk": "RED",
+                "riskLevel": 40,
+                "riskName": "High Risk"
+            },
+            {
+                "risk": "YELLOW",
+                "riskLevel": 20,
+                "riskName": "Medium Risk"
+            }
+        ],
+        "gtmcWorstRisk": [
+            {
+                "gtmcId": "GTMC_01",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_02",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_03",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_04",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_05",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_06",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_07",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 0
+            },
+            {
+                "gtmcId": "GTMC_08",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 0
+            },
+            {
+                "gtmcId": "GTMC_09",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 4
+            },
+            {
+                "gtmcId": "GTMC_10",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "GREEN",
+                "worstResRiskWtLicFbLevel": 10,
+                "countTechnicalInstructions": 0
+            },
+            {
+                "gtmcId": "GTMC_11",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "YELLOW",
+                "worstResRiskWtLicFbLevel": 20,
+                "countTechnicalInstructions": 5
+            },
+            {
+                "gtmcId": "GTMC_12",
+                "worstResRisk": "GREY",
+                "worstResRiskLevel": 50,
+                "worstResRiskWthLicFb": "YELLOW",
+                "worstResRiskWtLicFbLevel": 20,
+                "countTechnicalInstructions": 5
+            }
+        ],
+        "fossRiskInfo": [
+            {
+                "fossnr": "73554900106100002410",
+                "displayname": "JUnit 4.12",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100005763",
+                "displayname": "Mockito 1.10.19",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100007940",
+                "displayname": "H2 Database Engine 1.4.190",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100008886",
+                "displayname": "logback 1.1.7",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100008971",
+                "displayname": "SLF4J - org.slf4j:slf4j-parent 1.7.21",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100009003",
+                "displayname": "EclipseLink 2.6.3",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100011851",
+                "displayname": "jackson-databind 2.8.8.1",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100012608",
+                "displayname": "Spring Framework 4.3.9.RELEASE",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100013048",
+                "displayname": "Spring Data JPA 1.10.11RELEASE",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "YELLOW",
+                        "resRiskWthLicFb": "YELLOW",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "B832430D954C27ED2FF275E39FDD001C9E5CF1C8"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "YELLOW",
+                        "resRiskWthLicFb": "YELLOW",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "B832430D954C27ED2FF275E39FDD001C9E5CF1C8"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "fossnr": "73554900106100013049",
+                "displayname": "tomcat-embed-core 8.5.16",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73555000106100004620",
+                "displayname": "Spring Boot 1.4.0.RELEASE",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73555000106100004631",
+                "displayname": "Spring Batch 3.0.7",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73555000106100004762",
+                "displayname": "spring-framework 4.3.2.RELEASE",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREEN",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    }
+                ]
+            },
+            {
+                "fossnr": "73555000106100005228",
+                "displayname": "H2 Database Engine 1.4.192",
+                "gtmcInfo": [
+                    {
+                        "gtmcId": "GTMC_01",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_02",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_03",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_04",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_05",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_06",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_07",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_08",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_09",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_10",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": []
+                    },
+                    {
+                        "gtmcId": "GTMC_11",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    },
+                    {
+                        "gtmcId": "GTMC_12",
+                        "resRisk": "GREY",
+                        "resRiskWthLicFb": "GREEN",
+                        "technicalInstructions": [
+                            {
+                                "textHash": "60DA2406F5B076F1DC52C7EFF0037DF81FA510C0"
+                            },
+                            {
+                                "textHash": "80D2757190A8AB6289127F381387E3E13AFE435D"
+                            },
+                            {
+                                "textHash": "DFA890223DC3D61E7FFEF07E4C7436A09CA59157"
+                            },
+                            {
+                                "textHash": "FF146D04B9D7F399006135E6FE2A2DA2F1EA2104"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

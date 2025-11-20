@@ -1,0 +1,115 @@
+metadata:
+  name: sapCollectPolicyResults
+  description: Collect Policy Results from Cumulus
+  longDescription: |
+    This step allows to collect policy results from one or more pipeline runs (specified by 'pipelieRuns') for the given central and/or custom policy keys.
+
+    The results are collected from the cumulus storage, therefore it is required that:
+      - for custom policies the results has been uploaded before
+      - for central policies the evidence has been uploaded before (so that cumulus has determined the result)
+
+    The compliance can be validated so that the command will fail if at least one 'NOT_COMPLIANT' policy result has been collected or is missing (parameter 'validateCompliance').
+    Optionally, a result file containing a summary and details can be written (parameter 'resultFile').
+spec:
+  inputs:
+    secrets:
+      - name: cumulusFileCredentialsId
+        description: Jenkins 'File' credentials ID containing the key file to authenticate to Cumulus on the Google Cloud Platform.
+        type: jenkins
+      - name: githubTokenCredentialsId
+        type: jenkins
+        description: "Jenkins 'Secret text' credentials ID containing the token used to authenticate
+          with the Github server."
+    params:
+      - name: jsonKeyFilePath
+        description: File path to Google Cloud JSON key file. If this parameter is not set, the 'token' parameter will be used for authentication.
+        type: string
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: cumulusFileCredentialsId
+            type: secret
+          - type: vaultSecretFile
+            name: cumulusFileCredentialsVaultSecretName
+            default: cumulus
+      - name: token
+        type: string
+        description: "The token used to authenticate with the Google Cloud Storage service. It is provided by TrustEngine, so usually there is no need to set this parameter."
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - type: systemTrustSecret
+            name: cumulusSystemTrustSecretName
+            default: cumulus
+      - name: pipelineRuns
+        type: "[]string"
+        description: Defines the pipelineRuns and pipeline for which the Policy Results should be collected using Pipeline-ID and Version separated by a comma.
+        scope:
+          - STEPS
+          - PARAMETERS
+        mandatory: true
+      - name: centralPolicyKeys
+        type: "[]string"
+        description: Defines the Central Policies for which the Policy Results should be collected.
+        scope:
+          - STEPS
+          - PARAMETERS
+      - name: customPolicyKeys
+        type: "[]string"
+        description: Defines the Custom Policies for which the Policy Results should be collected.
+        scope:
+          - STEPS
+          - PARAMETERS
+      - name: validateCompliance
+        description: Validates the compliance which means that the pipeline will fail if at least one of the collected policy results is not compliant or missing.
+        type: bool
+        mandatory: false
+        default: false
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: maxWait
+        description: Define the time in minutes the step will wait and re-check if at least one of the collected policy results is missing.
+        type: int
+        mandatory: false
+        default: 0
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: githubToken
+        type: string
+        description: Token of Git user for GitHub access. Required if pipeline is running outside of the corporate network.
+        scope:
+          - PARAMETERS
+          - STEPS
+        secret: true
+        aliases:
+          - name: access_token
+        resourceRef:
+          - name: githubTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            default: github
+            name: githubTokenCredentialsVaultSecretName
+      - name: cumulusPolicyAgentVersion
+        description: |
+          The version of the cumulus policy agent to be used for the execution.
+          Note: Normally you should use the default
+        type: string
+        mandatory: false
+        default: latest
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: resultFile
+        description: |
+          Relative path of the result file that is generated with all the collected policy results.
+        type: string
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STEPS

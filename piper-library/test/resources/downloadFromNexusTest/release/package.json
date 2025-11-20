@@ -1,0 +1,69 @@
+{
+  "name": "sap-notification-hub",
+  "version": "1.1.11-20170222101742+a6181bdecc50cc829329d3b38671585ac5c99ed0",
+  "private": false,
+  "description": "A service to send push notifications to apple, google or microsoft",
+  "repository": {
+    "type": "git",
+    "url": "https://github.wdf.sap.corp/Sports/notification-hub-package.git"
+  },
+  "bin": {
+    "sap-nhub": "./src/www.js",
+    "sap-nhub-setPassword": "./src/setPassword.js",
+    "sap-nhub-verifyPassword": "./src/verifyPassword.js"
+  },
+  "scripts": {
+    "test": "node ./node_modules/gulp-cli/bin/gulp.js buildAll",
+    "build": "node ./node_modules/gulp-cli/bin/gulp.js build",
+    "start": "node src/www.js",
+    "nodemon": "./node_modules/gulp/bin/gulp.js nodemon"
+  },
+  "engines": {
+    "node": "6.x"
+  },
+  "dependencies": {
+    "apn": "1.7.8",
+    "body-parser": "1.12.4",
+    "cookie-parser": "1.3.5",
+    "express": "4.14.0",
+    "mongodb": "2.2.10",
+    "morgan": "1.5.3",
+    "passport": "0.3.2",
+    "passport-http": "^0.3.0",
+    "prom-client": "5.0.2",
+    "querystring": "0.2.0",
+    "request": "2.78.0",
+    "serve-favicon": "2.3.0",
+    "winston": "1.1.2"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "eslint": "^3.9.1",
+    "gulp": "^3.9.1",
+    "gulp-bower": "0.0.11",
+    "gulp-cli": "^1.2.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-env": "^0.2.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-footer": "^1.0.5",
+    "gulp-header": "^1.8.8",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-mocha": "^2.1.2",
+    "gulp-nodemon": "^2.0.3",
+    "gulp-tsb": "^1.10.3",
+    "gulp-tslint": "^6.1.3",
+    "istanbul": "^0.4.5",
+    "jasmine": "^2.3.2",
+    "map-stream": "0.0.6",
+    "marked": "^0.3.5",
+    "mocha": "^2.2.5",
+    "mocha-junit-reporter": "^1.12.0",
+    "nodemon": "^1.4.0",
+    "supertest": "^1.1.0",
+    "tslint": "^3.15.1",
+    "tslint-microsoft-contrib": "^2.0.13",
+    "typescript": "^1.7.5",
+    "typescript-eslint-parser": "^0.4.0",
+    "typings": "^1.3.2"
+  }
+}

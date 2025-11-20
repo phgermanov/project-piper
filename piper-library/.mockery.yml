@@ -1,0 +1,5 @@
+mockname: "{{.InterfaceName}}"
+filename: "{{.InterfaceName}}.go"
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: mocks
+quiet: false

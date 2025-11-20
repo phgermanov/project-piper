@@ -1,0 +1,163 @@
+metadata:
+  name: sapGenerateEnvironmentInfo
+  description:
+  longDescription: |
+    Generates a JSON file which can be uploaded to Cumulus using `sapCumulusUpload`.  The content of that file is automatically detected from the CI environment.
+    It currently supports: Azure DevOps (Pipelines), GitHub Actions, Jenkins.
+    The JSON file has the following format:
+    ```json
+    {
+      "BUILD_URL": "<link to the build job that triggered the upload>",
+      "GIT_BRANCH": "<branch or tag name>",
+      "GIT_COMMIT": "<commit id that triggers the pipeline>",
+      "GIT_TAG_COMMIT": "<commit id generated after artifactPrepareVersion writes github tag when after versioningType is cloud>",
+      "GIT_URL": "<repository url (used for determining SLC-25 compliance>",
+      "PIPELINE_RUN_MODE":"<different pipeline run modes useful for Cumulus>",
+      "isScheduled":"<set to true for scheduled pipeline>"
+    }
+    ```
+spec:
+  inputs:
+    params:
+      - name: outputPath
+        description: Specifies where the environment information shall be written to.
+        type: string
+        default: ./env.json
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: outputBuildSettingsPath
+        description: Specifies where the environment information shall be written to.
+        type: string
+        default: ./build-settings.json
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: outputPiperConfigPath
+        description: Specifies where the piper config information shall be written to.
+        type: string
+        default: ./piper-config.yaml
+        scope:
+          - PARAMETERS
+          - STEPS
+      - name: scheduled
+        description: Flag if the build was triggered by schedule.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/scheduledRun
+      - name: buildEnvironment
+        description: Describes the used build environment.
+        type: string
+        scope:
+          - PARAMETERS
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/buildEnv
+      - name: buildTool
+        type: string
+        description: "Defines the tool which is used for building the artifact."
+        mandatory: true
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: buildSettingsInfo
+        type: string
+        description: "Describes the buildSettings information was created during the build."
+        scope:
+          - GENERAL
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/buildSettingsInfo
+      - name: releaseStatus
+        type: string
+        description: "Describes the release status (e.g. promoted)."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/releaseStatus
+      - name: generateFiles
+        description: "List of files to be generated"
+        type: "[]string"
+        scope:
+          - PARAMETERS
+        possibleValues:
+          - envInfo
+          - buildSettings
+          - piperConfig
+          - releaseStatus
+        default:
+          - envInfo
+          - buildSettings
+          - piperConfig
+      - name: gitBranch
+        type: string
+        description: "Defines the git branch to be sent as part of the environment information."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/branch
+      - name: gitCommitId
+        type: string
+        description: "Defines the commitId to be sent as part of the environment information."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/commitId
+      - name: gitHeadCommitId
+        type: string
+        description: "Specifies the headcommitId to be sent as part of the environment information."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/headCommitId
+      - name: gitHttpsUrl
+        type: string
+        description: "Defines the gitHttpsUrl to be sent as part of the environment information."
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/httpsUrl
+      - name: pipelineOptimization
+        type: bool
+        description: "Describes the PIPELINE_RUN_MODE information."
+        scope:
+          - GENERAL
+          - PARAMETERS
+      - name: useCommitIdForCumulus
+        description: Parameter in Beta mode. To be set to true if cumulus storage needs to be only with commit id.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+        default: false
+      - name: piperConfig
+        type: string
+        description: "Describes the piper config yaml used during the pipeline run."
+        scope:
+          - GENERAL
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/piperConfig
+  outputs:
+    resources:
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "env*.json"
+            type: root
+          - filePattern: "build-settings.json"
+            type: settings
+          - filePattern: "release-status-*.json"
+            type: .status-log/release

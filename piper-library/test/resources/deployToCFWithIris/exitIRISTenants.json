@@ -1,0 +1,12 @@
+{
+    "system 1": {
+        "cfApiEndpoint": "https://api1.test.com",
+        "cfOrg": "testOrg1",
+        "cfSpace": "testSpace1"
+    },
+    "system 2": {
+        "cfApiEndpoint": "https://api2.test.com",
+        "cfOrg": "testOrg2",
+        "cfSpace": "testSpace2"
+    }
+}

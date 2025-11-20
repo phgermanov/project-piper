@@ -1,0 +1,214 @@
+metadata:
+  name: sapCreateFosstarsReport
+  description: Create Fosstars OSS rating report
+  longDescription: |
+    Create Fosstars OSS rating report based on open source dependencies used in the project.
+    It is currently in **BETA** mode, thus incompatible changes may occur although we aim to limit those kind of changes.
+
+    You find details about Fosstars on the [Fosstars GitHub](https://go.sap.corp/phosphor_fosstars)
+spec:
+  inputs:
+    secrets:
+      - name: gitHttpsCredentialsId
+        description: Jenkins 'Username with password' credentials ID containing username/password for http access to your git repository.
+        type: jenkins
+    params:
+      - name: buildDescriptor
+        description: Direct path to build Descriptor file (like Maven `pom.xml` or `package.json` etc. ).
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: sCMUrl
+        description: The source code management url.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: branch
+        description: The source code managent branch.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: fosstarsQueryServiceBaseUrl
+        description: The url to the fosstars service.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: https://fosstars.tools.sap.corp
+      - name: fosstarsClientSuffix
+        description: The client suffix for fosstars service.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: ratingNameSpace
+        description: The Namespace of the rating you are requesting for.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: Phosphor
+      - name: ratingName
+        description: The kind of rating you are requesting for.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: Security
+      - name: ratingLabelThreshold
+        description: The threshold value of the rating Label for the build to fail.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: NONE
+        possibleValues:
+          - BAD
+          - MODERATE
+          - NONE
+      - name: ratingValueThreshold
+        description: The threshold value of the rating Value between 1-10 for the build to fail.
+        type: int
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: failOnUnclearRatings
+        description: Fail the build on occurrence of at least one UNCLEAR rating
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: buildAllMavenPomFiles
+        description: Build maven project by getting all pom files in the project recursively.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: excludedLibraries
+        description: The list of librarires which should be excluded from the build failure due to bad ratings.
+        type: '[]string'
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: includeTransitiveDependency
+        description: Include the transitive dependencies in the Fosstars report.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: true
+      - name: excludeSAPInternalLibraries
+        description: Option to exclude SAP internal libraries/dependencies from Fosstars report.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: excludeTestDevDependencies
+        description: Option to exclude test/dev dependencies from Fosstars report.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: true
+      - name: requestedRetryCount
+        description: The number of times the ratings should be requested until all the ratings are in CALCULATED state.
+        type: int
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: 10
+      - name: skipSCMCheckOut
+        description: Skip the checkout of SCM and check for the build descriptors in the current folder.
+        type: bool
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: username
+        type: string
+        description: User name for git authentication
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+        secret: true
+        resourceRef:
+          - name: gitHttpsCredentialsId
+            type: secret
+            param: username
+      - name: password
+        type: string
+        description: Password/token for git authentication.
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+        secret: true
+        resourceRef:
+          - name: gitHttpsCredentialsId
+            type: secret
+            param: password
+      - name: customTlsCertificateLinks
+        type: "[]string"
+        description: "List of download links to custom TLS certificates. This is required to ensure trusted connections to instances with repositories (like nexus) when publish flag is set to true."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: globalSettingsFile
+        aliases:
+          - name: maven/globalSettingsFile
+        type: string
+        description: Maven only - Path to the mvn settings file that should be used as global settings file.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        default: 'https://int.repositories.cloud.sap/artifactory/build-releases/settings.xml'
+      - name: buildQuality
+        aliases:
+          - name: xMakeBuildQuality
+        type: string
+        description: "Defines the build quality for the build job."
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+  outputs:
+    resources:
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "fosstars-report/*.json"
+            type: fosstars
+          - filePattern: "fosstars-report/*.html"
+            type: fosstars
+  containers:
+    - image: maven:3.6-jdk-8

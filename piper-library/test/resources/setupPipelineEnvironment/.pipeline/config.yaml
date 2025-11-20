@@ -1,0 +1,4 @@
+steps:
+  executeGaugeTests:
+    gaugeKey1: 'gaugeVal1'
+    gaugeKey2: 'gaugeVal2'

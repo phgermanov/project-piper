@@ -1,0 +1,38 @@
+name: "Markdown"
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  markdownlint:
+    name: 'Lint'
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Prepare default config
+        if: ${{ hashFiles('.markdownlint.yml') == '' }}
+        run: 'echo "MD013: false" > .markdownlint.yml'
+      - name: 🚀 Lint Markdown files
+        uses: nosborn/github-action-markdown-cli@v3.4.0
+        with:
+          files: .
+  codespell:
+    name: Codespell
+    runs-on: self-hosted
+    steps:
+      - name: ⤵️ Checkout repository
+        uses: actions/checkout@v4
+      - name: 🏗 Install Codespell
+        run: pip install codespell==2.4.1
+      - name: 🚀 Check code for common misspellings
+        run: find . -name '*.md' -exec /home/runner/.local/bin/codespell --count {} +

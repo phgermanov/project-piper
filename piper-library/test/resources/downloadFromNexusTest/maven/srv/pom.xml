@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- 
+    Parent not pointing to Spring Boot Starter Parent
+    but to parent of this project tree. The build infrastructure
+    will use maven's version plugin and issue `version:set` to
+    set the version of the parent and all its children.
+    Without setting the parent here to point to the super pom,
+    the version of this project will not be set correctly.
+  -->
+  <parent>
+    <groupId>com.sap.cloud.application</groupId>
+    <artifactId>cap-spring-boot-root</artifactId>
+    <version>0.0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>srv-backend</artifactId>
+  <!-- 
+    Make sure not to specify a version here. The version will be inherited from 
+    the parent POM.
+  -->
+  
+  <properties>
+    <!-- 
+      Fix to trick Eclipse into not complaining with an "Unknown" issue 
+      in first line of the pom.xml. See: https://stackoverflow.com/questions/56142369/why-am-i-getting-unknown-error-in-line-1-of-pom-xml 
+    -->
+    <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- 
+      We need to configure this manually now, as it was previously done by
+      the Spring Boot Starter Parent.
+    -->
+    <java.version>8</java.version>
+    <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Override Spring Data release train provided by Spring Boot -->
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-releasetrain</artifactId>
+        <version>Fowler-SR2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <!-- Import dependency management from Spring Boot -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.sap.cloud.servicesdk.prov</groupId>
+      <artifactId>odatav2-spring-boot-starter</artifactId>
+      <version>1.33.0</version>
+    </dependency>
+
+    <!-- Security: These dependencies are optional, but an application does 
+      not have to include them for OData to work. This is just to protect the endpoints. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-oauth2-jose</artifactId>
+    </dependency>
+
+    <!-- To modify standard Spring Security's JwtDecoder (aka NimbusJwtDecoderJwkSupport) -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-jwt</artifactId>
+      <version>1.0.10.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- End of Optional Dependencies -->
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
+        <!-- 
+          Now executions need to be specified since we are
+          not using Spring Boot Starter Parent Pom anymore.
+        -->
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

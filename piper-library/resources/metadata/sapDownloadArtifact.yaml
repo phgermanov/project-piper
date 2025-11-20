@@ -1,0 +1,291 @@
+metadata:
+  name: sapDownloadArtifact
+  description: This step allows downloading artifacts from SAP's Nexus infrastructure
+  errors:
+    - pattern: "request to.*returned with response 401 Unauthorized"
+      message: "Authentication failed when accessing the artifact repository. Please verify artifactoryToken in Vault"
+      category: "authentication"
+  longDescription: |-
+    With this step you can download artifacts from SAP's Nexus/Artifactory infrastructure.
+
+    It is especially suited to download files which have been run through the [staging service](https://github.wdf.sap.corp/pages/Repository-services/staging-service/).
+
+spec:
+  inputs:
+    secrets:
+      - name: artifactoryTokenCredentialsId
+        description: Jenkins credentials ID containing the DMZ artifactory API token.
+        type: jenkins
+    params:
+      - name: artifactoryToken
+        type: string
+        description: "When the DMZ artifactory repository is used to publish artifacts, then a [Reference Token](https://www.jfrog.com/confluence/display/JFROG/User+Profile#UserProfile-IdentityTokenidentitytoken) must be provided to downloaded artifacts from artifactory"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: artifactoryTokenCredentialsId
+            type: secret
+          - type: vaultSecret
+            name: artifactoryTokenCredentialsVaultSecretName
+            default: common-repository
+      - name: stagingServiceRepositoryPassword
+        type: string
+        description: Password for the repository created from staging services
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/repositoryPassword
+      - name: stagingServiceRepositoryUser
+        type: string
+        description: Username for the repository created from staging services
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/repositoryUsername
+      - name: artifactId
+        type: string
+        description: ArtifactId of the artifact to be downloaded from Nexus.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactId
+      - name: buildTool
+        type: string
+        description: Defines the tool which is used for building the artifact.
+        mandatory: true
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: filePath
+        type: string
+        description: "Defines a custom path to the descriptor file. Build tool specific defaults are used (e.g. `maven: pom.xml`, `npm: package.json`, `mta: mta.yaml`)."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: fromStaging
+        type: bool
+        description: Defines if download should consider a staged artifact (`true`) or a promoted artifact (`false`)
+        default: true
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: globalSettingsFile
+        aliases:
+          - name: maven/globalSettingsFile
+        type: string
+        description: Maven only - Path to the mvn settings file that should be used as global settings file.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: groupId
+        aliases:
+          - name: group
+            deprecated: true
+        type: string
+        description: GroupId of the artifact to be downloaded from Nexus.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: groupId
+      - name: m2Path
+        aliases:
+          - name: maven/m2Path
+        type: string
+        description: Maven only - Path to the location of the local repository that should be used.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: maxRetries
+        type: int
+        description: Maximum number of HTTP request retries upon intermittent connection interrupts
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: 3
+      - name: packaging
+        type: string
+        description: Packaging of the artifact to be downloaded from Nexus. This will determine the file suffix.
+        scope:
+          - STEPS
+          - STAGES
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: packaging
+      - name: projectSettingsFile
+        aliases:
+          - name: maven/projectSettingsFile
+        type: string
+        description: Maven only - Path to the mvn settings file that should be used as project settings file.
+        scope:
+          - GENERAL
+          - STEPS
+          - STAGES
+          - PARAMETERS
+      - name: repositoryUrl
+        type: string
+        description: Url to the Nexus repository
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/repositoryUrl
+      - name: timeout
+        type: int
+        description: "Timeout in seconds until an HTTP call is forcefully terminated."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: 900
+      - name: version
+        aliases:
+          - name: artifactVersion
+        type: string
+        description: Version of the artifact to be downloaded
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+      - name: artifactDownloadUrls
+        type: "[]string"
+        description: "download urls to be used which points to the artifacts in nexus"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/promotedArtifactUrls
+      - name: artifactStagingDownloadUrls
+        type: "[]string"
+        description: "download urls to be used which points to the artifacts in nexus"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/stagedArtifactUrls
+      - name: artifactWithDependencies
+        type: bool
+        description: "when the Maven artifact is packaged with dependencies and is the artifact to be downloaded from nexus"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: mtarPublishedUrl
+        type: string
+        description: "the url to the repository where the mtar artifact is published during staging"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/mtarPublishedUrl
+      - name: extractPackage
+        type: bool
+        description: "when downloading an archive, run a standard extraction command and remove the original package"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: true
+      - name: artifacts
+        type: "[]map[string]interface{}"
+        description: "artifacts produced from the build step(s)"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/artifacts
+      - name: helmChartUrl
+        type: string
+        description: URL to the Helm chart stored in the repository
+        mandatory: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/helmChartUrl
+      - name: helmStagingRepositoryPassword
+        type: string
+        description: Password for the repository created from staging services
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        secret: true
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/helmRepositoryPassword
+      - name: helmStagingRepositoryUsername
+        type: string
+        description: Username for the repository created from staging services
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/helmRepositoryUsername
+      - name: targetPath
+        description: Path on disk where we want to save the downloaded files.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: "./"
+  containers:
+    - image: maven:3.6-jdk-8
+      conditions:
+        - conditionRef: strings-equal
+          params:
+            - name: buildTool
+              value: maven
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/localHelmChartPath
+          - name: custom/downloadTargetPath

@@ -1,0 +1,220 @@
+metadata:
+  name: sapXmakeExecuteBuild
+  aliases:
+    - name: executeBuild
+    - name: triggerXMakeRemoteJob
+      deprecated: true
+  description: This step executes a job in the xMake Central Build Service.
+  longDescription: |
+    For xMake details please see the documentation of [xMake Central Build Service](https://github.wdf.sap.corp/pages/xmake-ci/User-Guide/).
+
+    !!! note This step is used implicitly by the step [executeBuild](executeBuild.md).
+
+    To use the imagePushToRegistry step with a multi-arch Docker build, use the [useImageNameTags parameter](https://go.sap.corp/piper/steps/imagePushToRegistry/#sourceimagetag).
+spec:
+  inputs:
+    secrets:
+      - name: xMakeCredentialsId
+        aliases:
+          - name: xMakeNovaCredentialsId
+          - name: xMakeDevCredentialsId
+        type: jenkins
+    params:
+      - name: jobNamePattern
+        type: string
+        description: "The pattern that should be used to generate the job name."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: GitHub-Internal
+        possibleValues:
+          - GitHub-Tools
+          - GitHub-Internal
+      - name: buildType
+        type: string
+        description: "Defines the type of build to be executed."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - xMakeStage
+          - xMakePromote
+        default: xMakeStage
+      - name: jobParameters
+        aliases:
+          - name: xMakeJobParameters
+        type: "[]string"
+        description: "Defines additional configuration options that are passed as job parameters to the build job."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: buildQuality
+        type: string
+        aliases:
+          - name: xMakeBuildQuality
+        description: "Defines the build quality for the build job."
+        longDescription: "Defines the build quality for the build job. For productive pipelines this should always be set to Release. In order to setup a build in Release quality, please follow the respective [Documentation of the Non-ABAP Assembly team](https://wiki.wdf.sap.corp/wiki/display/NAAS/Simplified+Release+process+for+Github+based+Cloud+projects)."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        possibleValues:
+          - Milestone
+          - Release
+        default: Milestone
+      - name: shipmentType
+        type: string
+        aliases:
+          - name: xMakeShipmentType
+        description: "Defines the type of the shipment. This will be part of the automatically generated job name (only applicable for build quality 'Release')."
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: indirectshipment
+      - name: owner
+        type: string
+        aliases:
+          - name: githubOrg
+        description: "Defines the name of the GitHub organization. This will be part of the automatically generated job name."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: github/owner
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+      - name: repository
+        type: string
+        aliases:
+          - name: githubRepo
+        description: "Defines the name of the GitHub repository. This will be part of the automatically generated job name."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: github/repository
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+      - name: username
+        type: string
+        description: "The username to authenticate with the build environment."
+        scope:
+          - PARAMETERS
+        mandatory: true
+        secret: true
+        resourceRef:
+          - type: vaultSecret
+            default: xmake
+            name: xMakeCredentialsVaultSecretName
+          - name: xMakeCredentialsId
+            type: secret
+            param: username
+      - name: token
+        type: string
+        description: "The user token to authenticate with the build environment."
+        scope:
+          - PARAMETERS
+        mandatory: true
+        secret: true
+        resourceRef:
+          - type: vaultSecret
+            default: xmake
+            name: xMakeCredentialsVaultSecretName
+          - name: xMakeCredentialsId
+            type: secret
+            param: password
+      - name: commitId
+        aliases:
+          - name: gitCommitId
+        type: string
+        description: "Defines the git commit id which should be the source of the build job."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/commitId
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        mandatory: true
+      - name: stagingRepositoryId
+        aliases:
+          - name: xMakeStagingRepoId
+        type: string
+        description: "Defines the id of the repository containing the artifact created during the staging build job."
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/xmakeStagingRepositoryId
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: "xMakeJobName"
+        type: string
+        description: "DEPRECATED: This legacy parameter is ONLY used to derive the [jobNamePattern](#jobnamepattern)."
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: "xMakeJobNameTemplate"
+        description: "DEPRECATED: This legacy parameter is ONLY used to derive the [jobNamePattern](#jobnamepattern)."
+        type: string
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: artifactPattern
+        description: "Defines a pattern (glob style) to select the artifact(s) exported to the pipeline environment (e.g. '{*.war,*.zip}', '*.jar')."
+        type: string
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/releaseStatus
+          - name: custom/xmakeDeployPackage
+          - name: custom/xmakeStagingRepositoryId
+          - name: custom/xmakeJobUrl
+          - name: custom/stageBOM
+            type: 'map[string]interface{}'
+          - name: custom/promotedArtifactUrls
+            type: '[]string'
+          - name: container/imageNames
+            type: '[]string'
+          - name: container/imageNameTags
+            type: '[]string'
+          - name: container/registryUrl
+          - name: container/repositoryUsername
+          - name: container/repositoryPassword
+      - name: influx
+        type: influx
+        params:
+          - name: step_data
+            fields:
+              - name: xmakestage
+              - name: xmakepromote
+              - name: build_quality
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "**/build-type.json"
+            type: xmake
+          - filePattern: "**/sbom/**/bom.xml"
+            type: xmake

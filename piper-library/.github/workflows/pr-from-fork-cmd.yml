@@ -1,0 +1,67 @@
+name: Mirror PR from Fork
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  mirror-pr:
+    if: |
+      contains(github.event.comment.body, '/mirror') && (
+        github.event.comment.author_association == 'COLLABORATOR' ||
+        github.event.comment.author_association == 'OWNER' ||
+        github.event.comment.author_association == 'MEMBER'
+      )
+    runs-on: self-hosted
+    steps:
+      - name: Check Secrets
+        run: |
+          if [ -z "${{ secrets.WDF_SERVICE_USER }}" ]; then
+            echo "::error::WDF_SERVICE_USER secret is empty. This secret is required to authenticate API requests."
+            exit 1
+          fi
+
+      - name: Get PR details
+        run: |
+          PR_URL="${{ github.event.issue.pull_request.url }}"
+          PR_DATA=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.full+json" \
+              $PR_URL)
+          PR_BODY=$(echo "$PR_DATA" | jq -r .body)
+          PR_TITLE=$(echo "$PR_DATA" | jq -r .title)
+          JSON_BODY=$(jq -Rs <<< "$PR_BODY")
+          FORK_BRANCH_NAME=$(echo "$PR_DATA" | jq -r .head.ref)
+          FORK_REPO_FULL_NAME=$(echo "$PR_DATA" | jq -r .head.repo.full_name)
+          echo "FORK_BRANCH_NAME=$FORK_BRANCH_NAME"
+          echo "FORK_REPO_FULL_NAME=$FORK_REPO_FULL_NAME"
+          echo "FORK_BRANCH_NAME=$FORK_BRANCH_NAME" >> $GITHUB_ENV
+          echo "FORK_REPO_FULL_NAME=$FORK_REPO_FULL_NAME" >> $GITHUB_ENV
+          echo "JSON_BODY=$JSON_BODY" >> $GITHUB_ENV
+          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.FORK_REPO_FULL_NAME }}
+          ref: refs/heads/${{ env.FORK_BRANCH_NAME }}
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-wdf-piper-serviceuser"
+          git config user.email "dl_6287ae4dec3ca802990e86e5@global.corp.sap"
+
+      - name: Create new branch for mirror
+        run: |
+          git checkout -b mirror/${{ env.FORK_REPO_FULL_NAME }}
+
+      - name: Push to main repository
+        run: |
+          git remote add fork '${{ github.server_url }}/${{ github.repository }}'
+          git push fork mirror/${{ env.FORK_REPO_FULL_NAME }}
+
+      - name: Create Pull Request
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.WDF_SERVICE_USER }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            ${{ github.api_url }}/repos/${{ github.repository }}/pulls \
+            -d '{"title":"${{ env.PR_TITLE }}","head":"mirror/${{ env.FORK_REPO_FULL_NAME }}","base":"${{ github.event.repository.default_branch }}","body":${{ env.JSON_BODY}}}'

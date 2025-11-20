@@ -1,0 +1,88 @@
+metadata:
+  name: sapExecuteApiMetadataValidator
+  description: Execute SAP API Metadata Validator
+  longDescription: |
+    This step is a wrapper around [SAP API Metadata Validator](https://github.tools.sap/CentralEngineering/api-metadata-validator/) tooling.
+    For more details, please visit the project repository.
+
+    By default, this step uses a docker image from internal artifactory. Additionally, there is a docker image available on Internet Facing
+    Artifactory (common): `cpa-docker.common.repositories.cloud.sap/api-metadata-validator:latest`. To use it, you need to define it explicitly
+    in the step configuration using `dockerImage` property. Example:
+
+    ```
+    sapExecuteApiMetadataValidator:
+      dockerImage: cpa-docker.common.repositories.cloud.sap/api-metadata-validator:latest
+      files:
+        - '**/*.json'
+    ```
+
+    This step always returns results in JSON format (due to Cumulus integration it's not possible to configure a custom formatter using this wrapper).
+
+    The validator will always save the validation results in `api-metadata-validator-results.json` file in the current working directory.
+
+    The step will return non-zero exit code if there is at least one validation message with a severity **Error** (default behavior). However, it's
+    always possible to increase the compliance level by using `failSeverity` parameter.
+
+    This step is part of the **General Purpose Pipeline** and can be activated by the declarative configuration:
+    ````
+    stages:
+      Central Build:
+        sapExecuteApiMetadataValidator: true
+    ```
+
+    **Cumulus support**. The validator supports Cumulus. In case of General Purpose Pipeline the upload will happen automatically (in case that Cumulus is activated), in
+    custom pipelines it's possible to use the following call to upload the results:
+    ```
+    sapCumulusUpload script: script, filePattern: '**/api-metadata-validator-results.json', stepResultType: 'api-metadata-validator'
+    ```
+spec:
+  inputs:
+    params:
+      - name: files
+        description: YAML/JSON documents as files (use '*' as wildcard based on glob-pattern).
+        type: "[]string"
+        mandatory: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: ruleset
+        description: Predefined ruleset name, e.g. sap:base:v1, sap:core:v1, etc.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: failSeverity
+        description: Defines a lower severity barrier when validator should return non-zero exit code.
+        type: string
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: quiet
+        description: Disables rules with severity "Info" and "Warning" (except unrecognized-format rule). If set, only rules with severity "Error" will be run and reported.
+        type: bool
+        default: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: printToConsole
+        description: Pretty prints the validation results in the stdout (in addition to already saved results in `api-metadata-validator-results.json`). Requires v3.0 or newer.
+        type: bool
+        default: false
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+  outputs:
+    resources:
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "**/api-metadata-validator-results.json"
+            type: api-metadata-validator
+  containers:
+    - name: api-metadata-validator
+      image: cpa-docker.int.repositories.cloud.sap/api-metadata-validator:latest

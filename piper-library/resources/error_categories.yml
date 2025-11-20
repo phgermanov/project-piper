@@ -1,0 +1,129 @@
+build:
+  step:
+    - "mavenExecute"
+  message:
+    - "running command 'mbt' failed: cmd.Run() failed: exit status 1"
+    - "The execution of the voting build failed"
+    - "The execution of the kaniko build failed"
+    - "The execution of the dockerInside build failed"
+    - "USR-"
+compliance:
+  message:
+    - "Checkmarx scan failed, the project is not compliant"
+    - "Fortify scan failed, the project is not compliant"
+    - "FOSS to PPMS Entry mappings are missing"
+    - "Open Source Software Security vulnerabilities with CVSS score greater or equal"
+    - "PPMS Entries are missing for this build"
+    - "There are artifacts that require manual approval"
+    - "WhiteSource detected severe Open Source Software Security vulnerabilities"
+    - "Vulas detected Open Source Software Security vulnerabilities, the project is not compliant"
+    - "Protecode detected Open Source Software Security vulnerabilities, the project is not compliant"
+    - "[sapCreateTraceabilityReport] only"
+config:
+  step:
+    - "healthExecuteCheck"
+    - "mailSendNotification"
+  message:
+    - "[newmanExecute] No collection found with pattern"
+    - "[WhiteSource] Could not fetch/find requested project"
+    - "CFG-"
+    - "Could not find Fortify project with project"
+    - "CredentialNotFoundException"
+    - "Error: SonarQube installation defined in this job"
+    - "failed to read file 'VERSION': open VERSION: no such file or directory"
+    - "Failed to remove temporary config file"
+    - "Failed to run ssh-add"
+    - "Failed to retrieve GitHub statistics"
+    - "git add failed - step needs to run in a git context"
+    - "git call to retrieve 'remote.origin.url' failed - step needs to run in a git context"
+    - "Invalid yml configuration"
+    - "Invalid product token"
+    - "java.io.FileNotFoundException"
+    - "knownhosts: /var/jenkins_home/.ssh/known_hosts:"
+    - "knownhosts: illegal base64 data"
+    - "Login failed"
+    - "No Jenkins Credentials found with ID"
+    - "No Kubernetes container provided for running Skopeo"
+    - "No such library resource"
+    - "NO VALUE AVAILABLE"
+    - "Please check your global configuration"
+    - "Please make sure that your git configuration is correct"
+    - "Required context class hudson.FilePath is missing"
+    - "ssh: handshake failed: ssh: unable to authenticate"
+    - "step needs to run in a git context"
+    - "the returned code 401 is not in the accepted range"
+    - "User is not allowed to perform this action"
+    - "You do not have container-cp executable installed"
+custom:
+  step:
+    # buildOrderCaptureForBuildValidation appeared in logs but is no piper step
+    - "buildOrderCaptureForBuildValidation"
+    - "callInitDb"
+    - "callOnboarding"
+    # callOffboarding appeared in logs but is no piper step
+    - "callOffboarding"
+    # compileBoshReleases appeared in logs but is no piper step
+    - "compileBoshReleases"
+    # Cucumber Tests appeared in logs but is no piper step
+    - "Cucumber Tests"
+    - "deployApplicationTo"
+    - "dockerExecute"
+    - "dockerExecuteOnKubernetes"
+    # domPropagateTagToLibraries is deprecated thus considered as custom
+    - "domPropagateTagToLibraries"
+    - "executeCustomIntegrationTests"
+    - "healthExecuteCheck"
+    # manageCloudFoundryEnvironment is deprecated thus considered as custom
+    - "manageCloudFoundryEnvironment"
+    # modelServerAgentIntegrationTests appeared in logs but is no piper step
+    - "modelServerAgentIntegrationTests"
+    - "pipelineRestartSteps"
+    # publishLSSProductBom appeared in logs but is no piper step
+    - "publishLSSProductBom"
+    # Pull-Request Voting appeared in logs but is no piper step
+    - "Pull-Request Voting"
+    # Qualification appeared in logs but is no piper step
+    - "Qualification"
+    # restartableSteps is deprecated thus considered as custom
+    - "restartableSteps"
+    - "sapURLScan"
+    - "testFailure"
+    - "updateArtifactsYml"
+  message:
+    - "ambiguous among libraries"
+    - "Failed to parse template script"
+    - "is deprecated. Please use it's successor"
+    - "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"
+    - "java.lang.OutOfMemoryError: Java heap space"
+    - "java.lang.InterruptedException"
+test:
+  step:
+    - "checksPublishResults"
+    - "seleniumExecuteTests"
+    - "testsPublishResults"
+  message:
+    - "Some tests failed"
+    - "The execution of the bats tests failed"
+    - "The execution of the container structure tests failed"
+    - "The execution of the gauge tests failed"
+    - "The execution of the karma tests failed"
+    - "The execution of the newman tests failed"
+    - "The execution of the uiveri5 tests failed"
+    - "Failure in custom integration test"
+service:
+  message:
+    - "Download of Piper go binary failed"
+    - "Error: Download of sonar-scanner failed * connection refused"
+    - "org.jenkinsci.plugins.ParameterizedRemoteTrigger.exceptions.ExceedRetryLimitException: Max number of connection retries have been exceeded."
+    - "SDE-"
+    - "the returned code 408 is not in the accepted range"
+    - "XMA-"
+    - "java.lang.IllegalStateException: hudson.AbortException: Fail: the returned code 500 is not in the accepted range"
+    - "java.lang.IllegalStateException: java.net.SocketException: Connection reset"
+    - "java.lang.IllegalStateException: org.apache.http.NoHttpResponseException"
+    - "No Checkmarx result available"
+    - "Terminating after * minutes since artifact for Project Version * is still in status"
+    - "Vulas scan failed due to a severe error"
+infrastructure:
+  message:
+    - "ITI-"

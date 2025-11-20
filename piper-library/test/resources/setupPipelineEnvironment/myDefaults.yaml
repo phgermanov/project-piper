@@ -1,0 +1,3 @@
+steps:
+  setupPipelineEnvironment:
+    configYmlFile: '.pipeline/myConfig.yml'

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>${reportTitle}</title>
+<style type="text/css">
+${style}
+</style>
+</head>
+<body>
+    <h1>${reportTitle}</h1>
+    ${program.length()>0||delivery.length()>0?'<h2>':''}
+    ${program.length()>0?('<span><i>Program: ' + program + '</i></span><br />'):''}
+    ${delivery.length()>0?('<span><i>Delivery: ' + delivery+ '</i></span>'):''}
+    ${program.length()>0||delivery.length()>0?'</h2>':''}
+    <h3>total number of requirements: ${totalRequirements}<br />
+    total number of successful requirements: <span class="${(successfulRequirements==totalRequirements)?'green':'red'}">${successfulRequirements}</span></h3>
+    <div><i>Snapshot taken:${now} GMT</i><br /></div>
+    <div>
+    <table>
+        <tr>
+            <th>Issue #</th>
+            <th>Issue id</th>
+        <!--  <th>Title</th> -->
+            <th>Test Mapping</th>
+        </tr>
+
+        ${traceabilityTable}
+
+    </table>
+    </div>
+</body>
+</html>

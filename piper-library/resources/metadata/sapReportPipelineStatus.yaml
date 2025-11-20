@@ -1,0 +1,264 @@
+metadata:
+  name: sapReportPipelineStatus
+  description: Reports pipeline status and error logs
+  longDescription: |
+    This step enables the user to report the overall pipeline status and download the logfile for the pipeline run.
+    It also determines the Cumulus [Pipeline Execution Status](https://wiki.one.int.sap/wiki/pages/resumedraft.action?draftId=4190697507&draftShareId=c0f873e9-010b-4c9a-a6d1-f8acb51581e7&).
+    The status is determined by examining the pipeline logs, or querying the pipeline status through the orchestrator's API.
+    This requires valid orchestrator credentials to be configured for this step.
+spec:
+  inputs:
+    secrets:
+      - name: jenkinsCredentialsId
+        description: Jenkins UserID for authentication
+        type: jenkins
+      - name: azureToken
+        description: Azure access token for authentication
+        type: azure
+    params:
+      - name: splunkReporting
+        description: Activates Splunk reporting.
+        type: bool
+        mandatory: false
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default: false
+      - name: splunkDsn
+        aliases:
+          - name: dsn
+        description: The Splunk DSN. HTTP Endpoint to HTTP-Event-Collector (HEC) from Splunk.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+      - name: splunkToken
+        secret: true
+        description: The Splunk token.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+      - name: splunkIndex
+        secret: false
+        description: The Splunk index.
+        scope:
+          - GENERAL
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        type: string
+      - name: telemetryReporting
+        type: bool
+        description: Activates telemetry reporting for SWA.
+        default: true
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: telemetry/sapPiperPipelineStatus
+      - name: sendErrorLogs
+        description: Send error logs? Default no error logs will be sent.
+        type: "[]string"
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+        default:
+          - none
+        possibleValues:
+          - all
+          - none
+          - build
+          - compliance
+          - config
+          - custom
+          - test
+          - service
+          - infrastructure
+          - undefined
+      - name: jenkinsUser
+        type: string
+        aliases:
+          - name: userId
+        description: Username for Jenkins orchestrator authentication.
+        scope:
+          - PARAMETERS
+        secret: false
+        resourceRef:
+          - name: jenkinsCredentialsId
+            type: secret
+            param: username
+          - type: vaultSecret
+            name: jenkinsCredentialVaultSecretName
+            default:
+              jenkins
+      - name: jenkinsToken
+        type: string
+        aliases:
+          - name: token
+        description: Token for Jenkins orchestrator authentication.
+        mandatory: false
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - name: jenkinsCredentialsId
+            type: secret
+            param: password
+          - type: vaultSecret
+            name: jenkinsCredentialVaultSecretName
+            default:
+              jenkins
+      - name: azureToken
+        type: string
+        aliases:
+          - name: token
+        description: Token for Azure orchestrator authentication.
+        mandatory: false
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - name: azureToken
+            type: secret
+            param: password
+          - type: vaultSecret
+            name: azureCredentialVaultSecretName
+            default:
+              azure-dev-ops
+      - name: gitHubToken
+        aliases:
+          - name: password
+          - name: access_token
+        type: string
+        description: Token for GitHub Actions orchestrator authentication.
+        scope:
+          - PARAMETERS
+        secret: true
+        resourceRef:
+          - type: vaultSecret
+            name: githubVaultSecretName
+            default: github
+      - name: commitId
+        type: string
+        description: CommitId of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/commitId
+      - name: branch
+        type: string
+        description: Branch of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/branch
+      - name: gitOrganization
+        type: string
+        description: Git organization of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/organization
+      - name: gitRepository
+        type: string
+        description: Git repository of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/repository
+      - name: gitInstance
+        type: string
+        description: Git instance of the current build.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/instance
+      - name: gitURL
+        type: string
+        description: Git URL of the repository.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: git/url
+      - name: artifactVersion
+        description: The version assigned by artifactPrepareVersion to the uploaded log files/documents.
+        type: string
+        mandatory: false
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: artifactVersion
+        scope:
+          - PARAMETERS
+          - STAGES
+          - STEPS
+      - name: isOptimizedAndScheduled
+        type: bool
+        description: Whether the pipeline runs in optimized mode and the current execution is a scheduled one
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/isOptimizedAndScheduled
+        scope:
+          - PARAMETERS
+      - name: gcsBucketID
+        type: string
+        description: gcsBucketID/cumulusId of the current pipeline.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/gcsBucketID
+      - name: isProductiveBranch
+        type: bool
+        description: isProductiveBranch indicates if current pipeline is running on productive branch.
+        scope:
+          - PARAMETERS
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/isProductiveBranch
+      - name: useCommitIdForCumulus
+        description: Parameter in Beta mode. To be set to true if cumulus storage needs to be only with commit id.
+        type: bool
+        scope:
+          - GENERAL
+          - PARAMETERS
+        default: false
+      - name: eventData
+        type: string
+        description: Contains the "data" field of a CloudEvent that is used by the gcpPublishEvent step. If present, the pipeline outcome will be added to the event data.
+        resourceRef:
+          - name: commonPipelineEnvironment
+            param: custom/eventData
+  outputs:
+    resources:
+      - name: commonPipelineEnvironment
+        type: piperEnvironment
+        params:
+          - name: custom/eventData
+            type: string
+      - name: reports
+        type: reports
+        params:
+          - filePattern: "**/cumulus-configuration.json"
+            type: root
+          - filePattern: "jenkins-log*.txt"
+            type: log
+          - filePattern: "**/lock-run.json"
+            type: root
+          - filePattern: "pipelineLog*.log"
+            type: log

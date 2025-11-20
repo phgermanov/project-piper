@@ -1,0 +1,72 @@
+name: 'Piper SAST (Checkmarx) workflow'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'  # every day at 4am
+
+jobs:
+  Init:
+    uses: project-piper/piper-pipeline-github/.github/workflows/init.yml@main
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+  Versioning:
+    needs: [Init]
+    uses: project-piper/piper-pipeline-github/.github/workflows/versioning.yml@main
+    secrets: inherit
+    with:
+      piper-version: ${{ inputs.piper-version }}
+      sap-piper-version: ${{ inputs.sap-piper-version }}
+      pipeline-env: ${{ needs.Init.outputs.pipeline-env }}
+      checkout-submodules: ${{ inputs.checkout-submodules }}
+  SAST:
+    needs: [Init, Versioning]
+    name: SAST Security Scan
+    runs-on: self-hosted
+    env:
+      PIPER_ACTION_PIPER_VERSION: ${{ inputs.piper-version }}
+      PIPER_ACTION_SAP_PIPER_VERSION: ${{ inputs.sap-piper-version }}
+      PIPER_ACTION_SAP_PIPER_OWNER: ContinuousDelivery
+      PIPER_ACTION_SAP_PIPER_REPOSITORY: piper-library
+      PIPER_ACTION_GITHUB_ENTERPRISE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PIPER_ACTION_PIPELINE_ENV: ${{ inputs.pipeline-env }}
+      PIPER_vaultAppRoleID: ${{ secrets.PIPER_VAULTAPPROLEID }}
+      PIPER_vaultAppRoleSecretID: ${{ secrets.PIPER_VAULTAPPROLESECRETID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: checkmarxOneExecuteScan
+        id: checkmarxOneExecuteScan
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: checkmarxOneExecuteScan
+      - name: sapCumulusUpload (checkmarxOne)
+        if: always()
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern '**/Cx1_SASTReport_*.pdf, **/Cx1_SASTReport*.json, **/toolrun_checkmarxOne_*.json, **/checkmarxOne/*.sarif' --stepResultType checkmarxOne
+      - name: sapCumulusUpload (policy-evidence/SDOL-009-SAST)
+        if: always()
+        uses: SAP/project-piper-action@v1
+        with:
+          step-name: sapCumulusUpload
+          flags: --filePattern **/piper_checkmarxone_report.json --stepResultType policy-evidence/SDOL-009-SAST
+      - name: Notify Teams channel on failure
+        if: ${{ failure() && steps.checkmarxOneExecuteScan.outcome == 'failure' }}
+        env:
+          job_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: >
+          curl -L -X POST
+          --header 'Content-Type: application/json'
+          ${{ env.webhook_url }}
+          --data-raw '{
+            "@context": "https://schema.org/extensions",
+            "@type": "MessageCard",
+            "themeColor": "0072C6",
+            "title": "There is an issue detected on CheckmarxOne scan",
+            "text": "Link to workflow run: ${{ env.job_url }}"
+          }'
