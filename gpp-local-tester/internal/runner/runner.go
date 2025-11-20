@@ -90,6 +90,13 @@ func (r *Runner) PrepareEnvironment() error {
 	secretsPath := filepath.Join(projectPath, ".secrets")
 	secretsData := []string{}
 	for key, value := range r.config.Secrets {
+		// Use system GITHUB_TOKEN if available for act to download actions
+		if key == "GITHUB_TOKEN" {
+			if systemToken := os.Getenv("GITHUB_TOKEN"); systemToken != "" {
+				value = systemToken
+				fmt.Printf("%s Using system GITHUB_TOKEN for action downloads\n", blue("ℹ"))
+			}
+		}
 		secretsData = append(secretsData, fmt.Sprintf("%s=%s", key, value))
 	}
 	if err := os.WriteFile(secretsPath, []byte(strings.Join(secretsData, "\n")), 0600); err != nil {
