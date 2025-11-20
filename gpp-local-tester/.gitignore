@@ -46,6 +46,7 @@ example-project/.act-inputs.json
 example-project/node_modules/
 example-project/dist/
 example-project/.pipeline/commonPipelineEnvironment/
+example-project/.piper/
 
 # Temporary files
 .mock-server.pid

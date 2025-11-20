@@ -78,6 +78,13 @@ func (r *Runner) PrepareEnvironment() error {
 		projectPath = filepath.Join(".", projectPath)
 	}
 
+	// Copy local Piper binary to example project
+	fmt.Printf("%s Copying local Piper binary to project...\n", blue("ℹ"))
+	if err := r.copyPiperBinary(); err != nil {
+		return fmt.Errorf("failed to copy Piper binary: %w", err)
+	}
+	fmt.Printf("%s Local Piper binary copied\n", green("✓"))
+
 	// Create .secrets file
 	fmt.Printf("%s Creating .secrets file...\n", blue("ℹ"))
 	secretsPath := filepath.Join(projectPath, ".secrets")
@@ -188,6 +195,49 @@ func (r *Runner) Run(ctx context.Context, workflow string) error {
 
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("act failed: %w", err)
+	}
+
+	return nil
+}
+
+// copyPiperBinary copies the local Piper binary to the example project
+func (r *Runner) copyPiperBinary() error {
+	// Get source binary path
+	sourceBinary := r.config.Piper.BinaryPath
+	if !filepath.IsAbs(sourceBinary) {
+		absPath, err := filepath.Abs(sourceBinary)
+		if err != nil {
+			return fmt.Errorf("failed to resolve source binary path: %w", err)
+		}
+		sourceBinary = absPath
+	}
+
+	// Check if source binary exists
+	if _, err := os.Stat(sourceBinary); err != nil {
+		return fmt.Errorf("source Piper binary not found at %s: %w", sourceBinary, err)
+	}
+
+	// Get project path
+	projectPath := r.config.ExampleProject.Path
+	if !filepath.IsAbs(projectPath) {
+		projectPath = filepath.Join(".", projectPath)
+	}
+
+	// Create destination directory
+	destDir := filepath.Join(projectPath, ".piper")
+	if err := os.MkdirAll(destDir, 0755); err != nil {
+		return fmt.Errorf("failed to create .piper directory: %w", err)
+	}
+
+	// Copy binary
+	destBinary := filepath.Join(destDir, "piper")
+	sourceData, err := os.ReadFile(sourceBinary)
+	if err != nil {
+		return fmt.Errorf("failed to read source binary: %w", err)
+	}
+
+	if err := os.WriteFile(destBinary, sourceData, 0755); err != nil {
+		return fmt.Errorf("failed to write destination binary: %w", err)
 	}
 
 	return nil

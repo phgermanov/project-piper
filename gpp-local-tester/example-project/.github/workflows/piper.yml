@@ -36,15 +36,26 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Check Piper availability
+      - name: Setup local Piper binary
         run: |
-          echo "Checking for Piper binary..."
-          if [ -f "$HOME/piper-bin/piper" ]; then
-            echo "Local Piper binary found"
-            $HOME/piper-bin/piper version || true
+          echo "Setting up local Piper binary..."
+          if [ -f ".piper/piper" ]; then
+            echo "✓ Local Piper binary found at .piper/piper"
+            chmod +x .piper/piper
+            .piper/piper version || echo "Could not get version"
+            # Add to PATH so it's prioritized over downloaded version
+            echo "$GITHUB_WORKSPACE/.piper" >> $GITHUB_PATH
+            echo "✓ Local Piper binary added to PATH"
           else
-            echo "Local Piper binary not found, will use action's download"
+            echo "⚠ Local Piper binary not found at .piper/piper"
+            echo "⚠ Piper will be downloaded by the action"
           fi
+
+      - name: Verify Piper in PATH
+        run: |
+          echo "PATH: $PATH"
+          which piper || echo "piper not in PATH yet"
+          piper version || echo "piper command not available yet"
 
       - name: artifactPrepareVersion
         uses: SAP/project-piper-action@v1.22
