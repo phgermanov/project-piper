@@ -1,0 +1,82 @@
+# Piper Pipeline Configuration for Local Testing
+
+general:
+  # Disable telemetry for local testing
+  collectTelemetryData: false
+
+  # Productive branch
+  productiveBranch: 'main'
+
+  # Build tool
+  buildTool: 'npm'
+
+# Stage configuration
+stages:
+  Build:
+    npmExecuteScripts: true
+
+  # Disable stages that require real infrastructure
+  Integration:
+    active: false
+
+  Acceptance:
+    active: false
+
+  Performance:
+    active: false
+
+  Promote:
+    active: false
+
+  Release:
+    active: false
+
+# Step configuration
+steps:
+  # Artifact versioning
+  artifactPrepareVersion:
+    versioningType: 'cloud_noTag'
+    buildTool: 'npm'
+
+  # NPM execution
+  npmExecuteScripts:
+    install: true
+    runScripts:
+      - 'ci-build'
+
+  # NPM linting
+  npmExecuteLint:
+    failOnError: false
+
+  # Disable Vault integration
+  vaultRotateSecretId:
+    skipVault: true
+
+  # Mock Cumulus upload (artifact management)
+  sapCumulusUpload:
+    cumulusUrl: 'http://host.docker.internal:8888/api/v1'
+
+  # Disable actual deployments
+  cloudFoundryDeploy:
+    skip: true
+
+  # Mock SonarQube (if used)
+  sonarExecuteScan:
+    serverUrl: 'http://host.docker.internal:8888'
+    skip: true  # Skip for now, enable if you want to test
+
+  # Checkmarx scan
+  checkmarxExecuteScan:
+    skip: true
+
+  # WhiteSource scan
+  whitesourceExecuteScan:
+    skip: true
+
+  # Fortify scan
+  fortifyExecuteScan:
+    skip: true
+
+  # GitHub release
+  githubPublishRelease:
+    skip: true

@@ -1,0 +1,19 @@
+{
+  "name": "gpp-test-example",
+  "version": "1.0.0",
+  "description": "Example npm project for testing GPP locally",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Running tests...\" && exit 0",
+    "build": "echo \"Building project...\" && mkdir -p dist && echo 'console.log(\"Hello World\");' > dist/index.js",
+    "lint": "echo \"Linting...\" && exit 0",
+    "ci-build": "npm run lint && npm run test && npm run build",
+    "ci-lint": "npm run lint"
+  },
+  "keywords": ["gpp", "piper", "example"],
+  "author": "GPP Team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  }
+}

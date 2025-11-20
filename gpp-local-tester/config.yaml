@@ -1,0 +1,216 @@
+# GPP Local Testing Tool Configuration
+# This file configures the local testing environment for GitHub Pipeline Platform (GPP)
+
+# Piper Configuration
+piper:
+  # Path to local Piper binary (will be built if not exists)
+  binaryPath: "./bin/piper"
+
+  # Build Piper from source if binary doesn't exist
+  autoBuild: true
+
+  # Path to jenkins-library source (relative to this config file)
+  sourcePath: "../jenkins-library"
+
+  # Version to report (for telemetry/logging)
+  version: "local-dev"
+
+# Example Project Configuration
+exampleProject:
+  # Path to example project directory
+  path: "./example-project"
+
+  # Project type (npm, maven, go, etc.)
+  type: "npm"
+
+  # Branch to test (simulated)
+  branch: "main"
+
+  # Workflow file to execute
+  workflowFile: ".github/workflows/piper.yml"
+
+# Act Configuration
+act:
+  # Act binary path (will check if installed)
+  binaryPath: "act"
+
+  # Platform images to use
+  platform: "ubuntu-latest=ghcr.io/catthehacker/ubuntu:full-latest"
+
+  # Container architecture
+  containerArchitecture: "linux/amd64"
+
+  # Additional act flags
+  flags:
+    - "--verbose"
+    - "--artifact-server-path=/tmp/artifacts"
+
+  # Environment variables to inject
+  env:
+    PIPER_INTEGRATION_TEST: "true"
+    PIPER_DISABLE_TELEMETRY: "true"
+    CI: "true"
+    GITHUB_ACTIONS: "true"
+
+# Mock Services Configuration
+mockServices:
+  # Enable/disable mock server
+  enabled: true
+
+  # Mock server host and port
+  host: "localhost"
+  port: 8888
+
+  # Base URL for mock services (used in pipeline config)
+  baseUrl: "http://localhost:8888"
+
+  # Mock service endpoints and responses
+  endpoints:
+    # Vault Mock
+    - path: "/v1/auth/approle/login"
+      method: "POST"
+      response:
+        status: 200
+        body:
+          auth:
+            client_token: "mock-vault-token-12345"
+            lease_duration: 3600
+            renewable: true
+
+    - path: "/v1/secret/data/piper/*"
+      method: "GET"
+      response:
+        status: 200
+        body:
+          data:
+            data:
+              username: "mock-user"
+              password: "mock-password"
+
+    # Cumulus Mock (Artifact Upload)
+    - path: "/api/v1/upload"
+      method: "POST"
+      response:
+        status: 200
+        body:
+          success: true
+          artifactId: "mock-artifact-12345"
+          message: "Artifact uploaded successfully"
+
+    - path: "/api/v1/artifacts/*"
+      method: "GET"
+      response:
+        status: 200
+        body:
+          artifacts: []
+
+    # SonarQube Mock
+    - path: "/api/ce/task"
+      method: "GET"
+      response:
+        status: 200
+        body:
+          task:
+            status: "SUCCESS"
+            analysisId: "mock-analysis-12345"
+
+    - path: "/api/qualitygates/project_status"
+      method: "GET"
+      response:
+        status: 200
+        body:
+          projectStatus:
+            status: "OK"
+            conditions: []
+
+    # GitHub API Mock (for releases, PRs, etc.)
+    - path: "/repos/*/releases/latest"
+      method: "GET"
+      response:
+        status: 200
+        body:
+          tag_name: "v1.0.0"
+          assets: []
+
+    # System Trust Mock
+    - path: "/api/session/token"
+      method: "POST"
+      response:
+        status: 200
+        body:
+          token: "mock-system-trust-token"
+          expiresAt: "2025-12-31T23:59:59Z"
+
+    # Generic success response for unknown endpoints
+    - path: "/*"
+      method: "*"
+      response:
+        status: 200
+        body:
+          success: true
+          message: "Mock response"
+
+# Secrets Configuration (for act .secrets file)
+secrets:
+  PIPER_VAULTAPPROLEID: "mock-approle-id"
+  PIPER_VAULTAPPROLESECRETID: "mock-approle-secret"
+  PIPER_ENTERPRISE_SERVER_URL: "http://localhost:8888"
+  PIPER_WDF_GITHUB_TOKEN: "mock-github-token"
+  GITHUB_TOKEN: "mock-github-token"
+
+# Variables Configuration (for act .vars file)
+variables:
+  PIPER_INTEGRATION_TEST: "true"
+  PIPER_DISABLE_TELEMETRY: "true"
+
+# Pipeline Configuration Overrides
+# These will be merged into .pipeline/config.yml
+pipelineConfig:
+  general:
+    collectTelemetryData: false
+    productiveBranch: "main"
+
+  steps:
+    artifactPrepareVersion:
+      versioningType: "cloud_noTag"
+
+    # Override vault configuration to use mock server
+    vaultRotateSecretId:
+      vaultServerUrl: "http://localhost:8888"
+      skipVault: true
+
+    # Disable actual cloud deployments
+    cloudFoundryDeploy:
+      skip: true
+
+    # Mock Cumulus upload
+    sapCumulusUpload:
+      cumulusUrl: "http://localhost:8888/api/v1"
+
+    # Mock SonarQube
+    sonarExecuteScan:
+      serverUrl: "http://localhost:8888"
+      skip: false
+
+# Logging Configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  outputFile: "./gpp-local-test.log"
+  colorize: true
+
+# Test Execution Configuration
+test:
+  # Stages to execute (empty = all stages)
+  stages: []  # ["Init", "Build"]
+
+  # Stop on first failure
+  failFast: false
+
+  # Cleanup after execution
+  cleanup: true
+
+  # Keep container logs
+  keepLogs: true
+
+  # Timeout for entire pipeline (minutes)
+  timeout: 60

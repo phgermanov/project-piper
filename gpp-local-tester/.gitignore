@@ -1,0 +1,52 @@
+# Binaries
+gpp-test
+gpp-test-*
+bin/piper
+!bin/piper-mock.sh
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+mock-server.log
+gpp-local-test.log
+
+# Act artifacts
+example-project/.secrets
+example-project/.env
+example-project/.actrc
+example-project/.act-inputs.json
+example-project/node_modules/
+example-project/dist/
+example-project/.pipeline/commonPipelineEnvironment/
+
+# Temporary files
+.mock-server.pid
+*.tmp

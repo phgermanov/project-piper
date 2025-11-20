@@ -1,0 +1,72 @@
+name: Piper Pipeline (Local Test)
+
+on:
+  workflow_dispatch:
+    inputs:
+      piper-version:
+        description: 'Piper version to use'
+        required: false
+        default: 'local-dev'
+      extensibility-enabled:
+        description: 'Enable extensibility'
+        required: false
+        default: 'false'
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # For local testing with act, we'll use a simplified single-job approach first
+  # to verify the basic setup works, then expand to full multi-stage pipeline
+
+  piper-build:
+    name: Piper Build Stage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Check Piper availability
+        run: |
+          echo "Checking for Piper binary..."
+          if [ -f "$HOME/piper-bin/piper" ]; then
+            echo "Local Piper binary found"
+            $HOME/piper-bin/piper version || true
+          else
+            echo "Local Piper binary not found, will use action's download"
+          fi
+
+      - name: artifactPrepareVersion
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: 'artifactPrepareVersion'
+          flags: '--versioningType cloud_noTag'
+
+      - name: npmExecuteScripts
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: 'npmExecuteScripts'
+          flags: '--install --runScripts ci-build'
+
+      - name: Export pipeline environment
+        id: pipelineEnv
+        uses: SAP/project-piper-action@v1.22
+        with:
+          step-name: ''
+          export-pipeline-environment: true
+
+      - name: Build summary
+        run: |
+          echo "Build completed successfully!"
+          echo "Artifacts:"
+          ls -la dist/ || echo "No dist directory"
