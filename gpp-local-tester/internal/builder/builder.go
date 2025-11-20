@@ -28,10 +28,14 @@ func (b *Builder) Build() error {
 	green := color.New(color.FgGreen).SprintFunc()
 	yellow := color.New(color.FgYellow).SprintFunc()
 
-	// Check if binary already exists
+	// Get absolute path for binary
 	binaryPath := b.config.BinaryPath
 	if !filepath.IsAbs(binaryPath) {
-		binaryPath = filepath.Join(".", binaryPath)
+		absPath, err := filepath.Abs(binaryPath)
+		if err != nil {
+			return fmt.Errorf("failed to resolve binary path: %w", err)
+		}
+		binaryPath = absPath
 	}
 
 	if !b.Force && fileExists(binaryPath) {
@@ -40,10 +44,14 @@ func (b *Builder) Build() error {
 		return nil
 	}
 
-	// Check if source exists
+	// Get absolute path for source
 	sourcePath := b.config.SourcePath
 	if !filepath.IsAbs(sourcePath) {
-		sourcePath = filepath.Join(".", sourcePath)
+		absPath, err := filepath.Abs(sourcePath)
+		if err != nil {
+			return fmt.Errorf("failed to resolve source path: %w", err)
+		}
+		sourcePath = absPath
 	}
 
 	if !dirExists(sourcePath) {
