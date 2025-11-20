@@ -85,6 +85,13 @@ func (r *Runner) PrepareEnvironment() error {
 	}
 	fmt.Printf("%s Local Piper binary copied\n", green("✓"))
 
+	// Copy piper resources (stage config, etc.)
+	fmt.Printf("%s Copying piper resources to project...\n", blue("ℹ"))
+	if err := r.copyPiperResources(); err != nil {
+		return fmt.Errorf("failed to copy piper resources: %w", err)
+	}
+	fmt.Printf("%s Piper resources copied\n", green("✓"))
+
 	// Copy and adapt GPP workflows for local execution
 	fmt.Printf("%s Preparing GPP workflows for local execution...\n", blue("ℹ"))
 	if err := r.prepareGPPWorkflows(); err != nil {
@@ -252,6 +259,46 @@ func (r *Runner) copyPiperBinary() error {
 
 	if err := os.WriteFile(destBinary, sourceData, 0755); err != nil {
 		return fmt.Errorf("failed to write destination binary: %w", err)
+	}
+
+	return nil
+}
+
+// copyPiperResources copies necessary piper resources (stage config, etc.) to the example project
+func (r *Runner) copyPiperResources() error {
+	// Get SAP Piper library path
+	sapPiperPath := r.config.SapPiper.SourcePath
+	if !filepath.IsAbs(sapPiperPath) {
+		absPath, err := filepath.Abs(sapPiperPath)
+		if err != nil {
+			return fmt.Errorf("failed to resolve SAP Piper path: %w", err)
+		}
+		sapPiperPath = absPath
+	}
+
+	// Get project path
+	projectPath := r.config.ExampleProject.Path
+	if !filepath.IsAbs(projectPath) {
+		projectPath = filepath.Join(".", projectPath)
+	}
+
+	// Create .resources directory
+	resourcesDir := filepath.Join(projectPath, ".resources")
+	if err := os.MkdirAll(resourcesDir, 0755); err != nil {
+		return fmt.Errorf("failed to create .resources directory: %w", err)
+	}
+
+	// Copy piper-stage-config.yml
+	sourceConfig := filepath.Join(sapPiperPath, "resources", "piper-stage-config.yml")
+	destConfig := filepath.Join(resourcesDir, "piper-stage-config.yml")
+
+	configData, err := os.ReadFile(sourceConfig)
+	if err != nil {
+		return fmt.Errorf("failed to read piper-stage-config.yml: %w", err)
+	}
+
+	if err := os.WriteFile(destConfig, configData, 0644); err != nil {
+		return fmt.Errorf("failed to write piper-stage-config.yml: %w", err)
 	}
 
 	return nil
