@@ -15,6 +15,20 @@ piper:
   # Version to report (for telemetry/logging)
   version: "local-dev"
 
+# SAP Piper Configuration (contains SAP-specific commands like sapPipelineInit)
+sapPiper:
+  # Path to local SAP Piper binary (will be built if not exists)
+  binaryPath: "./bin/sap-piper"
+
+  # Build SAP Piper from source if binary doesn't exist
+  autoBuild: true
+
+  # Path to piper-library source (relative to this config file)
+  sourcePath: "../piper-library"
+
+  # Version to report (for telemetry/logging)
+  version: "local-dev"
+
 # Example Project Configuration
 exampleProject:
   # Path to example project directory

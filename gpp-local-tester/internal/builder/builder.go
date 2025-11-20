@@ -12,14 +12,16 @@ import (
 )
 
 type Builder struct {
-	config config.PiperConfig
-	Force  bool
+	config     config.PiperConfig
+	Force      bool
+	BinaryName string // Optional: override the binary name (default: "piper")
 }
 
 func New(cfg config.PiperConfig) *Builder {
 	return &Builder{
-		config: cfg,
-		Force:  false,
+		config:     cfg,
+		Force:      false,
+		BinaryName: "piper", // default to "piper"
 	}
 }
 
@@ -58,7 +60,7 @@ func (b *Builder) Build() error {
 		return fmt.Errorf("piper source not found at: %s", sourcePath)
 	}
 
-	fmt.Printf("%s Building Piper from source...\n", blue("ℹ"))
+	fmt.Printf("%s Building %s from source...\n", blue("ℹ"), b.BinaryName)
 	fmt.Printf("  Source: %s\n", sourcePath)
 	fmt.Printf("  Output: %s\n", binaryPath)
 	fmt.Println()
@@ -74,8 +76,14 @@ func (b *Builder) Build() error {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
+	// Determine the correct package path based on the source directory
+	pkgPath := "github.com/SAP/jenkins-library/cmd"
+	if strings.Contains(sourcePath, "piper-library") {
+		pkgPath = "github.com/SAP/piper-library/cmd"
+	}
+
 	// Build command
-	ldflags := fmt.Sprintf("-w -s -X github.com/SAP/jenkins-library/cmd.GitCommit=%s", gitCommit)
+	ldflags := fmt.Sprintf("-w -s -X %s.GitCommit=%s", pkgPath, gitCommit)
 
 	cmd := exec.Command("go", "build",
 		"-tags", "release",

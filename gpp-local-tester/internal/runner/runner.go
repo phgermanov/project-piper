@@ -214,10 +214,10 @@ func (r *Runner) Run(ctx context.Context, workflow string) error {
 	return nil
 }
 
-// copyPiperBinary copies the local Piper binary to the example project
+// copyPiperBinary copies the local SAP Piper binary to the example project
 func (r *Runner) copyPiperBinary() error {
-	// Get source binary path
-	sourceBinary := r.config.Piper.BinaryPath
+	// Use SAP Piper binary which contains SAP-specific commands like sapPipelineInit
+	sourceBinary := r.config.SapPiper.BinaryPath
 	if !filepath.IsAbs(sourceBinary) {
 		absPath, err := filepath.Abs(sourceBinary)
 		if err != nil {
@@ -228,7 +228,7 @@ func (r *Runner) copyPiperBinary() error {
 
 	// Check if source binary exists
 	if _, err := os.Stat(sourceBinary); err != nil {
-		return fmt.Errorf("source Piper binary not found at %s: %w", sourceBinary, err)
+		return fmt.Errorf("source SAP Piper binary not found at %s: %w", sourceBinary, err)
 	}
 
 	// Get project path
@@ -243,7 +243,7 @@ func (r *Runner) copyPiperBinary() error {
 		return fmt.Errorf("failed to create .piper directory: %w", err)
 	}
 
-	// Copy binary
+	// Copy SAP Piper binary as "piper" (project-piper-action expects it at this name)
 	destBinary := filepath.Join(destDir, "piper")
 	sourceData, err := os.ReadFile(sourceBinary)
 	if err != nil {

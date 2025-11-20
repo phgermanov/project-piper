@@ -15,8 +15,8 @@ var (
 
 var buildCmd = &cobra.Command{
 	Use:   "build",
-	Short: "Build Piper binary",
-	Long:  `Build the Piper binary from local jenkins-library source.`,
+	Short: "Build Piper binaries",
+	Long:  `Build the Piper and SAP Piper binaries from local source.`,
 	RunE:  buildPiper,
 }
 
@@ -29,7 +29,7 @@ func buildPiper(cmd *cobra.Command, args []string) error {
 	green := color.New(color.FgGreen).SprintFunc()
 	blue := color.New(color.FgBlue).SprintFunc()
 
-	printHeader("Building Piper Binary")
+	printHeader("Building Piper Binaries")
 
 	// Load configuration
 	fmt.Printf("%s Loading configuration from %s\n", blue("ℹ"), configFile)
@@ -38,7 +38,8 @@ func buildPiper(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
-	// Build Piper
+	// Build OS Piper
+	fmt.Printf("\n%s Building OS Piper...\n", blue("═"))
 	b := builder.New(cfg.Piper)
 	b.Force = force
 
@@ -46,6 +47,19 @@ func buildPiper(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to build Piper: %w", err)
 	}
 
-	fmt.Printf("\n%s Piper binary built successfully\n", green("✓"))
+	fmt.Printf("%s OS Piper binary built successfully\n", green("✓"))
+
+	// Build SAP Piper
+	fmt.Printf("\n%s Building SAP Piper...\n", blue("═"))
+	sapB := builder.New(cfg.SapPiper)
+	sapB.Force = force
+	sapB.BinaryName = "sap-piper"
+
+	if err := sapB.Build(); err != nil {
+		return fmt.Errorf("failed to build SAP Piper: %w", err)
+	}
+
+	fmt.Printf("%s SAP Piper binary built successfully\n", green("✓"))
+	fmt.Printf("\n%s All binaries built successfully\n", green("✓"))
 	return nil
 }

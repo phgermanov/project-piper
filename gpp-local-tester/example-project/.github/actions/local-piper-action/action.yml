@@ -64,4 +64,6 @@ runs:
       shell: bash
       run: |
         mkdir -p .pipeline
-        $GITHUB_WORKSPACE/.piper/piper checkIfStepActive --stageOutputFile .pipeline/stage_out.json --stepOutputFile .pipeline/step_out.json || true
+        # checkIfStepActive requires --step and --stage flags, but when output files are provided,
+        # it just generates the full maps and ignores these parameters
+        $GITHUB_WORKSPACE/.piper/piper checkIfStepActive --stage Init --step version --stageOutputFile .pipeline/stage_out.json --stepOutputFile .pipeline/step_out.json || true

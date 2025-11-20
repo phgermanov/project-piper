@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	Piper          PiperConfig          `yaml:"piper"`
+	SapPiper       PiperConfig          `yaml:"sapPiper"`
 	ExampleProject ExampleProjectConfig `yaml:"exampleProject"`
 	Act            ActConfig            `yaml:"act"`
 	MockServices   MockServicesConfig   `yaml:"mockServices"`
@@ -89,6 +90,9 @@ func Load(path string) (*Config, error) {
 	// Set defaults
 	if cfg.Piper.BinaryPath == "" {
 		cfg.Piper.BinaryPath = "./bin/piper"
+	}
+	if cfg.SapPiper.BinaryPath == "" {
+		cfg.SapPiper.BinaryPath = "./bin/sap-piper"
 	}
 	if cfg.MockServices.Host == "" {
 		cfg.MockServices.Host = "localhost"

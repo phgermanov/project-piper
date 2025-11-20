@@ -70,16 +70,28 @@ func runPipeline(cmd *cobra.Command, args []string) error {
 	}
 	fmt.Printf("%s All prerequisites met\n\n", green("✓"))
 
-	// Build Piper binary
+	// Build Piper binaries
 	if !skipBuild {
-		printHeader("Building Piper Binary")
+		printHeader("Building Piper Binaries")
+
+		// Build OS Piper
+		fmt.Printf("%s Building OS Piper...\n", blue("ℹ"))
 		b := builder.New(cfg.Piper)
 		if err := b.Build(); err != nil {
-			return fmt.Errorf("failed to build Piper: %w", err)
+			return fmt.Errorf("failed to build OS Piper: %w", err)
 		}
-		fmt.Printf("%s Piper binary ready\n\n", green("✓"))
+		fmt.Printf("%s OS Piper binary ready\n", green("✓"))
+
+		// Build SAP Piper
+		fmt.Printf("%s Building SAP Piper...\n", blue("ℹ"))
+		sapB := builder.New(cfg.SapPiper)
+		sapB.BinaryName = "sap-piper"
+		if err := sapB.Build(); err != nil {
+			return fmt.Errorf("failed to build SAP Piper: %w", err)
+		}
+		fmt.Printf("%s SAP Piper binary ready\n\n", green("✓"))
 	} else {
-		fmt.Printf("%s Skipping Piper build\n\n", yellow("⚠"))
+		fmt.Printf("%s Skipping Piper builds\n\n", yellow("⚠"))
 	}
 
 	// Start mock server
