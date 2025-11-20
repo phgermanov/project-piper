@@ -85,6 +85,13 @@ func (r *Runner) PrepareEnvironment() error {
 	}
 	fmt.Printf("%s Local Piper binary copied\n", green("✓"))
 
+	// Copy and adapt GPP workflows for local execution
+	fmt.Printf("%s Preparing GPP workflows for local execution...\n", blue("ℹ"))
+	if err := r.prepareGPPWorkflows(); err != nil {
+		return fmt.Errorf("failed to prepare GPP workflows: %w", err)
+	}
+	fmt.Printf("%s GPP workflows prepared\n", green("✓"))
+
 	// Create .secrets file
 	fmt.Printf("%s Creating .secrets file...\n", blue("ℹ"))
 	secretsPath := filepath.Join(projectPath, ".secrets")
@@ -248,4 +255,111 @@ func (r *Runner) copyPiperBinary() error {
 	}
 
 	return nil
+}
+
+// prepareGPPWorkflows copies and adapts GPP workflows for local execution
+func (r *Runner) prepareGPPWorkflows() error {
+	// Find piper-pipeline-github directory
+	gppPath := "../piper-pipeline-github"
+	absGPPPath, err := filepath.Abs(gppPath)
+	if err != nil {
+		return fmt.Errorf("failed to resolve GPP path: %w", err)
+	}
+
+	// Check if GPP workflows exist
+	gppWorkflowsPath := filepath.Join(absGPPPath, ".github", "workflows")
+	if _, err := os.Stat(gppWorkflowsPath); err != nil {
+		return fmt.Errorf("GPP workflows not found at %s: %w", gppWorkflowsPath, err)
+	}
+
+	// Get project path
+	projectPath := r.config.ExampleProject.Path
+	if !filepath.IsAbs(projectPath) {
+		absPath, err := filepath.Abs(projectPath)
+		if err != nil {
+			return fmt.Errorf("failed to resolve project path: %w", err)
+		}
+		projectPath = absPath
+	}
+
+	// Create workflows directory
+	destWorkflowsPath := filepath.Join(projectPath, ".github", "workflows")
+	if err := os.MkdirAll(destWorkflowsPath, 0755); err != nil {
+		return fmt.Errorf("failed to create workflows directory: %w", err)
+	}
+
+	// List of workflow files to copy and adapt
+	workflowFiles := []string{
+		"sap-piper-workflow.yml",
+		"init.yml",
+		"build.yml",
+		"integration.yml",
+		"acceptance.yml",
+		"performance.yml",
+		"promote.yml",
+		"release.yml",
+		"post.yml",
+	}
+
+	for _, workflowFile := range workflowFiles {
+		sourceFile := filepath.Join(gppWorkflowsPath, workflowFile)
+		destFile := filepath.Join(destWorkflowsPath, workflowFile)
+
+		// Read source workflow
+		content, err := os.ReadFile(sourceFile)
+		if err != nil {
+			// Skip if file doesn't exist
+			continue
+		}
+
+		// Adapt workflow for local execution
+		adaptedContent := r.adaptWorkflowForLocal(string(content))
+
+		// Write adapted workflow
+		if err := os.WriteFile(destFile, []byte(adaptedContent), 0644); err != nil {
+			return fmt.Errorf("failed to write workflow %s: %w", workflowFile, err)
+		}
+	}
+
+	return nil
+}
+
+// adaptWorkflowForLocal modifies a workflow to use local actions and remove external dependencies
+func (r *Runner) adaptWorkflowForLocal(content string) string {
+	// Replace SAP/project-piper-action with local action
+	content = strings.ReplaceAll(content, "uses: SAP/project-piper-action@v1.22", "uses: ./.github/actions/local-piper-action")
+
+	// Replace actions/checkout with specific commit (act may have issues with latest)
+	content = strings.ReplaceAll(content, "uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955", "uses: actions/checkout@v4")
+	content = strings.ReplaceAll(content, "uses: actions/checkout@v4", "uses: actions/checkout@v3")
+
+	// Replace actions/setup-go with v3 (more compatible with act)
+	content = strings.ReplaceAll(content, "uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00", "uses: actions/setup-go@v3")
+	content = strings.ReplaceAll(content, "uses: actions/setup-go@v6.0.0", "uses: actions/setup-go@v3")
+
+	// Replace actions/upload-artifact with v3 (already present)
+	// No change needed
+
+	// Comment out system trust action (not needed for local testing)
+	content = strings.ReplaceAll(content,
+		"- name: Retrieve System Trust session token",
+		"# - name: Retrieve System Trust session token (disabled for local testing)")
+	content = strings.ReplaceAll(content,
+		"id: system_trust",
+		"# id: system_trust")
+	content = strings.ReplaceAll(content,
+		"uses: project-piper/system-trust-composite-action@",
+		"# uses: project-piper/system-trust-composite-action@")
+
+	// Comment out extensibility actions (not needed for basic testing)
+	content = strings.ReplaceAll(content,
+		"uses: project-piper/piper-pipeline-github/.github/workflows@main",
+		"# uses: project-piper/piper-pipeline-github/.github/workflows@main (disabled for local testing)")
+
+	// Change runs-on from self-hosted to ubuntu-latest for act
+	content = strings.ReplaceAll(content,
+		"runs-on: ${{ fromJSON(inputs.runs-on) }}",
+		"runs-on: ubuntu-latest")
+
+	return content
 }

@@ -6,12 +6,15 @@ A comprehensive Go-based tool for testing GPP (GitHub Pipeline Platform) changes
 
 This tool allows you to test changes to jenkins-library, piper-library, and github-actions locally without pushing to GitHub. It provides:
 
+- ✅ **Real GPP workflows** - Executes actual `sap-piper-workflow.yml` from piper-pipeline-github
+- ✅ **Automatic workflow adaptation** - Converts GPP workflows for local execution
 - ✅ **Single configuration file** (`config.yaml`) for all settings
 - ✅ **Local Piper binary** usage instead of downloading from GitHub releases
 - ✅ **Mock external services** (Vault, Cumulus, SonarQube, etc.)
 - ✅ **Example npm project** pre-configured with Piper
 - ✅ **Automated test execution** with act
 - ✅ **Written in Go** - fast, compiled, zero dependencies
+- ✅ **Completely offline** - No external GitHub downloads during execution
 
 ## Architecture
 
@@ -276,14 +279,24 @@ secrets:
 
 ## How It Works
 
-### 1. Local Piper Binary Injection
+### 1. Real GPP Workflow Execution
+
+The tool automatically:
+1. Copies the actual GPP workflows from `piper-pipeline-github` repository
+2. Adapts them for local execution by:
+   - Replacing `SAP/project-piper-action@v1.22` with a local composite action
+   - Removing external dependencies that aren't needed for local testing
+   - Changing runner targets from `self-hosted` to `ubuntu-latest`
+3. Executes the real `sap-piper-workflow.yml` with all stages (Init, Build, Integration, etc.)
+
+### 2. Local Piper Binary Injection
 
 The tool:
 1. Builds Piper from your local `jenkins-library` source using Go
-2. Uses Docker bind mounts to inject the binary into act containers
-3. The binary is available at `/workspace/gpp-local-tester/bin/piper`
+2. Copies the binary to `example-project/.piper/piper`
+3. The local composite action uses this binary instead of downloading from GitHub
 
-### 2. Mock Service Server
+### 3. Mock Service Server
 
 A lightweight Go HTTP server that:
 - Listens on `localhost:8888`
@@ -299,7 +312,7 @@ Services mocked:
 - **System Trust** - Session tokens
 - **GitHub API** - Releases, PRs
 
-### 3. Act Configuration
+### 4. Act Configuration
 
 The tool automatically creates:
 - `.secrets` - Secret values for the pipeline
@@ -312,16 +325,18 @@ These files configure act to:
 - Inject secrets and variables
 - Connect to mock services via `host.docker.internal`
 
-### 4. Pipeline Execution
+### 5. Pipeline Execution
 
 The tool:
 1. Checks all prerequisites (act, docker, go)
 2. Builds Piper binary (if needed)
 3. Starts mock server in background
-4. Prepares act environment
-5. Executes `act` with proper configuration
-6. Shows real-time output
-7. Displays statistics at the end
+4. Copies and adapts GPP workflows from `piper-pipeline-github`
+5. Prepares local Piper action and binary
+6. Prepares act environment
+7. Executes `act` with the real GPP workflow
+8. Shows real-time output
+9. Displays statistics at the end
 
 ## Mock Service Endpoints
 

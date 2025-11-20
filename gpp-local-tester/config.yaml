@@ -26,8 +26,8 @@ exampleProject:
   # Branch to test (simulated)
   branch: "main"
 
-  # Workflow file to execute
-  workflowFile: ".github/workflows/piper.yml"
+  # Workflow file to execute (uses real GPP workflow)
+  workflowFile: ".github/workflows/sap-piper-workflow.yml"
 
 # Act Configuration
 act:

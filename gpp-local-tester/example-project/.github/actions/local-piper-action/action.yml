@@ -1,0 +1,67 @@
+name: 'Local Project Piper Action'
+description: 'Local version of project-piper-action for testing'
+inputs:
+  step-name:
+    description: 'Name of Piper step to execute'
+    required: false
+    default: ''
+  flags:
+    description: 'Flags/arguments for step'
+    required: false
+    default: ''
+  export-pipeline-environment:
+    description: 'Exports pipeline environment'
+    required: false
+    default: 'false'
+  create-check-if-step-active-maps:
+    description: 'Creates maps with active stages and steps'
+    required: false
+    default: 'false'
+
+outputs:
+  pipelineEnv:
+    description: 'Exported pipeline environment'
+    value: ${{ steps.export-env.outputs.pipelineEnv }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup local Piper
+      shell: bash
+      run: |
+        if [ -f "$GITHUB_WORKSPACE/.piper/piper" ]; then
+          chmod +x "$GITHUB_WORKSPACE/.piper/piper"
+          echo "$GITHUB_WORKSPACE/.piper" >> $GITHUB_PATH
+        else
+          echo "::warning::Local Piper binary not found at $GITHUB_WORKSPACE/.piper/piper"
+        fi
+
+    - name: Execute Piper step
+      if: inputs.step-name != ''
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.flags }}" ]; then
+          $GITHUB_WORKSPACE/.piper/piper ${{ inputs.step-name }} ${{ inputs.flags }} || true
+        else
+          $GITHUB_WORKSPACE/.piper/piper ${{ inputs.step-name }} || true
+        fi
+
+    - name: Export pipeline environment
+      if: inputs.export-pipeline-environment == 'true'
+      id: export-env
+      shell: bash
+      run: |
+        # Export pipeline environment as base64
+        if [ -d ".pipeline/commonPipelineEnvironment" ]; then
+          tar -czf - .pipeline/commonPipelineEnvironment 2>/dev/null | base64 -w 0 > /tmp/pipelineEnv.txt || echo "" > /tmp/pipelineEnv.txt
+          echo "pipelineEnv=$(cat /tmp/pipelineEnv.txt)" >> $GITHUB_OUTPUT
+        else
+          echo "pipelineEnv=" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create check if step active maps
+      if: inputs.create-check-if-step-active-maps == 'true'
+      shell: bash
+      run: |
+        mkdir -p .pipeline
+        $GITHUB_WORKSPACE/.piper/piper checkIfStepActive --stageOutputFile .pipeline/stage_out.json --stepOutputFile .pipeline/step_out.json || true

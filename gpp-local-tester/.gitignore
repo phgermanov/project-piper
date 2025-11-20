@@ -48,6 +48,17 @@ example-project/dist/
 example-project/.pipeline/commonPipelineEnvironment/
 example-project/.piper/
 
+# Generated GPP workflows (copied from piper-pipeline-github)
+example-project/.github/workflows/sap-piper-workflow.yml
+example-project/.github/workflows/init.yml
+example-project/.github/workflows/build.yml
+example-project/.github/workflows/integration.yml
+example-project/.github/workflows/acceptance.yml
+example-project/.github/workflows/performance.yml
+example-project/.github/workflows/promote.yml
+example-project/.github/workflows/release.yml
+example-project/.github/workflows/post.yml
+
 # Temporary files
 .mock-server.pid
 *.tmp
