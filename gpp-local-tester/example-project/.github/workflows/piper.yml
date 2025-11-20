@@ -1,83 +1,21 @@
-name: Piper Pipeline (Local Test)
+name: GPP Pipeline (Local Test)
 
 on:
   workflow_dispatch:
-    inputs:
-      piper-version:
-        description: 'Piper version to use'
-        required: false
-        default: 'local-dev'
-      extensibility-enabled:
-        description: 'Enable extensibility'
-        required: false
-        default: 'false'
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
 jobs:
-  # For local testing with act, we'll use a simplified single-job approach first
-  # to verify the basic setup works, then expand to full multi-stage pipeline
-
-  piper-build:
-    name: Piper Build Stage
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Setup local Piper binary
-        run: |
-          echo "Setting up local Piper binary..."
-          if [ -f ".piper/piper" ]; then
-            echo "✓ Local Piper binary found at .piper/piper"
-            chmod +x .piper/piper
-            .piper/piper version || echo "Could not get version"
-            # Add to PATH so it's prioritized over downloaded version
-            echo "$GITHUB_WORKSPACE/.piper" >> $GITHUB_PATH
-            echo "✓ Local Piper binary added to PATH"
-          else
-            echo "⚠ Local Piper binary not found at .piper/piper"
-            echo "⚠ Piper will be downloaded by the action"
-          fi
-
-      - name: Verify Piper in PATH
-        run: |
-          echo "PATH: $PATH"
-          which piper || echo "piper not in PATH yet"
-          piper version || echo "piper command not available yet"
-
-      - name: artifactPrepareVersion
-        uses: SAP/project-piper-action@v1.22
-        with:
-          step-name: 'artifactPrepareVersion'
-          flags: '--versioningType cloud_noTag'
-
-      - name: npmExecuteScripts
-        uses: SAP/project-piper-action@v1.22
-        with:
-          step-name: 'npmExecuteScripts'
-          flags: '--install --runScripts ci-build'
-
-      - name: Export pipeline environment
-        id: pipelineEnv
-        uses: SAP/project-piper-action@v1.22
-        with:
-          step-name: ''
-          export-pipeline-environment: true
-
-      - name: Build summary
-        run: |
-          echo "Build completed successfully!"
-          echo "Artifacts:"
-          ls -la dist/ || echo "No dist directory"
+  piper:
+    # Use the actual GPP workflow from piper-pipeline-github
+    # For local testing with act, we reference it relatively
+    uses: ../../piper-pipeline-github/.github/workflows/sap-piper-workflow.yml@main
+    secrets: inherit
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      piper-version: 'local-dev'
+      sap-piper-version: 'local-dev'
+      extensibility-enabled: false
