@@ -178,7 +178,7 @@ func (r *Runner) Run(ctx context.Context, workflow string) error {
 		"workflow_dispatch",
 		"-W", workflow,
 		"--bind", fmt.Sprintf("%s:%s", absProjectRoot, absProjectRoot),
-		"--container-options", "--add-host=host.docker.internal:host-gateway",
+		"--container-options=--add-host=host.docker.internal:host-gateway",
 	}
 
 	cmd := exec.CommandContext(ctx, r.config.Act.BinaryPath, args...)
