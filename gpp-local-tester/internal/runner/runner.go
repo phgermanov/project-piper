@@ -174,10 +174,11 @@ func (r *Runner) Run(ctx context.Context, workflow string) error {
 	}
 
 	// Build act command
+	// Note: Volume mounting for local Piper binary needs to be handled differently
+	// Act doesn't support direct volume mounting like Docker CLI
 	args := []string{
 		"workflow_dispatch",
 		"-W", workflow,
-		fmt.Sprintf("-v=%s:%s", absProjectRoot, absProjectRoot),
 		"--container-options=--add-host=host.docker.internal:host-gateway",
 	}
 
